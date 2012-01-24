@@ -15,8 +15,10 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/asok/rhtml"))
 (require 'rhtml-mode)
 
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/asok/ruby-electric"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/asok/emacs-rails"))
-(require 'rails)
+;; (add-to-list 'load-path (expand-file-name "~/.emacs.d/asok/ruby-electric"))
+;; (add-to-list 'load-path (expand-file-name "~/.emacs.d/asok/emacs-rails"))
+;; (require 'rails)
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/asok/rinari"))
+(require 'rinari)
 
 (provide 'asok-rails-config)

@@ -20,6 +20,7 @@
 
 (add-to-list 'load-path "~/.emacs.d/asok/rspec-mode")
 (require 'rspec-mode)
+(define-key rspec-mode-verifible-keymap (kbd "s") 'rspec-verify-single)
 
 ;; Original idea from
 ;; http://www.opensubscriber.com/message/emacs-devel@gnu.org/10971693.html
@@ -89,3 +90,7 @@
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
 
+(menu-bar-mode 1)
+
+(global-set-key (kbd "s-x") 'smex)
+(global-set-key (kbd "s-g") 'abort-recursive-edit)

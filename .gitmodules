@@ -1,0 +1,3 @@
+[submodule "asok/rinari"]
+	path = asok/rinari
+	url = https://github.com/eschulte/rinari.git
