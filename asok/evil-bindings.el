@@ -1,10 +1,4 @@
 (add-hook 'after-init-hook '(lambda ()
-(evil-define-key 'normal global-map "[" 'previous-buffer)
-(evil-define-key 'normal global-map "]" 'next-buffer)
-(define-key completion-list-mode-map "[" 'previous-buffer)
-(define-key completion-list-mode-map "]" 'next-buffer)
-;(define-key help-mode-map "[" 'previous-buffer) 
-;(define-key help-mode-map "]" 'next-buffer)
 
 (defun match-paren (arg)
   "Go to the matching paren if on a paren."
@@ -53,4 +47,7 @@
 (evil-define-key 'insert shell-mode-map (kbd "<down>") 'comint-next-input)
 
 ))
+
+
 (provide 'evil-bindings)
+

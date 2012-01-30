@@ -7,15 +7,12 @@
     (package-refresh-contents))
 
 ;; Add in your own as you wish:
-(defvar my-packages '(starter-kit-ruby starter-kit-js starter-kit-lisp anything anything-match-plugin anything-config rvm flymake-ruby color-theme flymake-haml yaml-mode)
+(defvar my-packages '(starter-kit-ruby starter-kit-js starter-kit-lisp anything anything-match-plugin anything-config rvm flymake-ruby color-theme flymake-haml yaml-mode yasnippet)
   "A list of packages to ensure are installed at launch.")
 
   (dolist (p my-packages)
     (when (not (package-installed-p p))
         (package-install p)))
-
-(require 'flymake-ruby)
-(add-hook 'ruby-mode-hook 'flymake-ruby-load)
 
 (require 'anything-match-plugin)
 (require 'anything-config)
@@ -23,7 +20,6 @@
   (interactive)
   (anything-other-buffer
    '(anything-c-source-buffers
-     anything-c-source-rails-project-files
      anything-c-source-recentf
      anything-c-source-imenu)
    " *my-anything*"))
@@ -31,6 +27,11 @@
 (require 'anything-of-rails)
 (global-set-key (kbd "s-r") 'anything-of-rails)
 
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/asok/ruby-mode"))
+(require 'ruby-mode)
+
+(require 'flymake-ruby)
+(add-hook 'ruby-mode-hook 'flymake-ruby-load)
 
 (global-set-key (kbd "M-e") 'rgrep)
 
@@ -57,14 +58,8 @@
  '(rspec-spec-command "rspec")
  '(rspec-use-rake-flag nil)
  '(rspec-use-rvm t)
- '(speedbar-frame-parameters (quote ((minibuffer) (width . 200) (border-width . 0) (menu-bar-lines . 0) (tool-bar-lines . 0) (unsplittable . t) (left-fringe . 0))))
+ '(speedbar-frame-parameters (quote ((minibuffer) (width . 50) (border-width . 0) (menu-bar-lines . 0) (tool-bar-lines . 0) (unsplittable . t) (left-fringe . 0))))
  '(tool-bar-mode nil))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(magit-item-highlight ((t (:inherit default)))))
 
 (require 'haml-mode)
 (require 'flymake-haml) (add-hook 'haml-mode-hook 'flymake-haml-load)
@@ -75,3 +70,15 @@
 (add-hook 'yaml-mode-hook
           '(lambda ()
              (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+
+(require 'yasnippet) ;; not yasnippet-bundle
+(yas/global-mode 1)
+
+(auto-fill-mode nil)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(magit-item-highlight ((t nil))))
+

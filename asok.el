@@ -94,3 +94,8 @@
 
 (global-set-key (kbd "s-x") 'smex)
 (global-set-key (kbd "s-g") 'abort-recursive-edit)
+
+(setq font-lock-maximum-decoration t)
+
+(global-set-key "\M-j" 'previous-buffer)
+(global-set-key "\M-k" 'next-buffer)
