@@ -7,9 +7,6 @@
 [submodule "asok/ruby-electric"]
 	path = asok/ruby-electric
 	url = git://github.com/qoobaa/ruby-electric.git
-[submodule "asok/ruby-mode"]
-	path = asok/ruby-mode
-	url = git://github.com/qoobaa/ruby-mode.git
 [submodule "asok/emacs-rails"]
 	path = asok/emacs-rails
 	url = git://github.com/asok/emacs-rails.git
