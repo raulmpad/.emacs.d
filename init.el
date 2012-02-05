@@ -27,8 +27,6 @@
 (require 'anything-of-rails)
 (global-set-key (kbd "s-r") 'anything-of-rails)
 
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/asok/ruby-mode"))
-(require 'ruby-mode)
 
 (require 'flymake-ruby)
 (add-hook 'ruby-mode-hook 'flymake-ruby-load)
@@ -42,7 +40,7 @@
 
 (require 'color-theme)
 (load-file "~/.emacs.d/asok/railscasts/color-theme-railscasts.el")
-(color-theme-railscasts)
+;(color-theme-railscasts)
 
 (require 'evil-bindings)
 
@@ -51,9 +49,13 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes (quote ("4711e8fe63ef13accc884c59469067d2f497e79c" default)))
+ '(evil-complete-next-func (lambda (arg) (let ((dabbrev-search-these-buffers-only (buffer-list)) dabbrev-case-distinction) (condition-case nil (if (eq last-command this-command) (dabbrev-expand nil) (dabbrev-expand (- (abs (or arg 1))))) (error (dabbrev-expand nil) j)))))
+ '(evil-complete-previous-func (lambda (arg) (let ((dabbrev-search-these-buffers-only (buffer-list)) dabbrev-case-distinction) (dabbrev-expand arg))))
  '(evil-default-cursor (quote (t "white")))
  '(evil-flash-delay 5)
  '(evil-motion-state-modes (quote (apropos-mode Buffer-menu-mode calendar-mode command-history-mode compilation-mode dictionary-mode help-mode Info-mode speedbar-mode undo-tree-visualizer-mode view-mode magit-mode)))
+ '(rails-rake-use-bundler-when-possible t)
  '(recentf-max-saved-items 40)
  '(rspec-spec-command "rspec")
  '(rspec-use-rake-flag nil)
@@ -82,3 +84,9 @@
  ;; If there is more than one, they won't work right.
  '(magit-item-highlight ((t nil))))
 
+(add-to-list 'load-path "~/.emacs.d/asok/anything-show-completion")
+(require 'anything-show-completion)
+
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/asok/enhanced-ruby-mode"))
+(setq enh-ruby-program "~/.rvm/bin/ruby-1.9.2-p0/bin/ruby") ; so that still works if ruby points to ruby1.8
+(require 'ruby-mode)

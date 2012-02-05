@@ -1,6 +1,10 @@
 #*#
+.#*#
 .DS_Store
 .smex-items
 places
 elpa
 auto-save-list
+tramp
+url/*
+anything-c-adaptive-history

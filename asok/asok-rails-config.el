@@ -1,6 +1,3 @@
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/asok/ruby-mode"))
-(require 'ruby-mode)
-
 (defadvice find-file-at-point (around goto-line compile activate)
   (let ((line (and (looking-at ".*:\\([0-9]+\\)")
                    (string-to-number (match-string 1)))))
@@ -10,7 +7,7 @@
 (add-hook 'rspec-mode-hook
           (lambda ()
             (font-lock-add-keywords nil
-                                    '(("\\<\\(describe\\|pending\\|context\\|specify\\|shared_example_group_for\\|it_should_behave_like\\|before\\|it\\|after\\)\\>" . font-lock-function-name-face)))))
+                                    '(("\\<\\(describe\\|pending\\|context\\|specify\\|shared_examples_for\\|it_should_behave_like\\|before\\|it\\|after\\)\\>" . font-lock-function-name-face)))))
 
 (font-lock-add-keywords 'ruby-mode '(("\\<\\(require_relative\\|require\\|include\\|extend\\)\\>" . font-lock-keyword-face)))
 
