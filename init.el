@@ -7,7 +7,7 @@
     (package-refresh-contents))
 
 ;; Add in your own as you wish:
-(defvar my-packages '(starter-kit-ruby starter-kit-js starter-kit-lisp anything anything-match-plugin anything-config rvm flymake-ruby color-theme flymake-haml yaml-mode yasnippet yari solarized-theme zenburn-theme)
+(defvar my-packages '(starter-kit-ruby starter-kit-js starter-kit-lisp anything anything-match-plugin anything-config rvm flymake-ruby color-theme flymake-haml yaml-mode yasnippet yari solarized-theme zenburn-theme color-theme-sanityinc-solarized mo-git-blame)
   "A list of packages to ensure are installed at launch.")
 
   (dolist (p my-packages)
@@ -49,7 +49,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes (quote ("1440d751f5ef51f9245f8910113daee99848e2c0" "485737acc3bedc0318a567f1c0f5e7ed2dfde3fb" "4711e8fe63ef13accc884c59469067d2f497e79c" default)))
+ '(custom-safe-themes (quote ("69349beba557a65bb06f89b28b8fd2890c742f07" "d14db41612953d22506af16ef7a23c4d112150e5" "1440d751f5ef51f9245f8910113daee99848e2c0" "485737acc3bedc0318a567f1c0f5e7ed2dfde3fb" "4711e8fe63ef13accc884c59469067d2f497e79c" default)))
  '(evil-complete-next-func (lambda (arg) (let ((dabbrev-search-these-buffers-only (buffer-list)) dabbrev-case-distinction) (condition-case nil (if (eq last-command this-command) (dabbrev-expand nil) (dabbrev-expand (- (abs (or arg 1))))) (error (dabbrev-expand nil) j)))))
  '(evil-complete-previous-func (lambda (arg) (let ((dabbrev-search-these-buffers-only (buffer-list)) dabbrev-case-distinction) (dabbrev-expand arg))))
  '(evil-default-cursor (quote (t "white")))
@@ -90,3 +90,8 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/asok/enhanced-ruby-mode"))
 (setq enh-ruby-program "~/.rvm/bin/ruby-1.9.2-p0") ; so that still works if ruby points to ruby1.8
 (require 'ruby-mode)
+
+(autoload 'mo-git-blame-file "mo-git-blame" nil t)
+(autoload 'mo-git-blame-current "mo-git-blame" nil t)
+(global-set-key [?\C-c ?g ?b] 'mo-git-blame-current)
+(global-set-key [?\C-c ?g ?s] 'magit-status)
