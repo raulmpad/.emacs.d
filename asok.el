@@ -99,5 +99,3 @@
 
 (global-set-key "\M-j" 'previous-buffer)
 (global-set-key "\M-k" 'next-buffer)
-
-(add-to-list 'custom-theme-load-path "~/.emacs.d/asok/zenburn-emacs/")

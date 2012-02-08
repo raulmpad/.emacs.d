@@ -7,7 +7,7 @@
     (package-refresh-contents))
 
 ;; Add in your own as you wish:
-(defvar my-packages '(starter-kit-ruby starter-kit-js starter-kit-lisp anything anything-match-plugin anything-config rvm flymake-ruby color-theme flymake-haml yaml-mode yasnippet)
+(defvar my-packages '(starter-kit-ruby starter-kit-js starter-kit-lisp anything anything-match-plugin anything-config rvm flymake-ruby color-theme flymake-haml yaml-mode yasnippet yari solarized-theme zenburn-theme)
   "A list of packages to ensure are installed at launch.")
 
   (dolist (p my-packages)
@@ -49,7 +49,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes (quote ("4711e8fe63ef13accc884c59469067d2f497e79c" default)))
+ '(custom-safe-themes (quote ("1440d751f5ef51f9245f8910113daee99848e2c0" "485737acc3bedc0318a567f1c0f5e7ed2dfde3fb" "4711e8fe63ef13accc884c59469067d2f497e79c" default)))
  '(evil-complete-next-func (lambda (arg) (let ((dabbrev-search-these-buffers-only (buffer-list)) dabbrev-case-distinction) (condition-case nil (if (eq last-command this-command) (dabbrev-expand nil) (dabbrev-expand (- (abs (or arg 1))))) (error (dabbrev-expand nil) j)))))
  '(evil-complete-previous-func (lambda (arg) (let ((dabbrev-search-these-buffers-only (buffer-list)) dabbrev-case-distinction) (dabbrev-expand arg))))
  '(evil-default-cursor (quote (t "white")))
@@ -82,11 +82,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(magit-item-highlight ((t nil))))
+ '(magit-item-highlight ((t nil)) t))
 
 (add-to-list 'load-path "~/.emacs.d/asok/anything-show-completion")
 (require 'anything-show-completion)
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/asok/enhanced-ruby-mode"))
-(setq enh-ruby-program "~/.rvm/bin/ruby-1.9.2-p0/bin/ruby") ; so that still works if ruby points to ruby1.8
+(setq enh-ruby-program "~/.rvm/bin/ruby-1.9.2-p0") ; so that still works if ruby points to ruby1.8
 (require 'ruby-mode)
