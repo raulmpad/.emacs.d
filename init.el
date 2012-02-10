@@ -1,3 +1,7 @@
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/asok/enhanced-ruby-mode"))
+(setq enh-ruby-program "~/.rvm/bin/ruby-1.9.2-p0") ; so that still works if ruby points to ruby1.8
+(require 'ruby-mode)
+
 (require 'package)
 (add-to-list 'package-archives
                           '("marmalade" . "http://marmalade-repo.org/packages/") t)
@@ -87,11 +91,8 @@
 (add-to-list 'load-path "~/.emacs.d/asok/anything-show-completion")
 (require 'anything-show-completion)
 
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/asok/enhanced-ruby-mode"))
-(setq enh-ruby-program "~/.rvm/bin/ruby-1.9.2-p0") ; so that still works if ruby points to ruby1.8
-(require 'ruby-mode)
 
 (autoload 'mo-git-blame-file "mo-git-blame" nil t)
 (autoload 'mo-git-blame-current "mo-git-blame" nil t)
 (global-set-key [?\C-c ?g ?b] 'mo-git-blame-current)
-(global-set-key [?\C-c ?g ?s] 'magit-status)
+(global-set-key [?\C-c ?. ?s] 'magit-status)
