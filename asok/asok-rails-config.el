@@ -37,4 +37,11 @@
 ;;  nxml-degraded t)
 ;; (add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . eruby-nxhtml-mumamo))
 
+(add-hook 'ruby-mode-hook
+      (lambda()
+        (add-hook 'local-write-file-hooks
+              '(lambda()
+                 (save-excursion
+                   (delete-trailing-whitespace))))))
 (provide 'asok-rails-config)
+
