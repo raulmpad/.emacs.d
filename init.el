@@ -97,7 +97,7 @@
       `((".*" ,temporary-file-directory t)))
 
 
-(global-set-key (kbd "s-x") 'smex)
+(global-set-key (kbd "s-x") 'helm-M-x)
 (global-set-key (kbd "s-g") 'abort-recursive-edit)
 
 (setq font-lock-maximum-decoration t)
@@ -122,25 +122,17 @@
 (defvar my-packages '(starter-kit-ruby starter-kit-js starter-kit-lisp anything anything-match-plugin
                                        anything-config rvm flymake-ruby color-theme flymake-haml
                                        yasnippet-bundle yari solarized-theme zenburn-theme
-                                       color-theme-sanityinc-solarized mo-git-blame ruby-end)
+                                       color-theme-sanityinc-solarized mo-git-blame ruby-end helm)
   "A list of packages to ensure are installed at launch.")
 
   (dolist (p my-packages)
     (when (not (package-installed-p p))
         (package-install p)))
 
-(require 'anything-match-plugin)
-(require 'anything-config)
-(defun my-anything ()
-  (interactive)
-  (anything-other-buffer
-   '(anything-c-source-buffers
-     anything-c-source-recentf)
-   " *my-anything*"))
-(global-set-key (kbd "s-a") 'my-anything)
+(global-set-key (kbd "s-a") 'helm-mini)
 (require 'anything-of-rails)
 (global-set-key (kbd "s-r") 'anything-of-rails)
-(global-set-key (kbd "s-i") '(lambda () (interactive) (anything-other-buffer '(anything-c-source-imenu) "*my-imenu*")))
+(global-set-key (kbd "s-i") 'helm-imenu)
 
 (require 'flymake-ruby)
 (add-hook 'ruby-mode-hook 'flymake-ruby-load)
@@ -200,6 +192,7 @@
  ;; If there is more than one, they won't work right.
  '(erm-syn-errline ((t (:underline "Red"))))
  '(erm-syn-warnline ((t (:underline "Orange"))))
+ '(helm-selection ((t (:background "controlLightHighlightColor" :underline t))))
  '(magit-item-highlight ((t nil))))
 
 (add-to-list 'load-path "~/.emacs.d/asok/anything-show-completion")
