@@ -1,4 +1,3 @@
-
 (defadvice find-file-at-point (around goto-line compile activate)
   (let ((line (and (looking-at ".*:\\([0-9]+\\)")
                    (string-to-number (match-string 1)))))
@@ -38,10 +37,14 @@
 ;; (add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . eruby-nxhtml-mumamo))
 
 (add-hook 'ruby-mode-hook
-      (lambda()
-        (add-hook 'local-write-file-hooks
-              '(lambda()
-                 (save-excursion
-                   (delete-trailing-whitespace))))))
-(provide 'asok-rails-config)
+          (lambda()
+            (add-hook 'local-write-file-hooks
+                      '(lambda()
+                         (save-excursion
+                           (delete-trailing-whitespace))))))
 
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/asok/enhanced-ruby-mode"))
+(setq enh-ruby-program "~/.rvm/bin/ruby-1.9.3-p125") ; so that still works if ruby points to ruby1.8
+(require 'ruby-mode)
+
+(provide 'asok-rails-config)

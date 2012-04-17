@@ -105,15 +105,14 @@
 (global-set-key "\M-j" 'previous-buffer)
 (global-set-key "\M-k" 'next-buffer)
 
-;; (add-to-list 'load-path (expand-file-name "~/.emacs.d/asok/enhanced-ruby-mode"))
-;; (setq enh-ruby-program "~/.rvm/bin/ruby-1.9.2-p0") ; so that still works if ruby points to ruby1.8
-;; (require 'ruby-mode)
    (autoload 'ruby-mode "ruby-mode" "Major mode for ruby files" t)
    (add-to-list 'auto-mode-alist '("\\.rb$" . ruby-mode))
    (add-to-list 'interpreter-mode-alist '("ruby" . ruby-mode))
 (require 'package)
 (add-to-list 'package-archives
-                          '("marmalade" . "http://marmalade-repo.org/packages/") t)
+             '("marmalade" . "http://marmalade-repo.org/packages/") t)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
 
 (when (not package-archive-contents)
@@ -175,6 +174,7 @@
  '(rspec-spec-command "rspec")
  '(rspec-use-rake-flag nil)
  '(rspec-use-rvm t)
+ '(ruby-check-syntax (quote errors-and-warnings))
  '(speedbar-frame-parameters (quote ((minibuffer) (width . 50) (border-width . 0) (menu-bar-lines . 0) (tool-bar-lines . 0) (unsplittable . t) (left-fringe . 0))))
  '(tool-bar-mode nil))
 
@@ -198,6 +198,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(erm-syn-errline ((t (:underline "Red"))))
+ '(erm-syn-warnline ((t (:underline "Orange"))))
  '(magit-item-highlight ((t nil))))
 
 (add-to-list 'load-path "~/.emacs.d/asok/anything-show-completion")
@@ -213,7 +215,16 @@
 (require 'evil-bindings)
 
 (add-hook 'rhtml-mode-hook '(lambda ()
-                              (flymake-mode-off)
+                              (flyspell-mode-off)
                               (turn-off-auto-fill)))
 
 (menu-bar-mode 1)
+
+(defun remove-dos-eol ()
+  "Do not show ^M in files containing mixed UNIX and DOS line endings."
+  (interactive)
+  (setq buffer-display-table (make-display-table))
+  (aset buffer-display-table ?\^M [])
+  ;(aset buffer-display-table ?\^[ []))
+  )
+(add-hook 'fundamental-mode-hook 'remove-dos-eol)

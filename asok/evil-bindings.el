@@ -62,7 +62,25 @@
   (kbd ", v") 'rspec-verify
   (kbd ", t") 'rspec-toggle-spec-and-target
   (kbd ", f") 'ido-find-file
+  (kbd ", d") 'ido-dired
   (kbd ", c") 'magit-status)
+(evil-define-key 'emacs global-map
+  (kbd ", f") 'ido-find-file
+  (kbd ", d") 'ido-dired)
+(evil-define-key 'motion global-map
+  (kbd ", f") 'ido-find-file
+  (kbd ", d") 'ido-dired)
 
+(evil-add-hjkl-bindings magit-branch-manager-mode-map 'emacs
+  "K" 'magit-discard-item
+  "L" 'magit-key-mode-popup-logging)
+(evil-add-hjkl-bindings magit-status-mode-map 'emacs
+  "K" 'magit-discard-item
+  "l" 'magit-key-mode-popup-logging
+  "h" 'magit-toggle-diff-refine-hunk)
+
+(add-hook 'term-mode-hook (lambda ()
+                            (local-unset-key "\M-k")
+                            (local-unset-key "\M-j")))
 (provide 'evil-bindings)
 
