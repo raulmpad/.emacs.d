@@ -8,3 +8,5 @@ auto-save-list
 tramp
 url/*
 anything-c-adaptive-history
+*.swp
+el-get

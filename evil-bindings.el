@@ -6,9 +6,6 @@
   (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
         ((looking-at "\\s\)") (forward-char 1) (backward-list 1))))
 
-(require 'surround)
-(global-surround-mode 1)
-
 (global-set-key (kbd "s-h") 'windmove-left)
 (global-set-key (kbd "s-l") 'windmove-right)
 (global-set-key (kbd "s-j") 'windmove-down)
@@ -40,20 +37,10 @@
   (comint-send-input))
 
 (evil-define-key 'normal term-raw-map "i" 'go-to-end-and-insert)
-
 (evil-define-key 'normal comint-mode-map "i" 'comint-goto-end-and-insert)
-(global-set-key "\M-r" 'comint-resend-last-input)
-
-(defun comint-native-completion ()
-  (interactive)
-  (setq current-command (buffer-substring-no-properties (process-mark (get-buffer-process (current-buffer))) (point-max)))
-  ;(setq current-command (current-line-string))
-  (comint-simple-send (get-buffer-process (current-buffer)) (concat current-command "\t"))
-  )
 
 (evil-define-key 'insert shell-mode-map (kbd "<up>") 'comint-previous-input)
 (evil-define-key 'insert shell-mode-map (kbd "<down>") 'comint-next-input)
-;; (evil-define-key 'insert shell-mode-map (kbd "<tab>") 'comint-native-completion)
 ))
 
 
@@ -79,6 +66,7 @@
   "l" 'magit-key-mode-popup-logging
   "h" 'magit-toggle-diff-refine-hunk)
 
+;TODO
 (add-hook 'term-mode-hook (lambda ()
                             (local-unset-key "\M-k")
                             (local-unset-key "\M-j")))
