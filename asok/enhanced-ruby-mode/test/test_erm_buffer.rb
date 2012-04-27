@@ -1,12 +1,37 @@
 # -*- coding: utf-8 -*-
-require_relative 'helper'
+require File.expand_path('../helper',__FILE__)
 require 'ruby/erm_buffer.rb'
 
 class TestErmBuffer < Test::Unit::TestCase
-  def parse_text(text)
-    buf=ErmBuffer.new
+  def parse_text(text,buf=ErmBuffer.new)
     buf.add_content(:r,1,text.size,0,text.size,text)
     buf.parse
+  end
+
+  def setup
+    super
+    ErmBuffer.set_extra_keywords({})
+  end
+
+  def test_extra_keywords
+    ErmBuffer.set_extra_keywords(%w[require])
+    assert_equal "((43 1 43 c 31)(0 1 2 9 10 15 31 38 39)(1 11 14)(7 10 11 14 15)(10 2 9 31 38))",
+    parse_text(%q{
+require 'abc'
+x.require z
+x.
+require
+     })
+  end
+
+  def test_buffer_local_extra_keywords
+    ErmBuffer.set_extra_keywords(%w[global])
+    local_buf=ErmBuffer.new
+    local_buf.set_extra_keywords %w[local]
+    assert_equal "((19 1 19 )(0 1 9 14 15)(10 9 14))",
+    parse_text(%q{
+global local
+     },local_buf)
   end
 
   def test_reset_mode

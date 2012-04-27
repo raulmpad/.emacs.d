@@ -2,8 +2,6 @@ require 'ripper'
 
 class ErmBuffer
   module Adder
-    STATES=[]
-
     def nadd(sym,tok,len=tok.size,ft=false,la=nil)
       case sym
       when :sp, :comment
@@ -36,7 +34,6 @@ class ErmBuffer
   class Parser < ::Ripper   #:nodoc: internal use only
     include Adder
 
-    attr_accessor *Adder::STATES
     attr_accessor :heredoc, :mode
 
     def parser
@@ -83,22 +80,15 @@ class ErmBuffer
       include Adder
 
       attr_accessor :tok, :lineno, :prev, :lines, :parser
-      attr_accessor *Adder::STATES
 
       def initialize(parser,prev,tok,lineno)
         @parser=parser
         @lineno=lineno
         @prev=prev
         @lines=[]
-        Adder::STATES.each do |s|
-          send("#{s}=",prev.send(s))
-        end
       end
 
       def restore
-        Adder::STATES.each do |s|
-          prev.send("#{s}=",send(s))
-        end
         @lines << [:heredoc_end,nil,nil] if lines.empty?
         if parser.equal?(prev)
           for args in lines
@@ -116,7 +106,8 @@ class ErmBuffer
       end
     end
 
-    def initialize(src,point_min,point_max,first_count)
+    def initialize(ermbuffer,src,point_min,point_max,first_count)
+      @ermbuffer=ermbuffer
       @point_min=point_min
       @point_max=point_max
       @src=src
@@ -127,12 +118,11 @@ class ErmBuffer
       # @first_count=first_count > 5 ? (src[0..first_count].rindex("\n")||0) : 0  # FIXME
     end
 
-
     def on_backref(tok)
       add(:rem,tok)
     end
 
-    for sym in [:backref, :embexpr_end, :float, :int,
+    for sym in [:embexpr_end, :float, :int,
                 :qwords_beg, :words_beg, :words_sep]
       alias_method "on_#{sym}", :on_backref
     end
@@ -143,7 +133,6 @@ class ErmBuffer
       module_eval(<<-End, __FILE__, __LINE__ + 1)
         def on_#{event}(tok)
           tok.force_encoding(@file_encoding) unless tok.encoding.equal?(@file_encoding)
-          # fixme :nor, lineno(), column(), :#{event}, tok, tok.encoding
           add(:#{event},tok)
         end
       End
@@ -179,6 +168,7 @@ class ErmBuffer
     end
 
     def on_period(tok)
+      @mode||=:period
       add(:rem, tok, tok.size, false, :cont)
     end
 
@@ -329,6 +319,8 @@ class ErmBuffer
             indent(:r)
             @list_count-=1
             :rem
+          else
+            :rem
           end,tok)
     end
 
@@ -338,8 +330,14 @@ class ErmBuffer
           add(:label,tok)
         when :predef, :def
           add(:defname,tok)
-        else
+        when :period
           add(:ident, tok)
+        else
+          if @ermbuffer.extra_keywords.include? tok
+            add(:kw, tok)
+          else
+            add(:ident, tok)
+          end
         end
       r
     end
@@ -431,72 +429,54 @@ class ErmBuffer
       res=@res.map.with_index{|v,i| v ? "(#{i} #{v.join(' ')})" : nil}.flatten.join
       "((#{@src_size} #{@point_min} #{@point_max} #{@indent_stack.join(' ')})#{res})"
     end
-
-    def compile_error(msg)
-      # fixme @buf.last,msg
-    end
-
-    private
-
-    # fixme PARSER_EVENTS
-
-    # #PARSER_EVENTS
-    # [:paren, :def,:var_ref,:class,]
-    #   .each do |event|
-    #   module_eval(<<-End, __FILE__, __LINE__ + 1)
-    #     def on_#{event}(*args)
-    #       args.unshift :#{event}
-    #       fixme args
-    #       @count
-    #     end
-    #   End
-    # end
   end
 
-  FONT_LOCK_NAMES=
-   {
+  FONT_LOCK_NAMES= {
     rem: 0,             # 'remove'
-     sp: 0,
-     ident: 0,
-     tstring_content: 1, # font-lock-string-face
-     const: 2,           # font-lock-type-face
-     ivar: 3,            # font-lock-variable-name-face
-     arglist: 3,
-     cvar: 3,
-     gvar: 3,
-     comment: 4,         # font-lock-comment-face
-     embdoc: 4,
-     label: 5,           # font-lock-constant-face
-     CHAR: 6,            # font-lock-string-face
-     backtick: 7,        # ruby-string-delimiter-face
-     __end__: 7,
-     embdoc_beg: 7,
-     embdoc_end: 7,
-     tstring_beg: 7,
-     regexp_beg: 8,      # ruby-regexp-delimiter-face
-     regexp_end: 8,
-     tlambda: 9,         # font-lock-function-name-face
-     defname: 9,
-     kw: 10,             # font-lock-keyword-face
-     block: 10,
-     heredoc_beg: 11,
-     heredoc_end: 11,
-     op: 12,             # ruby-op-face
-    }
+    sp: 0,
+    ident: 0,
+    tstring_content: 1, # font-lock-string-face
+
+    const: 2,           # font-lock-type-face
+    ivar: 3,            # font-lock-variable-name-face
+    arglist: 3,
+    cvar: 3,
+    gvar: 3,
+    comment: 4,         # font-lock-comment-face
+    embdoc: 4,
+    label: 5,           # font-lock-constant-face
+    CHAR: 6,            # font-lock-string-face
+    backtick: 7,        # ruby-string-delimiter-face
+    __end__: 7,
+    embdoc_beg: 7,
+    embdoc_end: 7,
+    tstring_beg: 7,
+    regexp_beg: 8,      # ruby-regexp-delimiter-face
+    regexp_end: 8,
+    tlambda: 9,         # font-lock-function-name-face
+    defname: 9,
+    kw: 10,             # font-lock-keyword-face
+    block: 10,
+    heredoc_beg: 11,
+    heredoc_end: 11,
+    op: 12,             # ruby-op-face
+  }
 
   def initialize
     @buffer=''
   end
 
-  def invalid_syntax?(code, fname='')
-    code.force_encoding("utf8")
-    code = code.sub(/\A(?:\s*\#.*$)*(\n)?/n) {
-      "#$&#{"\n" if $1 && !$2}BEGIN{return false}\n"
-    }
-    eval(code, nil, fname, 0)
+  # not used
+  def check_syntax(fname='',code=@buffer)
+    $VERBOSE=true
+    # eval but do not run code
+    eval("BEGIN{return}\n#{code}", nil, fname, 0)
+
   rescue SyntaxError
     $!.message
   rescue
+  ensure
+    $VERBOSE=nil
   end
 
   attr_reader :buffer
@@ -508,7 +488,7 @@ class ErmBuffer
     if !@first_count || pbeg < @first_count
       @first_count=pbeg
     end
-    # fixme :add_content, pbeg, @first_count
+
     if cmd == :r || @buffer.empty?
       @buffer=content
     else
@@ -519,12 +499,24 @@ class ErmBuffer
         @buffer[pbeg-1..len]=content
       end
     end
-    # invalid_syntax?(@buffer)  # FIXME
   end
 
   def parse
-    parser=ErmBuffer::Parser.new(@buffer,@point_min,@point_max,@first_count||0)
+    parser=ErmBuffer::Parser.new(self,@buffer,@point_min,@point_max,@first_count||0)
     @first_count=nil
     parser.parse
+  end
+
+  @@extra_keywords={}
+  def self.set_extra_keywords(keywords)
+    @@extra_keywords=keywords.each.with_object({}) {|o,h| h[o]=true}
+  end
+
+  def set_extra_keywords(keywords)
+    @extra_keywords=keywords.each.with_object({}) {|o,h| h[o]=true}
+  end
+
+  def extra_keywords
+    @extra_keywords || @@extra_keywords
   end
 end

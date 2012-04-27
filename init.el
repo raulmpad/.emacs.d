@@ -20,10 +20,6 @@
 (remove-hook 'prog-mode-hook 'esk-turn-on-idle-highlight-mode)
 (remove-hook 'prog-mode-hook 'esk-local-comment-auto-fill)
 
-(add-to-list 'load-path "~/.emacs.d/asok/rspec-mode")
-(require 'rspec-mode)
-(define-key rspec-mode-verifible-keymap (kbd "s") 'rspec-verify-single)
-
 ;; Original idea from
 ;; http://www.opensubscriber.com/message/emacs-devel@gnu.org/10971693.html
 (defun comment-dwim-line (&optional arg)
@@ -129,6 +125,8 @@
     (when (not (package-installed-p p))
         (package-install p)))
 
+(add-to-list 'load-path "~/.emacs.d/asok")
+
 (global-set-key (kbd "s-a") 'helm-mini)
 (require 'anything-of-rails)
 (global-set-key (kbd "s-r") 'anything-of-rails)
@@ -167,6 +165,7 @@
  '(rspec-use-rake-flag nil)
  '(rspec-use-rvm t)
  '(ruby-check-syntax (quote errors-and-warnings))
+ '(ruby-extra-keywords (quote ("include" "extend" "require" "require_relative")))
  '(speedbar-frame-parameters (quote ((minibuffer) (width . 50) (border-width . 0) (menu-bar-lines . 0) (tool-bar-lines . 0) (unsplittable . t) (left-fringe . 0))))
  '(tool-bar-mode nil))
 
@@ -193,7 +192,7 @@
  '(erm-syn-errline ((t (:underline "Red"))))
  '(erm-syn-warnline ((t (:underline "Orange"))))
  '(helm-selection ((t (:background "controlLightHighlightColor" :underline t))))
- '(magit-item-highlight ((t nil))))
+ '(magit-item-highlight ((t nil)) t))
 
 (add-to-list 'load-path "~/.emacs.d/asok/anything-show-completion")
 (require 'anything-show-completion)
@@ -221,3 +220,6 @@
   ;(aset buffer-display-table ?\^[ []))
   )
 (add-hook 'fundamental-mode-hook 'remove-dos-eol)
+
+(load-theme 'sanityinc-solarized-dark)
+

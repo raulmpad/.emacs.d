@@ -1,13 +1,13 @@
 ;;; ruby-mode.el --- Major mode for editing Ruby files
 
-;; Copyright (C) 2010
+;; Copyright (C) 2010, 2011, 2012
 ;;   Geoff Jacobsen
 
 ;; Author: Geoff Jacobsen
 ;; URL: http://http://github.com/jacott/Enhanced-Ruby-Mode
 ;; Created: Sep 18 2010
-;; Keywords: languages ruby
-;; Version: 0.1
+;; Keywords: languages elisp, ruby
+;; Version: 1.0
 
 ;; This file is not part of GNU Emacs.
 
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; Provides fontification, indentation, and navigation for Ruby code.
+;; Provides fontification, indentation, syntax checking, and navigation for Ruby code.
 ;;
 ;; If you're installing manually, you should add this to your .emacs
 ;; file after putting it on your load path:
@@ -40,6 +40,27 @@
 (defcustom enh-ruby-program "ruby"
   "The ruby program to parse the source."
   :group 'ruby)
+
+(defcustom ruby-check-syntax 'errors-and-warnings
+  "Highlight syntax errors and warnings."
+  :type '(radio (const :tag "None" nil)
+                (const :tag "Errors" errors)
+                (const :tag "Errors and warnings" errors-and-warnings))
+  :group 'ruby)
+
+(defcustom ruby-extra-keywords
+  nil
+  "List of idents that will be fontified as keywords. `erm-reset'
+will need to be called in order for any global changes to take effect.
+
+This variable can also be buffer local in which case it will
+override the global value for the buffer it is local
+to. `ruby-local-enable-extra-keywords' needs to be called after
+the value changes.
+"
+  :group 'ruby
+  :type '(repeat string))
+(put 'ruby-extra-keywords 'safe-local-variable 'listp)
 
 (defcustom ruby-indent-tabs-mode nil
   "*Indentation can insert tabs in ruby mode if this is non-nil."
@@ -61,20 +82,21 @@
   :type 'integer :group 'ruby)
 (put 'ruby-comment-column 'safe-local-variable 'integerp)
 
-(defcustom ruby-deep-arglist t
-  "*Deep indent lists in parenthesis when non-nil.
-Also ignores spaces after parenthesis when 'space."
+
+(defcustom ruby-deep-arglist nil
+  "Ignored in enhanced ruby mode."
   :group 'ruby)
 (put 'ruby-deep-arglist 'safe-local-variable 'booleanp)
 
-(defcustom ruby-deep-indent-paren '(?\( ?\[ ?\] t)
-  "*Deep indent lists in parenthesis when non-nil. t means continuous line.
-Also ignores spaces after parenthesis when 'space."
+(defcustom ruby-deep-indent-paren t
+  "*Deep indent lists in parenthesis when non-nil."
   :group 'ruby)
+(put 'ruby-deep-indent-paren 'safe-local-variable 'booleanp)
 
-(defcustom ruby-deep-indent-paren-style 'space
-  "Default deep indent style."
+(defcustom ruby-deep-indent-paren-style nil
+  "Ignored in enhanced ruby mode."
   :options '(t nil space) :group 'ruby)
+
 
 (defcustom ruby-encoding-map '((shift_jis . cp932) (shift-jis . cp932))
   "Alist to map encoding name from emacs to ruby."
@@ -123,6 +145,17 @@ Also ignores spaces after parenthesis when 'space."
   :group 'ruby)
 
 
+(defface erm-syn-errline
+  '((t (:box (:line-width 1 :color "red"))))
+  "Face used for marking error lines."
+  :group 'ruby)
+
+(defface erm-syn-warnline
+  '((t (:box (:line-width 1 :color "orange"))))
+  "Face used for marking warning lines."
+  :group 'ruby)
+
+
 (defun ruby-mode-set-encoding ()
   (save-excursion
     (widen)
@@ -160,49 +193,71 @@ Also ignores spaces after parenthesis when 'space."
 
 (defun erm-ruby-get-process ()
   (when (and erm-ruby-process (not (equal (process-status erm-ruby-process) 'run)))
-    (erm-initialise)
-    (throw 'interrupted t))
+    (let ((message (and erm-parsing-p erm-response)))
+      (erm-reset)
+      (if message 
+          (error "%s" message) 
+        (throw 'interrupted t))))
   (unless erm-ruby-process
-    (set-process-filter
-     (setq erm-ruby-process
-           (start-process "erm-ruby-process"
-                          nil
-                          enh-ruby-program (concat (file-name-directory (find-lisp-object-file-name 'erm-parse (symbol-function 'erm-parse))) "ruby/erm.rb")))
-     'erm-filter)
-    (set-process-query-on-exit-flag erm-ruby-process nil))
-  
+    (let ((process-connection-type nil))
+      (setq erm-ruby-process
+            (start-process "erm-ruby-process"
+                           nil
+                           enh-ruby-program (concat (erm-source-dir)
+                                                    "ruby/erm.rb")))
+      (set-process-coding-system erm-ruby-process 'utf-8 'utf-8)
+      (set-process-filter erm-ruby-process 'erm-filter)
+      (set-process-query-on-exit-flag erm-ruby-process nil)
+      (process-send-string (erm-ruby-get-process) (concat "x0:"
+                                                          (mapconcat 'identity (default-value 'ruby-extra-keywords) " ")
+                                                          ":\n\0\0\0\n"))))
+
   erm-ruby-process)
 
 (defvar erm-response nil "Private variable.")
 (defvar erm-parsing-p nil "Private variable.")
-(defvar erm-full-parse-p nil "Private variable.")
+(defvar erm-no-parse-needed-p nil "Private variable.")
+
+(defvar erm-source-dir nil "Private variable.")
+
+(defun erm-source-dir ()
+  (or erm-source-dir
+    (setq erm-source-dir (file-name-directory (find-lisp-object-file-name 
+                                               'erm-source-dir (symbol-function 'erm-source-dir))))))
+
 
 (defvar erm-ruby-process nil
   "The current erm process where emacs is interacting with")
 
-(defvar erm-buff-num nil "Private variable.")
 (defvar erm-next-buff-num nil "Private variable.")
 (defvar erm-parse-buff nil "Private variable.")
 (defvar erm-reparse-list nil "Private variable.")
+(defvar erm-syntax-check-list nil "Private variable.")
 
-(defun erm-initialise ()
+(defun erm-reset-syntax-buffers (list)
+  (let ((buffer (car list)))
+    (when buffer
+      (when (buffer-live-p buffer)
+        (with-current-buffer buffer (setq need-syntax-check-p nil)))
+      (erm-reset-syntax-buffers (cdr list)))))
+
+(defun erm-reset ()
+  "Reset all ruby-mode buffers and restart the ruby parser."
+  (interactive)
+  (erm-reset-syntax-buffers erm-syntax-check-list) 
   (setq erm-reparse-list nil
-        erm-full-parse-p nil
+        erm-syntax-check-list nil
         erm-parsing-p nil
         erm-parse-buff nil
-        erm-next-buff-num 0)
+        erm-next-buff-num 1)
   (when erm-ruby-process
     (delete-process erm-ruby-process) 
     (setq erm-ruby-process nil))
-
+  
   (dolist (buf (buffer-list))
     (with-current-buffer buf
       (when (eq 'ruby-mode major-mode)
         (erm-reset-buffer)))))
-
-
-
-(erm-initialise)
 
 (defun erm-major-mode-changed ()
   (erm-buffer-killed))
@@ -214,7 +269,22 @@ Also ignores spaces after parenthesis when 'space."
   (setq erm-buff-num erm-next-buff-num)
   (setq erm-next-buff-num (1+ erm-buff-num))
   (add-hook 'after-change-functions #'erm-req-parse nil t)
-  (ruby-fontify-buffer))
+  (unless
+      (ruby-local-enable-extra-keywords)
+    (ruby-fontify-buffer)))
+
+(defun ruby-local-enable-extra-keywords ()
+  "If the variable `ruby-extra-keywords' is buffer local then
+  enable the keywords for current buffer."
+  (when (local-variable-p 'ruby-extra-keywords)
+      (process-send-string (erm-ruby-get-process)
+                           (concat "x"
+                                   (number-to-string erm-buff-num) ":"
+                                   (mapconcat 'identity ruby-extra-keywords " ")
+                                   ":\n\0\0\0\n"))
+      (ruby-fontify-buffer)
+      t))
+
 
 (defvar ruby-mode-syntax-table nil
   "Syntax table in use in ruby-mode buffers.")
@@ -269,11 +339,12 @@ Also ignores spaces after parenthesis when 'space."
   (define-key ruby-mode-map "\e\C-e" 'ruby-end-of-defun)
   (define-key ruby-mode-map "\e\C-b" 'ruby-backward-sexp)
   (define-key ruby-mode-map "\e\C-f" 'ruby-forward-sexp)
+  (define-key ruby-mode-map "\e\C-u" 'ruby-up-sexp)
   (define-key ruby-mode-map "\e\C-p" 'ruby-beginning-of-block)
   (define-key ruby-mode-map "\e\C-n" 'ruby-end-of-block)
   (define-key ruby-mode-map "\e\C-h" 'ruby-mark-defun)
   (define-key ruby-mode-map "\e\C-q" 'ruby-indent-exp)
-  (define-key ruby-mode-map "\C-c\C-e" 'ruby-insert-end)
+  (define-key ruby-mode-map "\C-c\C-e" 'ruby-find-error)
   (define-key ruby-mode-map "\C-c\C-f" 'ruby-insert-end)
   (define-key ruby-mode-map "\C-m" 'newline)
   (define-key ruby-mode-map "\C-c/" 'ruby-insert-end))
@@ -284,6 +355,7 @@ Also ignores spaces after parenthesis when 'space."
 (define-abbrev-table 'ruby-mode-abbrev-table ())
 
 (defun ruby-mode-variables ()
+  (make-variable-buffer-local 'ruby-extra-keywords)
   (set-syntax-table ruby-mode-syntax-table)
   (setq local-abbrev-table ruby-mode-abbrev-table)
   (set (make-local-variable 'indent-line-function) 'ruby-indent-line)
@@ -293,6 +365,9 @@ Also ignores spaces after parenthesis when 'space."
   (set (make-variable-buffer-local 'comment-column) ruby-comment-column)
   (set (make-variable-buffer-local 'comment-start-skip) "#+ *")
   (setq indent-tabs-mode ruby-indent-tabs-mode)
+  (set (make-local-variable 'need-syntax-check-p) nil)
+  (set (make-local-variable 'erm-full-parse-p) nil)
+  (set (make-local-variable 'erm-buff-num) nil)
   (set (make-local-variable 'parse-sexp-ignore-comments) t)
   (set (make-local-variable 'parse-sexp-lookup-properties) t)
   (set (make-local-variable 'paragraph-start) (concat "$\\|" page-delimiter))
@@ -306,8 +381,9 @@ Also ignores spaces after parenthesis when 'space."
   (interactive)
   (kill-all-local-variables)
   (use-local-map ruby-mode-map)
+  (set (make-local-variable 'erm-e-w-status) nil)
   (setq major-mode 'ruby-mode
-        mode-name "EnhRuby"
+        mode-name '("EnhRuby" erm-e-w-status)
         comment-start "#"  ; used by comment-region; don't change it
         comment-end "")
   (ruby-mode-variables)
@@ -342,12 +418,7 @@ Also ignores spaces after parenthesis when 'space."
 
   (set (make-local-variable 'imenu-create-index-function)
        'ruby-imenu-create-index)
-  
-  (set (make-local-variable #'font-lock-syntactic-face-function)
-       (lambda (state) nil))
 
-  (make-local-variable 'erm-full-parse-p)
-  (make-local-variable 'erm-buff-num)
   (add-hook 'change-major-mode-hook 'erm-major-mode-changed nil t)
   (add-hook 'kill-buffer-hook 'erm-buffer-killed nil t)
 
@@ -417,6 +488,9 @@ modifications to the buffer."
 
 
 (defun erm-req-parse (min max len)
+  (when (and ruby-check-syntax (not need-syntax-check-p))
+    (setq need-syntax-check-p t)
+    (setq erm-syntax-check-list (cons (current-buffer) erm-syntax-check-list)))
   (let ((pc (if erm-parsing-p
                 (if (eq erm-parse-buff (current-buffer))
                     (setq erm-parsing-p 'a)
@@ -424,7 +498,7 @@ modifications to the buffer."
               (setq erm-response "")
               (setq erm-parsing-p t)
               (if (not erm-full-parse-p)
-                  'p
+                  (if erm-no-parse-needed-p (progn (setq erm-parsing-p nil) 'a) 'p)
                 (setq min 1
                       max (1+ (buffer-size))
                       len 0
@@ -450,7 +524,7 @@ modifications to the buffer."
 
 (defun erm-filter (proc response)
   (setq erm-response (concat erm-response response))
-  (when (string= "\n\0\0\0\n" (substring erm-response -5 nil))
+  (when (and (> (length erm-response) 5) (string= "\n\0\0\0\n" (substring erm-response -5 nil)))
     (setq response (substring erm-response 0 -5))
     (setq erm-response "")
     (with-current-buffer erm-parse-buff
@@ -496,14 +570,18 @@ modifications to the buffer."
           (ruby-backward-sexp)
           (if (not (eq 'd (get-text-property (point) 'indent)))
               (current-column)
-            (ruby-calculate-indent-1 (point) (line-beginning-position))))
+            (setq pos (point))
+            (ruby-skip-non-indentable)
+            (ruby-calculate-indent-1 pos (line-beginning-position))))
 
          ((eq 'r prop)
-          (ruby-backward-sexp)
-          (1+ (current-column)))
+          (if ruby-deep-indent-paren
+              (progn (ruby-backward-sexp) (current-column))
+            (forward-line -1)
+            (ruby-skip-non-indentable)
+            (- (ruby-calculate-indent-1 pos (line-beginning-position)) ruby-indent-level)))
 
-         ((or (eq 'font-lock-string-face face) 
-              (eq 'ruby-heredoc-delimiter-face face) 
+         ((or (memq face '(font-lock-string-face ruby-heredoc-delimiter-face))
               (and (eq 'font-lock-variable-name-face face)
                    (looking-at "#")))
           (current-column))
@@ -511,20 +589,27 @@ modifications to the buffer."
          (t 
           (forward-line -1)
           
-          (while 
-              (progn
-                (when (looking-at "^[[:space:]]*$")
-                  (skip-chars-backward " \n\t\r\v\f")
-                  (forward-line 0))
-
-                (setq face (get-text-property (point) 'face))
-                (or (eq 'font-lock-string-face face) 
-                    (eq 'ruby-heredoc-delimiter-face face) 
-                    (and (eq 'font-lock-variable-name-face face)
-                         (looking-at "#"))))
-            (forward-line -1))
+          (ruby-skip-non-indentable)
           (ruby-calculate-indent-1 pos (line-beginning-position))))))))
 
+(defun erm-looking-at-not-indentable ()
+  (skip-syntax-forward " " (line-end-position))
+  (let ((face (get-text-property (point) 'face)))
+    (or (= (point) (line-end-position))
+        (memq face '(font-lock-string-face font-lock-comment-face ruby-heredoc-delimiter-face))
+        (and (eq 'font-lock-variable-name-face face)
+             (looking-at "#"))
+        (and (memq face '(ruby-regexp-delimiter-face ruby-string-delimiter-face))
+             (> (point) (point-min))
+             (eq (get-text-property (1- (point)) 'face) 'font-lock-string-face)))))
+
+
+(defun ruby-skip-non-indentable ()
+  (forward-line 0)
+  (while (and (> (point) (point-min))
+              (erm-looking-at-not-indentable))
+    (skip-chars-backward " \n\t\r\v\f")
+    (forward-line 0)))
 
 (defun ruby-calculate-indent-1 (limit pos)
   (goto-char pos)
@@ -542,7 +627,7 @@ modifications to the buffer."
           (setq prop (get-text-property pos 'indent))))
       (setq col (- pos start-pos -1))
       (cond
-       ((eq prop 'l) (setq pc (cons col pc)))
+       ((eq prop 'l) (setq pc (cons (if ruby-deep-indent-paren col (+ ruby-indent-level indent)) pc)))
        ((eq prop 'r) (if pc (setq pc (cdr pc)) (setq npc col)))
        ((or (eq prop 'b) (eq prop 'd) (eq prop 's)) (setq bc (cons col bc)))
        ((eq prop 'e) (if bc (setq bc (cdr bc)) (setq nbc col))))
@@ -587,6 +672,43 @@ modifications to the buffer."
   (when (< 0 (or (setq pos (previous-single-property-change pos 'face)) 0))
     (previous-single-property-change pos 'face)))
 
+(defun ruby-show-errors-at (pos face)
+  (let ((overlays (overlays-at pos))
+        overlay
+        messages)
+
+    (while overlays
+      (setq overlay (car overlays))
+      (when (and (overlay-get overlay 'erm-syn-overlay) (eq (overlay-get overlay 'face) face))
+        (setq messages (cons (overlay-get overlay 'help-echo) messages)))
+      (setq overlays (cdr overlays)))
+
+    (message "%s" (mapconcat 'identity messages "\n"))
+    messages))
+
+
+(defun ruby-find-error (&optional arg)
+  "Search back, then forward for a syntax error/warning.
+Display contents in mini-buffer."
+  (interactive "^P")
+  (let (overlays
+        overlay
+        (face (if arg 'erm-syn-warnline 'erm-syn-errline))
+        messages
+        (pos (point)))
+    (unless (eq last-command 'ruby-find-error)
+      (while (and (not messages) (> pos (point-min)))
+        (setq messages (ruby-show-errors-at (setq pos (previous-overlay-change pos)) face))))
+    
+    (unless messages
+      (while (and (not messages) (< pos (point-max)))
+        (setq messages (ruby-show-errors-at (setq pos (next-overlay-change pos)) face))))
+
+    (if messages
+        (goto-char pos)
+      (unless arg
+        (ruby-find-error t)))))
+
 
 (defun ruby-up-sexp (&optional arg)
   "Move up one balanced expression (sexp).
@@ -602,8 +724,7 @@ With ARG, do it that many times."
                         (cond
                          ((or (eq prop 'l) (eq prop 'b) (eq prop 'd)) (1- count))
                          ((or (eq prop 'r) (eq prop 'e)) (1+ count))
-                         ((eq prop 's) count)
-                         (t 0))))
+                         (t count))))
         (setq prop (and (setq pos (ruby-previous-indent-change pos))
                         (get-text-property pos 'indent))))
       
@@ -619,12 +740,13 @@ With ARG, do it that many times."
     (goto-char
      (save-excursion
        (while (>= (setq arg (1- arg)) 0)
-         (while (progn
+         (while (and 
+                 (> (point) (point-min))
+                 (progn
                   (ruby-backward-sexp 1)
                   (setq prop (get-text-property (point) 'indent))
-                  (not (and (eq prop 'b) (looking-at ruby-defun-beg-re))))))
+                  (not (and (eq prop 'b) (looking-at ruby-defun-beg-re)))))))
        (point)))))
-
 
 (defun ruby-mark-defun ()
   "Put mark at end of this Ruby definition, point at beginning."
@@ -671,17 +793,18 @@ With ARG, do it that many times."
   (unless arg (setq arg 1))
   (let ((cont t)
         prop)
-    (goto-char
-     (save-excursion
-       (while (>= (setq arg (1- arg)) 0)
-         (while (progn
-                  (ruby-forward-sexp 1)
-                  (setq prop (get-text-property (point) 'indent))
-                  (not (and (eq prop 'e)
-                            (save-excursion 
-                              (ruby-backward-sexp 1)
-                              (looking-at ruby-defun-beg-re)))))))
-       (point)))))
+    (while (>= (setq arg (1- arg)) 0)
+         (while (and 
+                 (< (point) (point-max))
+                 (progn
+                   (ruby-forward-sexp 1)
+                   (setq prop (get-text-property (point) 'indent))
+                   (not (and (eq prop 'e)
+                             (save-excursion 
+                               (ruby-backward-sexp 1)
+                               (looking-at ruby-defun-beg-re))))))))
+    (forward-word)
+    (point)))
 
 (defun ruby-end-of-block (&optional arg)
   "Move forwards across one balanced expression (sexp) looking for a block end.
@@ -726,8 +849,7 @@ With ARG, do it that many times."
         (setq prop (and (setq pos (ruby-previous-indent-change pos))
                         (get-text-property pos 'indent))))
       
-      (unless prop (error "expression ends prematurely"))
-      (goto-char pos))))
+      (goto-char (if prop pos (point-min))))))
 
 (defun ruby-forward-sexp (&optional arg)
   "Move backward across one balanced expression (sexp).
@@ -755,8 +877,7 @@ With ARG, do it that many times."
         (setq prop (and (setq pos (ruby-next-indent-change pos))
                         (get-text-property pos 'indent))))
       
-      (unless prop (error "expression ends prematurely"))
-      (goto-char pos))))
+      (goto-char (if prop pos (point-max))))))
 
 (defun ruby-insert-end ()
   (interactive)
@@ -768,10 +889,8 @@ With ARG, do it that many times."
                       "\n}"
                     "\nend")))))
     (insert text)
-    (erm-wait-for-parse)
     (ruby-indent-line t)
     ))
-
 
 (defun ruby-previous-indent-change (pos)
   (and pos (setq pos (1- pos))
@@ -791,17 +910,14 @@ With ARG, do it that many times."
                 (1+ pos))
            (next-single-property-change pos 'indent))))
 
-(defun ruby-calculate-indent-2 ()
-  (let ((limit (1- (point))))
-    (if (<= limit (point-min))
-        0
-      (beginning-of-line)
-      (ruby-calculate-indent-1 limit (point)))))
-
 (defun ruby-indent-line (&optional flag)
   "Correct indentation of the current ruby line."
   (erm-wait-for-parse)
-  (ruby-indent-to (ruby-calculate-indent)))
+  (unwind-protect
+      (progn
+        (setq erm-no-parse-needed-p t)
+        (ruby-indent-to (ruby-calculate-indent)))
+    (setq erm-no-parse-needed-p nil)))
 
 (defun ruby-indent-to (indent)
   "Indent the current line."
@@ -847,26 +963,126 @@ With ARG, do it that many times."
             (put-text-property (car pos) (cadr pos) 'face face)
             (setq pos (cddr pos))))))))
 
+(defun erm-syntax-response (response)
+  (save-excursion
+    (dolist (ol (overlays-in (point-min) (point-max)))
+    (when (and (overlayp ol) (overlay-get ol 'erm-syn-overlay))
+        (delete-overlay ol)
+        ))
+    (goto-char (point-min))
+    (let ((warn-count 0)
+          (error-count 0)
+          (e-w erm-e-w-status)
+          (last-line 1))
+      (while (string-match ":\\([0-9]+\\): *\\(\\(warning\\)?[^\n]+\\)\n" response)
+        (let (beg end ov
+                  (line-no (string-to-number (match-string 1 response)))
+                  (msg (match-string 2 response))
+                  (face (if (string= "warning" (match-string 3 response)) 'erm-syn-warnline 'erm-syn-errline)))
+          (setq response (substring response (match-end 0)))
+          (forward-line (- line-no last-line))
+
+          (when (or (eq face 'erm-syn-errline) (eq ruby-check-syntax 'errors-and-warnings))
+            (if (and (not (eq ?: (string-to-char response)))
+                     (string-match "\\`[^\n]*\n\\( *\\)^\n" response))
+                (progn
+                  (setq beg (point))
+                  (condition-case nil
+                      (forward-char  (length (match-string 1 response)))
+                    (error (goto-char (point-max))))
+                  (setq end (point))
+                  
+                  (condition-case nil
+                      (progn
+                        (backward-sexp)
+                        (forward-sexp))
+                    
+                    (error (back-to-indentation)))
+                  (setq beg (if (>= (point) end)
+                                (1- end)
+                              (if (< (point) beg)
+                                  (if (>= beg end) (1- end) beg)
+                                (point)))))
+
+              (move-end-of-line nil)
+              (skip-chars-backward " \n\t\r\v\f")
+              (while (eq 'font-lock-comment-face (get-text-property (point) 'face))
+                (backward-char))
+              (skip-chars-backward " \n\t\r\v\f")
+              (setq end (point))
+              (back-to-indentation)
+              (setq beg (point)))
+          
+
+            (if (eq face 'erm-syn-warnline)
+                (setq warn-count (1+ warn-count))
+              (setq error-count (1+ error-count)))
+
+            (setq ov (make-overlay beg end nil t t))
+            (overlay-put ov 'face           face)
+            (overlay-put ov 'help-echo      msg)
+            (overlay-put ov 'erm-syn-overlay  t)
+            (overlay-put ov 'priority (if (eq 'erm-syn-warnline face) 99 100)))
+
+          (setq last-line line-no)
+          ))
+      (if (eq (+ error-count warn-count) 0)
+          (setq e-w nil)
+        (setq e-w (format ":%d/%d" error-count warn-count)))
+      (when (not (string= e-w erm-e-w-status))
+        (setq erm-e-w-status e-w)
+        (force-mode-line-update)))))
+
+(defun erm-do-syntax-check ()
+  (unless erm-parsing-p
+    (let ((buffer (car erm-syntax-check-list)))
+      (setq erm-syntax-check-list (cdr erm-syntax-check-list))
+      (if (buffer-live-p buffer)
+          (with-current-buffer buffer
+            (when need-syntax-check-p
+              (setq need-syntax-check-p nil)
+              (setq erm-parsing-p t)
+              (process-send-string (erm-ruby-get-process) (concat "c" (number-to-string erm-buff-num) 
+                                                                  ":\n\0\0\0\n"))))
+        (if erm-syntax-check-list
+            (erm-do-syntax-check))))))
+
 (defun erm-parse (response)
   (let (interrupted-p
+        (cmd (aref response 0))
         (send-next-p (eq 'a erm-parsing-p)))
     (setq erm-parsing-p nil)
-    (setq interrupted-p
-          (condition-case nil
-              (catch 'interrupted
-                (if send-next-p
-                    (erm-ready)
-                  (ruby-add-faces (car (read-from-string response))))
-                nil)
-            (error t)))
-    (if interrupted-p
-        (setq erm-full-parse-p t)
-      (if erm-full-parse-p 
-          (ruby-fontify-buffer)
-        (when (car erm-reparse-list)
-          (with-current-buffer (car erm-reparse-list)
-            (setq erm-reparse-list (cdr erm-reparse-list))
-            (ruby-fontify-buffer)))))))
+    (cond
+     ((eq ?\( cmd)
+          (setq interrupted-p
+                (condition-case nil
+                    (catch 'interrupted
+                      (if send-next-p
+                          (erm-ready)
+                        (ruby-add-faces (car (read-from-string response))))
+                      nil)
+                  (error t)))
+          (if interrupted-p
+              (setq erm-full-parse-p t)
 
+            (if erm-full-parse-p 
+                (ruby-fontify-buffer)
+              (if (car erm-reparse-list)
+                  (with-current-buffer (car erm-reparse-list)
+                    (setq erm-reparse-list (cdr erm-reparse-list))
+                    (ruby-fontify-buffer))
+                (erm-do-syntax-check)
+                ))))
+
+     ((eq ?c cmd)
+      (unless need-syntax-check-p
+        (erm-syntax-response (substring response 1)))
+      (erm-do-syntax-check))
+
+     (t 
+      (setq erm-full-parse-p t)
+      (error "%s" (substring response 1))))))
+
+(erm-reset)
 
 (provide 'ruby-mode)
