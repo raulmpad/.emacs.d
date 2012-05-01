@@ -11,8 +11,6 @@
 (global-set-key (kbd "s-j") 'windmove-down)
 (global-set-key (kbd "s-k") 'windmove-up)
 
-(require 'key-chord)
-(key-chord-mode 1)
 ;; the greates keymapping EVER
 (setq key-chord-two-keys-delay 0.5)
 (key-chord-define evil-insert-state-map "jk" 'evil-esc)
@@ -70,5 +68,5 @@
 (add-hook 'term-mode-hook (lambda ()
                             (local-unset-key "\M-k")
                             (local-unset-key "\M-j")))
-(provide 'evil-bindings)
+(provide 'my-evil-bindings)
 

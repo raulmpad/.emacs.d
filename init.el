@@ -64,9 +64,7 @@
                              (delete-trailing-whitespace)))))))
 
 (defun ruby-mode-hooks ()
-  (add-to-list 'load-path "~/.emacs.d/el-get/enhanced-ruby-mode")
-  (setq enh-ruby-program "~/.rvm/rubies/ruby-1.9.3-p125/bin/ruby/")
-  (require 'ruby-mode)
+  (setq enh-ruby-program "~/.rvm/rubies/ruby-1.9.3-p125/bin/ruby")
   ;; (autoload 'ruby-mode "ruby-mode" "Major mode for ruby files" t)
   (add-to-list 'auto-mode-alist '("\\.rb$" . ruby-mode))
   (add-to-list 'interpreter-mode-alist '("ruby" . ruby-mode))
@@ -131,15 +129,20 @@
                         (global-set-key (kbd "s-a") 'helm-mini)
                         (global-set-key (kbd "s-i") 'helm-imenu)
                         (global-set-key (kbd "s-x") 'helm-M-x)))
+        (:name key-chord
+               :type emacswiki
+               :load "key-chord.el"
+               :feature key-chord
+               :after (lambda ()
+                        (key-chord-mode 1)))
         (:name evil
                :type git
                :url "git://gitorious.org/evil/evil.git"
                :load "evil.el"
                :feature evil
                :after (lambda ()
-                        (evil-mode 1)
-                                        ;(require 'evil-bindings)
-                        ))
+                        (require 'my-evil-bindings)
+                        (evil-mode 1)))
         (:name evil-surround
                :type git
                :url "git://github.com/timcharper/evil-surround.git"
@@ -179,14 +182,10 @@
                                         ;:load "rails.el"
                                         ;:feature rails)
         ))
-(setq my-packages
-      (append '(starter-kit starter-kit-ruby starter-kit-js starter-kit-lisp anything color-theme-sanityinc-solarized)
-              (mapcar 'el-get-source-name el-get-sources)))
-(el-get 'sync my-packages)
+(el-get 'sync (mapcar 'el-get-source-name el-get-sources))
 
 (global-set-key (kbd "M-e") 'rgrep)
 
-(require 'evil-bindings)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -264,3 +263,5 @@
         (ansi-term term-cmd))))
   (evil-mode nil))
 (global-set-key (kbd "<f2>") 'visit-ansi-term)
+
+
