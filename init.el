@@ -172,6 +172,8 @@
         (:name anything-of-rails
                :type git
                :url "git://github.com/yosm/emacs_anything-of-rails.git"
+               :load "rails.el"
+               :feature "rails"
                :after (lambda ()
                         (global-set-key (kbd "s-r") 'anything-of-rails)))
         (:name magit
