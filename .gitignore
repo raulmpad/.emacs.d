@@ -10,3 +10,4 @@ url/*
 anything-c-adaptive-history
 *.swp
 el-get
+tmp
