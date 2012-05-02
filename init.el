@@ -161,6 +161,7 @@
         (:name rhtml-mode
                :type git
                :url "git://github.com/eschulte/rhtml.git"
+               :feature rhtml-mode
                :after (lambda ()
                         (flyspell-mode-off)
                         (turn-off-auto-fill)))
