@@ -161,6 +161,7 @@
         (:name rhtml-mode
                :type git
                :url "git://github.com/eschulte/rhtml.git"
+               :load "rhtml-mode.el"
                :feature rhtml-mode
                :after (lambda ()
                         (flyspell-mode-off)
@@ -179,11 +180,11 @@
                         (global-set-key (kbd "s-r") 'anything-of-rails)))
         (:name magit
                :type elpa)
-                                        ;(:name emacs-rails
-                                        ;:type git
-                                        ;:url "git://github.com/remvee/emacs-rails.git"
-                                        ;:load "rails.el"
-                                        ;:feature rails)
+        (:name emacs-rails
+               :type git
+               :url "git://github.com/remvee/emacs-rails.git"
+               :load "rails.el"
+               :feature rails)
         ))
 (el-get 'sync (mapcar 'el-get-source-name el-get-sources))
 
