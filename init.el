@@ -3,7 +3,7 @@
 (add-to-list 'load-path "~/.emacs.d")
 
 (fset 'yes-or-no-p 'y-or-n-p)
-(set-frame-font "Menlo-14")
+(set-frame-font "Monospaced-15")
 (setq ring-bell-function 'ignore)
 
 (setq make-backup-files nil)
@@ -75,6 +75,10 @@
   (setq ruby-extra-keywords (append '("describe" "pending" "context" "specify" "shared_examples_for" "it_should_behave_like" "before" "it" "after" "background" "feature" "scenario") ruby-extra-keywords))
   (ruby-local-enable-extra-keywords))
 
+(defun my-rhtml-mode-hook ()
+  (flyspell-mode-off)
+  (turn-off-auto-fill))
+
 (defadvice find-file-at-point (around goto-line compile activate)
   (let ((line (and (looking-at ".*:\\([0-9]+\\)")
                    (string-to-number (match-string 1)))))
@@ -116,6 +120,15 @@
                :type elpa)
         (:name anything
                :type elpa)
+        (:name haml-mode
+               ;; :type git
+               ;; :url "git://github.com/dgutov/haml-mode.git"
+               ;; :load "haml-mode.el"
+               ;; :feature haml-mode
+               :after (lambda ()
+                        (require 'ruby-mode)
+                        (add-hook 'haml-mode-hook '(lambda ()
+                                                     flyspell-mode-off))))
         (:name flymake-haml
                :type elpa
                :after (lambda () (add-hook 'haml-mode-hook 'flymake-haml-load)))
@@ -180,11 +193,11 @@
                         (global-set-key (kbd "s-r") 'anything-of-rails)))
         (:name magit
                :type elpa)
-        (:name emacs-rails
-               :type git
-               :url "git://github.com/remvee/emacs-rails.git"
-               :load "rails.el"
-               :feature rails)
+        ;; (:name emacs-rails
+        ;;        :type git
+        ;;        :url "git://github.com/remvee/emacs-rails.git"
+        ;;        :load "rails.el"
+        ;;        :feature rails)
         ))
 (el-get 'sync (mapcar 'el-get-source-name el-get-sources))
 
@@ -268,4 +281,4 @@
   (evil-mode nil))
 (global-set-key (kbd "<f2>") 'visit-ansi-term)
 
-
+(require 'my-rails-mode)
