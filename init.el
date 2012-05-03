@@ -106,6 +106,9 @@
                :features ruby-mode
                :post-init (lambda ()
                         (ruby-mode-hooks)))
+        (:name ruby-electric
+               :type git
+               :url "git://github.com/qoobaa/ruby-electric.git")
         (:name rvm
                :type elpa
                :load "rvm.el"
@@ -143,6 +146,7 @@
                :type elpa)
         (:name helm
                :type elpa
+               :features helm-config
                :post-init (lambda ()
                         (global-set-key (kbd "s-a") 'helm-mini)
                         (global-set-key (kbd "s-i") 'helm-imenu)
