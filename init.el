@@ -104,16 +104,16 @@
                :url "git://github.com/jacott/Enhanced-Ruby-Mode.git"
                :load "ruby-mode.el"
                :features ruby-mode
-               :after (lambda ()
+               :post-init (lambda ()
                         (ruby-mode-hooks)))
         (:name rvm
                :type elpa
                :load "rvm.el"
-               :after (lambda () (rvm-autodetect-ruby)))
+               :post-init (lambda () (rvm-autodetect-ruby)))
         (:name starter-kit
                :type elpa
                :load "starter-kit.el"
-               :after (lambda ()
+               :post-init (lambda ()
                         (remove-hook 'prog-mode-hook 'esk-turn-on-hl-line-mode)
                         (remove-hook 'prog-mode-hook 'esk-turn-on-idle-highlight-mode)
                         (remove-hook 'prog-mode-hook 'esk-local-comment-auto-fill)))
@@ -130,20 +130,20 @@
                ;; :url "git://github.com/dgutov/haml-mode.git"
                ;; :load "haml-mode.el"
                ;; :feature haml-mode
-               :after (lambda ()
+               :post-init (lambda ()
                         (require 'ruby-mode)
                         (add-hook 'haml-mode-hook '(lambda ()
                                                      flyspell-mode-off))))
         (:name flymake-haml
                :type elpa
-               :after (lambda () (add-hook 'haml-mode-hook 'flymake-haml-load)))
+               :post-init (lambda () (add-hook 'haml-mode-hook 'flymake-haml-load)))
         (:name flymake-ruby :type elpa
-               :after (lambda () (add-hook 'ruby-mode-hook 'flymake-ruby-load)))
+               :post-init (lambda () (add-hook 'ruby-mode-hook 'flymake-ruby-load)))
         (:name color-theme-sanityinc-solarized
                :type elpa)
         (:name helm
                :type elpa
-               :after (lambda ()
+               :post-init (lambda ()
                         (global-set-key (kbd "s-a") 'helm-mini)
                         (global-set-key (kbd "s-i") 'helm-imenu)
                         (global-set-key (kbd "s-x") 'helm-M-x)))
@@ -151,14 +151,14 @@
                :type emacswiki
                :load "key-chord.el"
                :feature key-chord
-               :after (lambda ()
+               :post-init (lambda ()
                         (key-chord-mode 1)))
         (:name evil
                :type git
                :url "git://gitorious.org/evil/evil.git"
                :load "evil.el"
                :feature evil
-               :after (lambda ()
+               :post-init (lambda ()
                         (require 'my-evil-bindings)
                         (evil-mode 1)))
         (:name evil-surround
@@ -166,31 +166,31 @@
                :url "git://github.com/timcharper/evil-surround.git"
                :load "surround.el"
                :feature surround
-               :after (lambda ()
+               :post-init (lambda ()
                         (global-surround-mode 1)))
         (:name rspec-mode
                :type git
                :url "git://github.com/pezra/rspec-mode.git"
                :load "rspec-mode.el"
                :feature rspec-mode
-               :after (lambda ()
+               :post-init (lambda ()
                         (add-hook 'rspec-mode-hook 'erm-rspec-extra-keywords)
                         (define-key rspec-mode-verifible-keymap (kbd "s") 'rspec-verify-single)))
         (:name rhtml-mode
-               :after (lambda ()
+               :post-init (lambda ()
                         (add-to-list 'auto-mode-alist '("\\.js\.erb$" . rhtml-mode))
                         (add-hook 'rhtml-mode-hook 'my-rhtml-mode-hook)))
         (:name yaml-mode
                :type git
                :url "git://github.com/yoshiki/yaml-mode.git"
-               :after (lambda ()
+               :post-init (lambda ()
                         (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))))
         (:name anything-of-rails
                :type git
                :url "git://github.com/yosm/emacs_anything-of-rails.git"
                :load "rails.el"
                :feature "rails"
-               :after (lambda ()
+               :post-init (lambda ()
                         (global-set-key (kbd "s-r") 'anything-of-rails)))
         (:name magit
                :type elpa)
