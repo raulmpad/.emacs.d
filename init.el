@@ -96,9 +96,14 @@
 (require 'el-get)
 
 (setq el-get-sources
-      '((:name enhanced-ruby-mode
+      '(
+        (:name ruby-mode
+               :load "ruby-mode.el")
+        (:name enhanced-ruby-mode
                :type git
                :url "git://github.com/jacott/Enhanced-Ruby-Mode.git"
+               :load "ruby-mode.el"
+               :features ruby-mode
                :after (lambda ()
                         (ruby-mode-hooks)))
         (:name rvm
