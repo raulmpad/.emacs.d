@@ -177,9 +177,11 @@
                         (add-hook 'rspec-mode-hook 'erm-rspec-extra-keywords)
                         (define-key rspec-mode-verifible-keymap (kbd "s") 'rspec-verify-single)))
         (:name rhtml-mode
+               :load "rhtml-mode.el"
+               :feature rhtml-mode
                :post-init (lambda ()
-                        (add-to-list 'auto-mode-alist '("\\.js\.erb$" . rhtml-mode))
-                        (add-hook 'rhtml-mode-hook 'my-rhtml-mode-hook)))
+                            (add-to-list 'auto-mode-alist '("\\.js\.erb$" . rhtml-mode))
+                            (add-hook 'rhtml-mode-hook 'my-rhtml-mode-hook)))
         (:name yaml-mode
                :type git
                :url "git://github.com/yoshiki/yaml-mode.git"
