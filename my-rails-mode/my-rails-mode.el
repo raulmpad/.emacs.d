@@ -1,5 +1,7 @@
 (require 'my-rails-mode-model)
 (require 'my-rails-mode-controller)
+(require 'my-rails-mode-migrate)
+;; (require 'my-rails-mode-views)
 
 (defcustom my-rails-grep-extensions '("builder" "erb" "haml" "liquid" "mab" "rake" "rb" "rhtml" "rjs" "rxml" "yml" "feature" "js" "html" "rtex" "prawn")
   "List of file extensions which grep searches."
