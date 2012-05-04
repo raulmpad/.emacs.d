@@ -1,10 +1,14 @@
-(require 'my-rails-model-mode)
+(require 'my-rails-mode-model)
+(require 'my-rails-mode-controller)
 
 (defcustom my-rails-grep-extensions '("builder" "erb" "haml" "liquid" "mab" "rake" "rb" "rhtml" "rjs" "rxml" "yml" "feature" "js" "html" "rtex" "prawn")
   "List of file extensions which grep searches."
   :group 'my-rails-mode
   :type '(repeat string))
 
+(defun my-rails-mode:highlight-keywords (keywords)
+  (setq ruby-extra-keywords (append ruby-extra-keywords keywords ))
+  (ruby-local-enable-extra-keywords))
 
 (defun my-rails-mode:root ()
   "Return RAILS_ROOT if this file is a part of a Rails application,
@@ -47,10 +51,7 @@ else return nil"
 
 (defun set-my-rails-mode ()
   (when (my-rails-mode:root)
-    (my-rails-mode t))
-  (when (my-rails-mode:is-under "app/models")
-    (my-rails-model-mode t))
-  )
+    (my-rails-mode t)))
 
 (add-hook 'find-file-hook 'set-my-rails-mode)
 
