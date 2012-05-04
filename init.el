@@ -288,4 +288,5 @@
   (evil-mode nil))
 (global-set-key (kbd "<f2>") 'visit-ansi-term)
 
+(add-to-list 'load-path "~/.emacs.d/my-rails-mode/")
 (require 'my-rails-mode)
