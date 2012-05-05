@@ -1,6 +1,6 @@
 (require 'my-rails-mode-model)
 (require 'my-rails-mode-controller)
-(require 'my-rails-mode-migrate)
+(require 'my-rails-mode-migration)
 ;; (require 'my-rails-mode-views)
 
 (defcustom my-rails-grep-extensions '("builder" "erb" "haml" "liquid" "mab" "rake" "rb" "rhtml" "rjs" "rxml" "yml" "feature" "js" "html" "rtex" "prawn")
@@ -34,22 +34,35 @@ else return nil"
                       (list (grep-read-regexp))))
   (rgrep regexp (mapconcat (lambda (ext) (format "*.%s" ext)) my-rails-grep-extensions " ") (my-rails-mode:root)))
 
-(define-minor-mode my-rails-mode
-  "My custom RubyOnRails minor mode"
-  nil
-  " myRoR"
-  `(
-    (,(kbd "C-c s") . my-rails-mode:grep-project)
+(defun my-rails-mode:find-class (word)
+  (let ((curdir default-directory)
+        (found nil)
+        (model (concat (my-rails-mode:root) "app/models/" word ".rb"))
+        (lib (concat (my-rails-mode:root)  "lib/" word ".rb")))
+
+    (cond ((file-exists-p model)
+           (find-file model)) 
+          ((file-exists-p lib)
+           (find-file lib)))
     )
   )
 
-(defun my-rails-mode:is-under (path)
-"Returns t if it is under root + path "
-(if (string-match (concat "^" (my-rails-mode:root) path) (expand-file-name default-directory))
-                  t
-                  nil
-                 )
-)
+(defun my-rails-mode:jump ()
+  (interactive)
+  (let ((word (thing-at-point 'symbol))
+        (case-fold-search nil))
+    (if (string-match-p "^[A-Z].*" word)
+        (my-rails-mode:find-class (repla word))))
+
+  )
+
+(defun my-rails-mode:under-p (path)
+  "Returns t if it is under root + path "
+  (if (string-match (concat "^" (my-rails-mode:root) path) (expand-file-name default-directory))
+      t
+    nil
+    )
+  )
 
 (defun set-my-rails-mode ()
   (when (my-rails-mode:root)
@@ -62,6 +75,16 @@ else return nil"
 ;;;   (let ((map (make-keymap)))
 ;;;     (define-key map (kbd "C-c s") 'my-rails-mode:grep-project)
 ;;;     map))
+
+(define-minor-mode my-rails-mode
+  "My custom RubyOnRails minor mode"
+  nil
+  " myRoR"
+  `(
+    (,(kbd "C-c s") . my-rails-mode:grep-project)
+    (,(kbd "<C-return>") . my-rails-mode:jump)
+    )
+  )
 
 (provide 'my-rails-mode)
 

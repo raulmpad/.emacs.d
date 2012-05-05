@@ -28,7 +28,7 @@
 
 
 (add-hook 'rhtml-mode-hook '(lambda ()
-                             (when (my-rails-mode:is-under "app/views")
+                             (when (my-rails-mode:under-p "app/views")
                                (font-lock-add-keywords nil
                                                        ;; '((regexp-opt my-rails-mode:view-keywords 'words) . font-lock-keyword-face)
                                                        ;; '(((regexp my-rails-mode:view-keywords 'words) . font-lock-keyword-face))

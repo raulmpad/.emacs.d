@@ -185,6 +185,7 @@
                :feature rhtml-mode
                :post-init (lambda ()
                             (add-to-list 'auto-mode-alist '("\\.js\.erb$" . rhtml-mode))
+                            (add-to-list 'auto-mode-alist '("\\.text\.erb$" . rhtml-mode))
                             (add-hook 'rhtml-mode-hook 'my-rhtml-mode-hook)))
         (:name yaml-mode
                :type git
@@ -200,6 +201,10 @@
                         (global-set-key (kbd "s-r") 'anything-of-rails)))
         (:name magit
                :type elpa)
+        (:name thingatpt+
+               :type emacswiki
+               :load "thingatpt+.el"
+               :feature "thingatpt")
         ;; (:name emacs-rails
         ;;        :type git
         ;;        :url "git://github.com/remvee/emacs-rails.git"
