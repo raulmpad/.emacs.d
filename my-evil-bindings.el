@@ -10,6 +10,9 @@
 (global-set-key (kbd "s-l") 'windmove-right)
 (global-set-key (kbd "s-j") 'windmove-down)
 (global-set-key (kbd "s-k") 'windmove-up)
+(global-set-key (kbd "s-d") 'previous-buffer)
+(global-set-key (kbd "s-f") 'next-buffer)
+
 
 ;; the greates keymapping EVER
 (setq key-chord-two-keys-delay 0.5)

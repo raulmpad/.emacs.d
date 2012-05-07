@@ -51,9 +51,6 @@
 
 (setq font-lock-maximum-decoration t)
 
-(global-set-key "\M-j" 'previous-buffer)
-(global-set-key "\M-k" 'next-buffer)
-
 
 (defun delete-trailing-whitespace-in-ruby-mode ()
   (add-hook 'ruby-mode-hook
