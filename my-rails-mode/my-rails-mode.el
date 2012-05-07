@@ -50,8 +50,7 @@ else return nil"
            (find-file controller))
           ((file-exists-p lib)
            (find-file lib)))
-    )
-  )
+    )))
 
 (defun my-rails-mode:jump ()
   (interactive)
@@ -63,13 +62,13 @@ else return nil"
   )
 
 (defun my-rails-mode:open-log ()
-(interactive)
-(find-file
- (concat (my-rails-mode:root)
-         "log/"
-         (ido-completing-read "Open log: " (directory-files (concat (my-rails-mode:root) "log/") nil "[^.|^..]"))))
-(compilation-mode 1)
-(auto-revert-tail-mode 1))
+  (interactive)
+  (find-file
+   (concat (my-rails-mode:root)
+           "log/"
+           (ido-completing-read "Open log: " (directory-files (concat (my-rails-mode:root) "log/") nil "[^.|^..]"))))
+  (compilation-mode 1)
+  (auto-revert-tail-mode 1))
 
 
 (defun my-rails-mode:under-p (path)
