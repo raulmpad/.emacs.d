@@ -67,7 +67,7 @@ else return nil"
 (find-file
  (concat (my-rails-mode:root)
          "log/"
-         (ido-completing-read "Open log: " (directory-files (concat (my-rails-mode:root) "log/")))))
+         (ido-completing-read "Open log: " (directory-files (concat (my-rails-mode:root) "log/") nil "[^.|^..]"))))
 (compilation-mode 1)
 (auto-revert-tail-mode 1))
 
