@@ -38,10 +38,16 @@ else return nil"
   (let ((curdir default-directory)
         (found nil)
         (model (concat (my-rails-mode:root) "app/models/" word ".rb"))
+        (mailer (concat (my-rails-mode:root) "app/mailers/" word ".rb"))
+        (controller (concat (my-rails-mode:root) "app/controllers/" word ".rb"))
         (lib (concat (my-rails-mode:root)  "lib/" word ".rb")))
 
-    (cond ((file-exists-p model)
+    (cond ((file-exists-p model
            (find-file model)) 
+          ((file-exists-p mailer)
+           (find-file mailer))
+          ((file-exists-p controller)
+           (find-file controller))
           ((file-exists-p lib)
            (find-file lib)))
     )
@@ -52,9 +58,19 @@ else return nil"
   (let ((word (thing-at-point 'symbol))
         (case-fold-search nil))
     (if (string-match-p "^[A-Z].*" word)
-        (my-rails-mode:find-class (repla word))))
+        (my-rails-mode:find-class word)))
 
   )
+
+(defun my-rails-mode:open-log ()
+(interactive)
+(find-file
+ (concat (my-rails-mode:root)
+         "log/"
+         (ido-completing-read "Open log: " (directory-files (concat (my-rails-mode:root) "log/")))))
+(compilation-mode 1)
+(auto-revert-tail-mode 1))
+
 
 (defun my-rails-mode:under-p (path)
   "Returns t if it is under root + path "
