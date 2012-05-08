@@ -67,9 +67,11 @@
   "l" 'magit-key-mode-popup-logging
   "h" 'magit-toggle-diff-refine-hunk)
 
-;TODO
-(add-hook 'term-mode-hook (lambda ()
-                            (local-unset-key "\M-k")
-                            (local-unset-key "\M-j")))
+(add-hook 'compilation-mode-hook '(lambda ()
+                                    (local-unset-key "g")
+                                    (local-unset-key "h")
+                                    (evil-define-key 'motion compilation-mode-map "r" 'recompile))
+                                    (evil-define-key 'motion compilation-mode-map "h" 'evil-backward-char))
+
 (provide 'my-evil-bindings)
 

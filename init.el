@@ -292,3 +292,5 @@
 
 (add-to-list 'load-path "~/.emacs.d/my-rails-mode/")
 (require 'my-rails-mode)
+
+
