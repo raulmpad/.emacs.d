@@ -8,6 +8,13 @@
   :group 'my-rails-mode
   :type '(repeat string))
 
+(defvar my-rails-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-c s") 'my-rails-mode:grep-project)
+    (define-key map (kbd "C-<return>") 'my-rails-mode:jump)
+    map)
+  "Keymap for `my-rails-mode`.")
+
 (defun my-rails-mode:highlight-keywords (keywords)
   (setq ruby-extra-keywords (append ruby-extra-keywords keywords ))
   (ruby-local-enable-extra-keywords))
@@ -67,7 +74,6 @@ else return nil"
    (concat (my-rails-mode:root)
            "log/"
            (ido-completing-read "Open log: " (directory-files (concat (my-rails-mode:root) "log/") nil "[^.|^..]"))))
-  (compilation-mode 1)
   (auto-revert-tail-mode 1))
 
 
@@ -95,10 +101,7 @@ else return nil"
   "My custom RubyOnRails minor mode"
   nil
   " myRoR"
-  `(
-    (,(kbd "C-c s") . my-rails-mode:grep-project)
-    (,(kbd "<C-return>") . my-rails-mode:jump)
-    )
+  my-rails-mode-map
   )
 
 (provide 'my-rails-mode)
