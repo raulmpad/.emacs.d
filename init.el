@@ -74,7 +74,9 @@
 
 (defun my-rhtml-mode-hook ()
   (flyspell-mode-off)
-  (turn-off-auto-fill))
+  (turn-off-auto-fill)
+  ;disable abbrev-mode
+  (abbrev-mode -1))
 
 (defadvice find-file-at-point (around goto-line compile activate)
   (let ((line (and (looking-at ".*:\\([0-9]+\\)")
