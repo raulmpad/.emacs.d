@@ -2,15 +2,11 @@
 (require 'my-rails-mode-controller)
 (require 'my-rails-mode-migration)
 ;; (require 'my-rails-mode-views)
-
-(defcustom my-rails-grep-extensions '("builder" "erb" "haml" "liquid" "mab" "rake" "rb" "rhtml" "rjs" "rxml" "yml" "feature" "js" "html" "rtex" "prawn")
-  "List of file extensions which grep searches."
-  :group 'my-rails-mode
-  :type '(repeat string))
+(require 'ack-and-a-half)
 
 (defvar my-rails-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "C-c s") 'my-rails-mode:grep-project)
+    (define-key map (kbd "C-c s") 'my-rails-mode:ack-project)
     (define-key map (kbd "C-<return>") 'my-rails-mode:jump)
     map)
   "Keymap for `my-rails-mode`.")
@@ -35,11 +31,18 @@ else return nil"
             (setq max (- max 1))))))
     (if found (expand-file-name curdir))))
 
-(defun my-rails-mode:grep-project (regexp)
-  "Find regexp in project."
+(defun my-rails-mode:helm-grep-project (regexp)
+  "Find regexp in project using helm-do-grep-1"
   (interactive (progn (grep-compute-defaults)
-                      (list (grep-read-regexp))))
-  (rgrep regexp (mapconcat (lambda (ext) (format "*.%s" ext)) my-rails-grep-extensions " ") (my-rails-mode:root)))
+                      (list (grep-read-regexp)))
+  ()
+               )
+
+  )
+
+(defun my-rails-mode:ack-project (pattern &optional regexp directory)
+  (interactive (ack-and-a-half-interactive))
+  (ack-and-a-half-run (my-rails-mode:root) regexp (concat "--type=ruby --type=html --type=js --type=css --type-add html=.haml --type-add css=.sass,.scss --ignore-dir=tmp --ignore-dir=coverage " pattern)))
 
 (defun my-rails-mode:find-class (word)
   (let ((curdir default-directory)
@@ -64,7 +67,7 @@ else return nil"
   (let ((word (thing-at-point 'symbol))
         (case-fold-search nil))
     (if (string-match-p "^[A-Z].*" word)
-        (my-rails-mode:find-class word)))
+        (my-rails-mode:find-class (replace-regexp-in-string "::" "/" word))))
 
   )
 
