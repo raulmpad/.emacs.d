@@ -125,8 +125,6 @@
                :type elpa)
         (:name starter-kit-lisp
                :type elpa)
-        (:name anything
-               :type elpa)
         (:name haml-mode
                ;; :type git
                ;; :url "git://github.com/dgutov/haml-mode.git"
@@ -145,11 +143,11 @@
                :type elpa)
         (:name helm
                :type elpa
-               :features helm-config
                :post-init (lambda ()
-                        (global-set-key (kbd "s-a") 'helm-mini)
-                        (global-set-key (kbd "s-i") 'helm-imenu)
-                        (global-set-key (kbd "s-x") 'helm-M-x)))
+                            (require 'helm-mode)
+                            (global-set-key (kbd "s-a") 'helm-mini)
+                            (global-set-key (kbd "s-i") 'helm-imenu)
+                            (global-set-key (kbd "s-x") 'helm-M-x)))
         (:name key-chord
                :type emacswiki
                :load "key-chord.el"
@@ -198,20 +196,35 @@
                :feature "rails"
                :post-init (lambda ()
                         (global-set-key (kbd "s-r") 'anything-of-rails)))
-        (:name magit
-               :type elpa)
         (:name thingatpt+
                :type emacswiki
                :load "thingatpt+.el"
                :feature "thingatpt")
+        (:name ack-and-a-half
+               :type git
+               :url "git://github.com/gleber/ack-and-a-half.git"
+               :branch "autofill-word-at-point"
+               :post-init (lambda ()
+                            (autoload 'ack-and-a-half-same "ack-and-a-half" nil t)
+                            (autoload 'ack-and-a-half "ack-and-a-half" nil t)
+                            (autoload 'ack-and-a-half-find-file-same "ack-and-a-half" nil t)
+                            (autoload 'ack-and-a-half-find-file "ack-and-a-half" nil t)
+                            ;; Create shorter aliases
+                            (defalias 'ack 'ack-and-a-half)
+                            (defalias 'ack-same 'ack-and-a-half-same)
+                            (defalias 'ack-find-file 'ack-and-a-half-find-file)
+                            (defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
+                            ))
         ;; (:name emacs-rails
         ;;        :type git
         ;;        :url "git://github.com/remvee/emacs-rails.git"
         ;;        :load "rails.el"
         ;;        :feature rails)
         ))
-(el-get 'sync (mapcar 'el-get-source-name el-get-sources))
-
+ 
+(setq my-packages (append '(anything magit)
+                          (mapcar 'el-get-source-name el-get-sources)))
+(el-get 'sync my-packages)
 (global-set-key (kbd "M-e") 'rgrep)
 
 
@@ -220,6 +233,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ack-and-a-half-arguments nil)
+ '(ack-and-a-half-mode-extension-alist nil)
  '(comint-process-echoes t)
  '(custom-safe-themes (quote ("4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" "69349beba557a65bb06f89b28b8fd2890c742f07" "d14db41612953d22506af16ef7a23c4d112150e5" "1440d751f5ef51f9245f8910113daee99848e2c0" "485737acc3bedc0318a567f1c0f5e7ed2dfde3fb" "4711e8fe63ef13accc884c59469067d2f497e79c" default)))
  '(evil-complete-previous-func (lambda (arg) (let ((dabbrev-search-these-buffers-only (buffer-list)) dabbrev-case-distinction) (dabbrev-expand arg))))
@@ -247,7 +262,7 @@
  '(erm-syn-errline ((t (:underline "Red"))))
  '(erm-syn-warnline ((t (:underline "Orange"))))
  '(helm-selection ((t (:background "controlLightHighlightColor" :underline t))))
- '(magit-item-highlight ((t nil)) t))
+ '(magit-item-highlight ((t nil))))
 
 (menu-bar-mode 1)
 
