@@ -215,11 +215,11 @@
                             (defalias 'ack-find-file 'ack-and-a-half-find-file)
                             (defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
                             ))
-        ;; (:name emacs-rails
-        ;;        :type git
-        ;;        :url "git://github.com/remvee/emacs-rails.git"
-        ;;        :load "rails.el"
-        ;;        :feature rails)
+(:name rainbow-delimiters
+       :description "Color nested parentheses, brackets, and braces according to their depth."
+       :type elpa
+       :feature rainbow-delimiters
+       :post-init (lambda () (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)))
         ))
  
 (setq my-packages (append '(anything magit)
