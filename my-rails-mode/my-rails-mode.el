@@ -31,45 +31,35 @@ else return nil"
             (setq max (- max 1))))))
     (if found (expand-file-name curdir))))
 
-(defun my-rails-mode:helm-grep-project (regexp)
-  "Find regexp in project using helm-do-grep-1"
-  (interactive (progn (grep-compute-defaults)
-                      (list (grep-read-regexp)))
-  ()
-               )
-
-  )
-
 (defun my-rails-mode:ack-project (pattern &optional regexp directory)
   (interactive (ack-and-a-half-interactive))
   (ack-and-a-half-run (my-rails-mode:root) regexp (concat "--type=ruby --type=html --type=js --type=css --type-add html=.haml --type-add css=.sass,.scss --ignore-dir=tmp --ignore-dir=coverage " pattern)))
 
 (defun my-rails-mode:find-class (word)
   (let ((curdir default-directory)
-        (found nil)
         (model (concat (my-rails-mode:root) "app/models/" word ".rb"))
         (mailer (concat (my-rails-mode:root) "app/mailers/" word ".rb"))
-        (controller (concat (my-rails-mode:root) "app/controllers/" word ".rb"))
         (lib (concat (my-rails-mode:root)  "lib/" word ".rb")))
 
-    (cond ((file-exists-p model
+    (cond ((file-exists-p model)
            (find-file model)) 
           ((file-exists-p mailer)
            (find-file mailer))
-          ((file-exists-p controller)
-           (find-file controller))
           ((file-exists-p lib)
            (find-file lib)))
-    )))
+    ))
 
 (defun my-rails-mode:jump ()
   (interactive)
-  (let ((word (thing-at-point 'symbol))
-        (case-fold-search nil))
-    (if (string-match-p "^[A-Z].*" word)
-        (my-rails-mode:find-class (replace-regexp-in-string "::" "/" word))))
+         (my-rails-mode:find-class (replace-regexp-in-string "::" "/" (symbol-name (symbol-at-point))))
+  ;; (let ((word (thing-at-point 'symbol))
+  ;;       (case-fold-search nil)
+  ;;       (word))
+  ;;   (if (string-match-p "^[A-Z].*" word)
+  ;;       (my-rails-mode:find-class (replace-regexp-in-string "::" "/" word))))
 
   )
+
 
 (defun my-rails-mode:open-log ()
   (interactive)
@@ -81,7 +71,7 @@ else return nil"
 
 
 (defun my-rails-mode:under-p (path)
-  "Returns t if it is under root + path "
+  "Returns t if `default-directory' is under root + path "
   (if (string-match (concat "^" (my-rails-mode:root) path) (expand-file-name default-directory))
       t
     nil
@@ -93,12 +83,6 @@ else return nil"
     (my-rails-mode t)))
 
 (add-hook 'find-file-hook 'set-my-rails-mode)
-
-
-;;; (defvar my-rails-mode-map
-;;;   (let ((map (make-keymap)))
-;;;     (define-key map (kbd "C-c s") 'my-rails-mode:grep-project)
-;;;     map))
 
 (define-minor-mode my-rails-mode
   "My custom RubyOnRails minor mode"
