@@ -51,15 +51,74 @@ else return nil"
 
 (defun my-rails-mode:jump ()
   (interactive)
-         (my-rails-mode:find-class (replace-regexp-in-string "::" "/" (symbol-name (symbol-at-point))))
-  ;; (let ((word (thing-at-point 'symbol))
-  ;;       (case-fold-search nil)
-  ;;       (word))
-  ;;   (if (string-match-p "^[A-Z].*" word)
-  ;;       (my-rails-mode:find-class (replace-regexp-in-string "::" "/" word))))
-
+  ;; (my-rails-mode:find-class (replace-regexp-in-string "::" "/" (symbol-name (symbol-at-point))))
+  (let ((word (thing-at-point 'symbol))
+        (case-fold-search nil))
+    
+    (if (string-match-p "^[A-Z].*" word)
+        (my-rails-mode:find-class (replace-regexp-in-string "::" "/" word))
+      (my-rails-mode:find-partial-or-template word))
+    )
   )
 
+(defun my-rails-mode:substring-of-regexp (regexp word)
+  "Returns substring of word starting from beginning of matched regexp plus the passed length"
+  (substring word (+ (string-match regexp word) 1) (match-end 1)))
+
+(defun my-rails-mode:find-partial-or-template (word)
+  (let ((word (replace-regexp-in-string "['\"]" "" word)) ; get rid of ' and "
+        (path (concat (my-rails-mode:root) "app/views/"))
+        (cur-format (my-rails-mode:substring-of-regexp ".\\(js\\|html\\|text\\|csv\\|pdf\\)." buffer-file-name))) ; extract current format
+    (if (string-match-p "/" word)
+        (cond 
+         ((file-exists-p (concat path word)) ; user.html.erb
+          (find-file (concat path word)))
+
+         ((file-exists-p (concat path word "." cur-format ".erb")) ; user
+          (find-file (concat path word "." cur-format ".erb")))
+
+         ((file-exists-p (concat path word "." cur-format ".haml")) ; user
+          (find-file (concat path word "." cur-format ".haml")))
+
+         ((file-exists-p (concat path (my-rails-mode:insert-string "/.*$" word "_"))) ; _user.html.erb
+          (find-file (concat path (my-rails-mode:insert-string "/.*$" word "_"))))
+
+         ((file-exists-p (concat path (my-rails-mode:insert-string "/.*$" word "_") "." cur-format ".erb")) ; _user
+          (find-file (concat path (my-rails-mode:insert-string "/.*$" word "_") "." cur-format ".erb")))
+
+         ((file-exists-p (concat path (my-rails-mode:insert-string "/.*$" word "_") "." cur-format ".haml")) ; _user
+          (find-file (concat path (my-rails-mode:insert-string "/.*$" word "_") "." cur-format ".haml")))
+         ))
+    (cond  ; anything inside of current directory
+     ((file-exists-p (concat default-directory word)) ; user.html.erb
+      (find-file (concat default-directory word)))
+
+     ((file-exists-p (concat default-directory word "." cur-format ".erb")) ; user
+      (find-file (concat default-directory word "." cur-format ".erb")))
+
+     ((file-exists-p (concat default-directory word "." cur-format ".haml")) ; user
+      (find-file (concat default-directory word "." cur-format ".haml")))
+
+     ((file-exists-p (concat default-directory "_" word)) ; _user.html.erb
+      (find-file (concat default-directory "_" word)))
+
+     ((file-exists-p (concat default-directory "_" word "." cur-format ".erb")) ; _user
+      (find-file (concat default-directory "_" word "." cur-format ".erb")))
+
+     ((file-exists-p (concat default-directory "_" word "." cur-format ".haml")) ; _user
+      (find-file (concat default-directory "_" word "." cur-format ".haml"))
+      )
+
+     )
+
+    ))
+
+(defun my-rails-mode:insert-string (regexp word string)
+  (let ((pos (+ (string-match "/.*$" word) 1)))
+    (concat (substring word 0 pos) string (substring word pos))
+    )
+
+  )
 
 (defun my-rails-mode:open-log ()
   (interactive)
@@ -70,9 +129,9 @@ else return nil"
   (auto-revert-tail-mode 1))
 
 
-(defun my-rails-mode:under-p (path)
+(defun my-rails-mode:under-p (filename)
   "Returns t if `default-directory' is under root + path "
-  (if (string-match (concat "^" (my-rails-mode:root) path) (expand-file-name default-directory))
+  (if (string-match (concat "^" filename) (expand-file-name default-directory))
       t
     nil
     )
