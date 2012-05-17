@@ -75,7 +75,7 @@
 (defun my-rhtml-mode-hook ()
   (flyspell-mode-off)
   (turn-off-auto-fill)
-  ;disable abbrev-mode
+                                        ;disable abbrev-mode
   (abbrev-mode -1))
 
 (defadvice find-file-at-point (around goto-line compile activate)
@@ -104,7 +104,7 @@
                :load "ruby-mode.el"
                :features ruby-mode
                :post-init (lambda ()
-                        (ruby-mode-hooks)))
+                            (ruby-mode-hooks)))
         (:name ruby-electric
                :type git
                :url "git://github.com/qoobaa/ruby-electric.git")
@@ -116,9 +116,9 @@
                :type elpa
                :load "starter-kit.el"
                :post-init (lambda ()
-                        (remove-hook 'prog-mode-hook 'esk-turn-on-hl-line-mode)
-                        (remove-hook 'prog-mode-hook 'esk-turn-on-idle-highlight-mode)
-                        (remove-hook 'prog-mode-hook 'esk-local-comment-auto-fill)))
+                            (remove-hook 'prog-mode-hook 'esk-turn-on-hl-line-mode)
+                            (remove-hook 'prog-mode-hook 'esk-turn-on-idle-highlight-mode)
+                            (remove-hook 'prog-mode-hook 'esk-local-comment-auto-fill)))
         (:name starter-kit-ruby
                :type elpa)
         (:name starter-kit-js
@@ -131,9 +131,9 @@
                ;; :load "haml-mode.el"
                ;; :feature haml-mode
                :post-init (lambda ()
-                        (require 'ruby-mode)
-                        (add-hook 'haml-mode-hook '(lambda ()
-                                                     flyspell-mode-off))))
+                            (require 'ruby-mode)
+                            (add-hook 'haml-mode-hook '(lambda ()
+                                                         flyspell-mode-off))))
         (:name flymake-haml
                :type elpa
                :post-init (lambda () (add-hook 'haml-mode-hook 'flymake-haml-load)))
@@ -153,30 +153,30 @@
                :load "key-chord.el"
                :feature key-chord
                :post-init (lambda ()
-                        (key-chord-mode 1)))
+                            (key-chord-mode 1)))
         (:name evil
                :type git
                :url "git://gitorious.org/evil/evil.git"
                :load "evil.el"
                :feature evil
                :post-init (lambda ()
-                        (require 'my-evil-bindings)
-                        (evil-mode 1)))
+                            (require 'my-evil-bindings)
+                            (evil-mode 1)))
         (:name evil-surround
                :type git
                :url "git://github.com/timcharper/evil-surround.git"
                :load "surround.el"
                :feature surround
                :post-init (lambda ()
-                        (global-surround-mode 1)))
+                            (global-surround-mode 1)))
         (:name rspec-mode
                :type git
                :url "git://github.com/pezra/rspec-mode.git"
                :load "rspec-mode.el"
                :feature rspec-mode
                :post-init (lambda ()
-                        (add-hook 'rspec-mode-hook 'erm-rspec-extra-keywords)
-                        (define-key rspec-mode-verifible-keymap (kbd "s") 'rspec-verify-single)))
+                            (add-hook 'rspec-mode-hook 'erm-rspec-extra-keywords)
+                            (define-key rspec-mode-verifible-keymap (kbd "s") 'rspec-verify-single)))
         (:name rhtml-mode
                :load "rhtml-mode.el"
                :feature rhtml-mode
@@ -188,14 +188,14 @@
                :type git
                :url "git://github.com/yoshiki/yaml-mode.git"
                :post-init (lambda ()
-                        (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))))
+                            (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))))
         (:name anything-of-rails
                :type git
                :url "git://github.com/yosm/emacs_anything-of-rails.git"
                :load "rails.el"
                :feature "rails"
                :post-init (lambda ()
-                        (global-set-key (kbd "s-r") 'anything-of-rails)))
+                            (global-set-key (kbd "s-r") 'anything-of-rails)))
         (:name thingatpt+
                :type emacswiki
                :load "thingatpt+.el"
@@ -215,13 +215,13 @@
                             (defalias 'ack-find-file 'ack-and-a-half-find-file)
                             (defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
                             ))
-(:name rainbow-delimiters
-       :description "Color nested parentheses, brackets, and braces according to their depth."
-       :type elpa
-       :feature rainbow-delimiters
-       :post-init (lambda () (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)))
+        (:name rainbow-delimiters
+               :description "Color nested parentheses, brackets, and braces according to their depth."
+               :type elpa
+               :feature rainbow-delimiters
+               :post-init (lambda () (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)))
         ))
- 
+
 (setq my-packages (append '(anything magit)
                           (mapcar 'el-get-source-name el-get-sources)))
 (el-get 'sync my-packages)
@@ -236,7 +236,7 @@
  '(ack-and-a-half-arguments nil)
  '(ack-and-a-half-mode-extension-alist nil)
  '(comint-process-echoes t)
- '(custom-safe-themes (quote ("4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" "69349beba557a65bb06f89b28b8fd2890c742f07" "d14db41612953d22506af16ef7a23c4d112150e5" "1440d751f5ef51f9245f8910113daee99848e2c0" "485737acc3bedc0318a567f1c0f5e7ed2dfde3fb" "4711e8fe63ef13accc884c59469067d2f497e79c" default)))
+ '(custom-safe-themes (quote ("4cf3221feff536e2b3385209e9b9dc4c2e0818a69a1cdb4b522756bcdf4e00a4" "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" "69349beba557a65bb06f89b28b8fd2890c742f07" "d14db41612953d22506af16ef7a23c4d112150e5" "1440d751f5ef51f9245f8910113daee99848e2c0" "485737acc3bedc0318a567f1c0f5e7ed2dfde3fb" "4711e8fe63ef13accc884c59469067d2f497e79c" default)))
  '(evil-complete-previous-func (lambda (arg) (let ((dabbrev-search-these-buffers-only (buffer-list)) dabbrev-case-distinction) (dabbrev-expand arg))))
  '(evil-default-cursor (quote (t "white")))
  '(evil-flash-delay 5)
@@ -262,7 +262,7 @@
  '(erm-syn-errline ((t (:underline "Red"))))
  '(erm-syn-warnline ((t (:underline "Orange"))))
  '(helm-selection ((t (:background "controlLightHighlightColor" :underline t))))
- '(magit-item-highlight ((t nil))))
+ '(magit-item-highlight ((t nil)) t))
 
 (menu-bar-mode 1)
 
