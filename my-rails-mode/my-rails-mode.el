@@ -51,13 +51,17 @@ else return nil"
 
 (defun my-rails-mode:jump ()
   (interactive)
-  ;; (my-rails-mode:find-class (replace-regexp-in-string "::" "/" (symbol-name (symbol-at-point))))
   (let ((word (thing-at-point 'symbol))
         (case-fold-search nil))
     
-    (if (string-match-p "^[A-Z].*" word)
-        (my-rails-mode:find-class (replace-regexp-in-string "::" "/" word))
-      (my-rails-mode:find-partial-or-template word))
+    (if (string-match-p "^[A-Z].*" word) 
+        (my-rails-mode:find-class (downcase (replace-regexp-in-string "::" "/" word)))
+      (if (string-match-p "['\"\\|/]" word) ; we've grabbed string from view
+          (my-rails-mode:find-partial-or-template word)
+        (my-rails-mode:find-class (downcase
+                                   (replace-regexp-in-string "s$" ""
+                                                             (replace-regexp-in-string ":" ""
+                                                                                       (replace-regexp-in-string "::" "/" word))))))) ; we've grabbed something like :hedges (strip ':' and 's') TODO: pluralization is dumb here
     )
   )
 
