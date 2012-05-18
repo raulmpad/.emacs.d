@@ -8,6 +8,7 @@
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-c s") 'my-rails-mode:ack-project)
     (define-key map (kbd "C-<return>") 'my-rails-mode:jump)
+    (define-key map (kbd "C-c r") 'my-rails-mode:run-or-restart-server)
     map)
   "Keymap for `my-rails-mode`.")
 
@@ -69,6 +70,7 @@ else return nil"
   "Returns substring of word starting from beginning of matched regexp plus the passed length"
   (substring word (+ (string-match regexp word) 1) (match-end 1)))
 
+;TODO DRY it up
 (defun my-rails-mode:find-partial-or-template (word)
   (let ((word (replace-regexp-in-string "['\"]" "" word)) ; get rid of ' and "
         (path (concat (my-rails-mode:root) "app/views/"))
@@ -131,6 +133,22 @@ else return nil"
            "log/"
            (ido-completing-read "Open log: " (directory-files (concat (my-rails-mode:root) "log/") nil "[^.|^..]"))))
   (auto-revert-tail-mode 1))
+
+(defun my-rails-mode:run-or-restart-server ()
+  (interactive)
+  
+  (if (string= (buffer-name) (my-rails-mode:run-server-buffer-name))
+      (recompile)
+    (if (get-buffer (my-rails-mode:run-server-buffer-name))
+        (switch-to-buffer-other-window (my-rails-mode:run-server-buffer-name))
+      (compilation-start "bundle exec rails server" t 'my-rails-mode:run-server-buffer-name)
+      (save-window-excursion
+        (switch-to-buffer (my-rails-mode:run-server-buffer-name))
+        (my-rails-mode t))
+      )))
+
+(defun my-rails-mode:run-server-buffer-name (&optional arg)
+  (string ?* ?M ?y ?R ?o ?R ? ?S ?e ?r ?v ?e ?r ?*))
 
 
 (defun my-rails-mode:under-p (filename)
