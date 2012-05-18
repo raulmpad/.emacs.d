@@ -145,6 +145,7 @@
                :type elpa
                :post-init (lambda ()
                             (require 'helm-mode)
+                            (global-set-key (kbd "s-r") 'helm-projectile)
                             (global-set-key (kbd "s-a") 'helm-mini)
                             (global-set-key (kbd "s-i") 'helm-imenu)
                             (global-set-key (kbd "s-x") 'helm-M-x)))
@@ -189,13 +190,6 @@
                :url "git://github.com/yoshiki/yaml-mode.git"
                :post-init (lambda ()
                             (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))))
-        (:name anything-of-rails
-               :type git
-               :url "git://github.com/yosm/emacs_anything-of-rails.git"
-               :load "rails.el"
-               :feature "rails"
-               :post-init (lambda ()
-                            (global-set-key (kbd "s-r") 'anything-of-rails)))
         (:name thingatpt+
                :type emacswiki
                :load "thingatpt+.el"
@@ -220,9 +214,17 @@
                :type elpa
                :feature rainbow-delimiters
                :post-init (lambda () (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)))
+        (:name  projectile
+                :type git
+                :url "git://github.com/bbatsov/projectile.git"
+                :post-init (lambda ()
+                             (require 'projectile)
+                             (add-hook 'ruby-mode-hook #'(lambda () (projectile-mode)))
+                             (add-hook 'rhtml-mode-hook #'(lambda () (projectile-mode)))
+                             (setq projectile-ignored-directories (append projectile-ignored-directories '("tmp" "public" "coverage" "log" "vendor" "db/migrate")))))
         ))
 
-(setq my-packages (append '(anything magit)
+(setq my-packages (append '(magit)
                           (mapcar 'el-get-source-name el-get-sources)))
 (el-get 'sync my-packages)
 (global-set-key (kbd "M-e") 'rgrep)
@@ -241,6 +243,7 @@
  '(evil-default-cursor (quote (t "white")))
  '(evil-flash-delay 5)
  '(evil-motion-state-modes (quote (apropos-mode Buffer-menu-mode calendar-mode command-history-mode compilation-mode dictionary-mode help-mode Info-mode speedbar-mode undo-tree-visualizer-mode view-mode magit-mode)))
+ '(projectile-enable-caching t)
  '(rails-rake-use-bundler-when-possible t)
  '(recentf-max-saved-items 40)
  '(rspec-spec-command "rspec")
