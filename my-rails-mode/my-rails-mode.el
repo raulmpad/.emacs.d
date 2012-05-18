@@ -8,7 +8,7 @@
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-c s") 'my-rails-mode:ack-project)
     (define-key map (kbd "C-<return>") 'my-rails-mode:jump)
-    (define-key map (kbd "C-c r") 'my-rails-mode:run-or-restart-server)
+    (define-key map (kbd "C-c r") 'my-rails-mode:run-server)
     map)
   "Keymap for `my-rails-mode`.")
 
@@ -134,18 +134,23 @@ else return nil"
            (ido-completing-read "Open log: " (directory-files (concat (my-rails-mode:root) "log/") nil "[^.|^..]"))))
   (auto-revert-tail-mode 1))
 
-(defun my-rails-mode:run-or-restart-server ()
-  (interactive)
-  
-  (if (string= (buffer-name) (my-rails-mode:run-server-buffer-name))
-      (recompile)
-    (if (get-buffer (my-rails-mode:run-server-buffer-name))
-        (switch-to-buffer-other-window (my-rails-mode:run-server-buffer-name))
-      (compilation-start "bundle exec rails server" t 'my-rails-mode:run-server-buffer-name)
-      (save-window-excursion
-        (switch-to-buffer (my-rails-mode:run-server-buffer-name))
-        (my-rails-mode t))
-      )))
+(defun my-rails-mode:run-server (&optional arg)
+  "Run server with 'bundle exec rails server' command and outputs to
+buffer named whatever `my-rails-mode:run-server-buffer-name' returns.
+If the server is already running switch to the compilation buffer.
+If the current buffer is the compilation buffer restart the server.
+If invoked with prefix arg shutdown the server."
+  (interactive "P")
+  (if (consp arg) (kill-buffer (my-rails-mode:run-server-buffer-name))
+    (if (string= (buffer-name) (my-rails-mode:run-server-buffer-name))
+        (recompile)
+      (if (get-buffer (my-rails-mode:run-server-buffer-name))
+          (switch-to-buffer-other-window (my-rails-mode:run-server-buffer-name))
+        (compilation-start "bundle exec rails server" t 'my-rails-mode:run-server-buffer-name)
+        (save-window-excursion
+          (switch-to-buffer (my-rails-mode:run-server-buffer-name))
+          (my-rails-mode t))
+        ))))
 
 (defun my-rails-mode:run-server-buffer-name (&optional arg)
   (string ?* ?M ?y ?R ?o ?R ? ?S ?e ?r ?v ?e ?r ?*))
