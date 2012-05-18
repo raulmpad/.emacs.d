@@ -265,7 +265,7 @@
  '(erm-syn-errline ((t (:underline "Red"))))
  '(erm-syn-warnline ((t (:underline "Orange"))))
  '(helm-selection ((t (:background "controlLightHighlightColor" :underline t))))
- '(magit-item-highlight ((t nil)) t))
+ '(magit-item-highlight ((t nil))))
 
 (menu-bar-mode 1)
 
@@ -313,4 +313,5 @@
 (add-to-list 'load-path "~/.emacs.d/my-rails-mode/")
 (require 'my-rails-mode)
 
+(add-hook 'magit-checkout-command-hook '(lambda () (projectile-invalidate-cache)))
 
