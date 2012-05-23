@@ -224,7 +224,7 @@
                              (setq projectile-ignored-directories (append projectile-ignored-directories '("tmp" "public" "coverage" "log" "vendor" "db/migrate")))))
         ))
 
-(setq my-packages (append '(magit)
+(setq my-packages (append '(magit yasnippet inf-ruby)
                           (mapcar 'el-get-source-name el-get-sources)))
 (el-get 'sync my-packages)
 (global-set-key (kbd "M-e") 'rgrep)
@@ -314,4 +314,7 @@
 (require 'my-rails-mode)
 
 (add-hook 'magit-checkout-command-hook '(lambda () (projectile-invalidate-cache)))
+
+(require 'yasnippet)
+(yas/initialize)
 
