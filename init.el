@@ -105,9 +105,9 @@
                :features ruby-mode
                :post-init (lambda ()
                             (ruby-mode-hooks)))
-        (:name ruby-electric
-               :type git
-               :url "git://github.com/qoobaa/ruby-electric.git")
+        ;; (:name ruby-electric
+        ;;        :type git
+        ;;        :url "git://github.com/qoobaa/ruby-electric.git")
         (:name rvm
                :type elpa
                :load "rvm.el"
@@ -317,4 +317,6 @@
 
 (require 'yasnippet)
 (yas/initialize)
+(setq yas/root-directory "~/.emacs.d/snippets")
+(yas/load-directory yas/root-directory)
 
