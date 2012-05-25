@@ -313,10 +313,12 @@
 (add-to-list 'load-path "~/.emacs.d/my-rails-mode/")
 (require 'my-rails-mode)
 
-(add-hook 'magit-checkout-command-hook '(lambda () (projectile-invalidate-cache)))
+;(add-hook 'magit-checkout-command-hook '(lambda () (projectile-invalidate-cache)))
 
 (require 'yasnippet)
 (yas/initialize)
 (setq yas/root-directory "~/.emacs.d/snippets")
 (yas/load-directory yas/root-directory)
+
+(defun inf-ruby-keys () nil)
 
