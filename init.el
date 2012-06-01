@@ -137,8 +137,8 @@
         (:name flymake-haml
                :type elpa
                :post-init (lambda () (add-hook 'haml-mode-hook 'flymake-haml-load)))
-        (:name flymake-ruby :type elpa
-               :post-init (lambda () (add-hook 'ruby-mode-hook 'flymake-ruby-load)))
+        ;; (:name flymake-ruby :type elpa
+        ;;        :post-init (lambda () (add-hook 'ruby-mode-hook 'flymake-ruby-load)))
         (:name color-theme-sanityinc-solarized
                :type elpa)
         (:name helm
@@ -214,14 +214,18 @@
                :type elpa
                :feature rainbow-delimiters
                :post-init (lambda () (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)))
-        (:name  projectile
-                :type git
-                :url "git://github.com/bbatsov/projectile.git"
-                :post-init (lambda ()
-                             (require 'projectile)
-                             (add-hook 'ruby-mode-hook #'(lambda () (projectile-mode)))
-                             (add-hook 'rhtml-mode-hook #'(lambda () (projectile-mode)))
-                             (setq projectile-ignored-directories (append projectile-ignored-directories '("tmp" "public" "coverage" "log" "vendor" "db/migrate")))))
+        ;; (:name multi-web-mode
+        ;;        :type elpa
+        ;;        :url "git://github.com/fgallina/multi-web-mode.git"
+        ;;        :feature multi-web-mode)
+        (:name projectile
+               :type git
+               :url "git://github.com/bbatsov/projectile.git"
+               :post-init (lambda ()
+                            (require 'projectile)
+                            (add-hook 'ruby-mode-hook #'(lambda () (projectile-mode)))
+                            (add-hook 'rhtml-mode-hook #'(lambda () (projectile-mode)))
+                            (setq projectile-ignored-directories (append projectile-ignored-directories '("tmp" "public" "coverage" "log" "vendor" "db/migrate")))))
         ))
 
 (setq my-packages (append '(magit yasnippet inf-ruby)
@@ -322,3 +326,18 @@
 
 (defun inf-ruby-keys () nil)
 
+;; (defun multi-web-mode-html-erb ()
+;;     (setq mweb-default-major-mode 'rhtml-mode)
+;;     (setq mweb-tags '((ruby-mode "<%=" "%>")))
+;;     (setq mweb-filename-extensions '("html.erb"))
+;;     (multi-web-mode)
+;;     )
+
+;; (defun multi-web-mode-text-erb ()
+;;     (setq mweb-default-major-mode 'text-mode)
+;;     (setq mweb-tags '((ruby-mode "<%==\\|<%=\\|<%#\\|<%" "%>")))
+;;     (setq mweb-filename-extensions '("text.erb"))
+;;     (multi-web-mode))
+
+;; (add-to-list 'auto-mode-alist '("\.html\.erb$" . multi-web-mode-html-erb))
+;; (add-to-list 'auto-mode-alist '("\.text\.erb$" . multi-web-mode-text-erb))
