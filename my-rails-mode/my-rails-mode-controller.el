@@ -9,7 +9,7 @@
 
 
 (add-hook 'ruby-mode-hook '(lambda ()
-                             (when (my-rails-mode:under-p "app/controllers")
+                             (when (my-rails-mode:under-p "app/controllers/")
                                (my-rails-mode:highlight-keywords my-rails-mode:controller-keywords))))
 
 

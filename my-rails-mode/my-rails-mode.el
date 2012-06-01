@@ -156,9 +156,9 @@ If invoked with prefix arg shutdown the server."
   (string ?* ?M ?y ?R ?o ?R ? ?S ?e ?r ?v ?e ?r ?*))
 
 
-(defun my-rails-mode:under-p (filename)
-  "Returns t if `default-directory' is under root + path "
-  (if (string-match (concat "^" filename) (expand-file-name default-directory))
+(defun my-rails-mode:under-p (dirname)
+  "Returns t if `default-directory' is under pass dir name "
+  (if (string-match (concat dirname "$") (expand-file-name default-directory))
       t
     nil
     )

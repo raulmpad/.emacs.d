@@ -7,7 +7,7 @@
 
 
 (add-hook 'ruby-mode-hook '(lambda ()
-                             (when (my-rails-mode:under-p "db/migrate")
+                             (when (my-rails-mode:under-p "db/migrate/")
                                (my-rails-mode:highlight-keywords my-rails-mode:migration-keywords))))
 
 

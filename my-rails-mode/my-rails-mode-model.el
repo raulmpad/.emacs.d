@@ -13,7 +13,7 @@
 :type '(repeat string))
 
 (add-hook 'ruby-mode-hook '(lambda ()
-                             (when (my-rails-mode:under-p "app/models")
+                             (when (my-rails-mode:under-p "app/models/")
                                (my-rails-mode:highlight-keywords my-rails-mode:model-keywords))))
 
 (provide 'my-rails-mode-model)
