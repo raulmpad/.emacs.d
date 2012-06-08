@@ -341,3 +341,5 @@
 
 ;; (add-to-list 'auto-mode-alist '("\.html\.erb$" . multi-web-mode-html-erb))
 ;; (add-to-list 'auto-mode-alist '("\.text\.erb$" . multi-web-mode-text-erb))
+
+(electric-pair-mode)

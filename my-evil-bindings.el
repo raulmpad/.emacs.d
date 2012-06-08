@@ -49,6 +49,7 @@
   (kbd ", s") 'rspec-verify-single
   (kbd ", v") 'rspec-verify
   (kbd ", t") 'rspec-toggle-spec-and-target
+  (kbd ", k") 'helm-show-kill-ring
   (kbd ", f") 'ido-find-file
   (kbd ", d") 'ido-dired
   (kbd ", c") 'magit-status)
