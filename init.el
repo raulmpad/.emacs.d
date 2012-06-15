@@ -269,7 +269,8 @@
  '(erm-syn-errline ((t (:underline "Red"))))
  '(erm-syn-warnline ((t (:underline "Orange"))))
  '(helm-selection ((t (:background "controlLightHighlightColor" :underline t))))
- '(magit-item-highlight ((t nil))))
+ '(magit-item-highlight ((t nil)))
+ '(yas/field-highlight-face ((t (:inherit (quote highlight))))))
 
 (menu-bar-mode 1)
 
