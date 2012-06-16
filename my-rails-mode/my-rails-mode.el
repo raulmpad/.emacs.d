@@ -9,6 +9,7 @@
     (define-key map (kbd "C-c s") 'my-rails-mode:ack-project)
     (define-key map (kbd "C-<return>") 'my-rails-mode:jump)
     (define-key map (kbd "C-c r") 'my-rails-mode:run-server)
+    (define-key map (kbd "C-c b") 'my-rails-mode:bundle-open)
     map)
   "Keymap for `my-rails-mode`.")
 
@@ -120,6 +121,7 @@ else return nil"
     ))
 
 (defun my-rails-mode:insert-string (regexp word string)
+  "Inserts string after the catched regexp in the word"
   (let ((pos (+ (string-match "/.*$" word) 1)))
     (concat (substring word 0 pos) string (substring word pos))
     )
@@ -163,6 +165,16 @@ If invoked with prefix arg shutdown the server."
     nil
     )
   )
+
+(defun my-rails-mode:bundle-open (gem)
+  (interactive "sGem name: ")
+  (find-file (trim-string (shell-command-to-string (concat "bundle show " gem)))))
+
+(defun my-rails-mode:trim-string (string)
+  "Remove white spaces in beginning and ending of STRING.
+White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
+(replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" string))
+)
 
 (defun set-my-rails-mode ()
   (when (my-rails-mode:root)
