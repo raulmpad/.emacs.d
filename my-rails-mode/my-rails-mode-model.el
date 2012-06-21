@@ -1,5 +1,5 @@
 
-(defcustom my-rails-mode:model-keywords 
+(defcustom mrm/model-keywords 
  '("default_scope" "named_scope" "scope" "serialize"
  "belongs_to" "has_one" "has_many" "has_and_belongs_to_many" "composed_of" "accepts_nested_attributes_for"
 "before_create" "before_destroy" "before_save" "before_update" "before_validation" "before_validation_on_create" "before_validation_on_update"
@@ -13,7 +13,7 @@
 :type '(repeat string))
 
 (add-hook 'ruby-mode-hook '(lambda ()
-                             (when (my-rails-mode:under-p "app/models/")
-                               (my-rails-mode:highlight-keywords my-rails-mode:model-keywords))))
+                             (when (mrm/under-p "app/models/")
+                               (mrm/highlight-keywords mrm/model-keywords))))
 
 (provide 'my-rails-mode-model)

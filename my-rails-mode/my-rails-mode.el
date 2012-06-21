@@ -6,18 +6,18 @@
 
 (defvar my-rails-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "C-c s") 'my-rails-mode:ack-project)
-    (define-key map (kbd "C-<return>") 'my-rails-mode:jump)
-    (define-key map (kbd "C-c r") 'my-rails-mode:run-server)
-    (define-key map (kbd "C-c b") 'my-rails-mode:bundle-open)
+    (define-key map (kbd "C-c s") 'mrm/ack-project)
+    (define-key map (kbd "C-<return>") 'mrm/jump)
+    (define-key map (kbd "C-c r") 'mrm/run-server)
+    (define-key map (kbd "C-c b") 'mrm/bundle-open)
     map)
   "Keymap for `my-rails-mode`.")
 
-(defun my-rails-mode:highlight-keywords (keywords)
+(defun mrm/highlight-keywords (keywords)
   (setq ruby-extra-keywords (append ruby-extra-keywords keywords ))
   (ruby-local-enable-extra-keywords))
 
-(defun my-rails-mode:root ()
+(defun mrm/root ()
   "Return RAILS_ROOT if this file is a part of a Rails application,
 else return nil"
   (let ((curdir default-directory)
@@ -33,15 +33,15 @@ else return nil"
             (setq max (- max 1))))))
     (if found (expand-file-name curdir))))
 
-(defun my-rails-mode:ack-project (pattern &optional regexp directory)
+(defun mrm/ack-project (pattern &optional regexp directory)
   (interactive (ack-and-a-half-interactive))
-  (ack-and-a-half-run (my-rails-mode:root) regexp (concat "--type=ruby --type=html --type=js --type=css --type-add html=.haml --type-add css=.sass,.scss --ignore-dir=tmp --ignore-dir=coverage " pattern)))
+  (ack-and-a-half-run (mrm/root) regexp (concat "--type=ruby --type=html --type=js --type=css --type-add html=.haml --type-add css=.sass,.scss --ignore-dir=tmp --ignore-dir=coverage " pattern)))
 
-(defun my-rails-mode:find-class (word)
+(defun mrm/find-class (word)
   (let ((curdir default-directory)
-        (model (concat (my-rails-mode:root) "app/models/" word ".rb"))
-        (mailer (concat (my-rails-mode:root) "app/mailers/" word ".rb"))
-        (lib (concat (my-rails-mode:root)  "lib/" word ".rb")))
+        (model (concat (mrm/root) "app/models/" word ".rb"))
+        (mailer (concat (mrm/root) "app/mailers/" word ".rb"))
+        (lib (concat (mrm/root)  "lib/" word ".rb")))
 
     (cond ((file-exists-p model)
            (find-file model)) 
@@ -51,31 +51,31 @@ else return nil"
            (find-file lib)))
     ))
 
-(defun my-rails-mode:jump ()
+(defun mrm/jump ()
   (interactive)
   (let ((word (thing-at-point 'symbol))
         (case-fold-search nil))
     
     (if (string-match-p "^[A-Z].*" word) 
-        (my-rails-mode:find-class (downcase (replace-regexp-in-string "::" "/" word)))
+        (mrm/find-class (downcase (replace-regexp-in-string "::" "/" word)))
       (if (string-match-p "['\"\\|/]" word) ; we've grabbed string from view
-          (my-rails-mode:find-partial-or-template word)
-        (my-rails-mode:find-class (downcase
+          (mrm/find-partial-or-template word)
+        (mrm/find-class (downcase
                                    (replace-regexp-in-string "s$" ""
                                                              (replace-regexp-in-string ":" ""
                                                                                        (replace-regexp-in-string "::" "/" word))))))) ; we've grabbed something like :hedges (strip ':' and 's') TODO: pluralization is dumb here
     )
   )
 
-(defun my-rails-mode:substring-of-regexp (regexp word)
+(defun mrm/substring-of-regexp (regexp word)
   "Returns substring of word starting from beginning of matched regexp plus the passed length"
   (substring word (+ (string-match regexp word) 1) (match-end 1)))
 
 ;TODO DRY it up
-(defun my-rails-mode:find-partial-or-template (word)
+(defun mrm/find-partial-or-template (word)
   (let ((word (replace-regexp-in-string "['\"]" "" word)) ; get rid of ' and "
-        (path (concat (my-rails-mode:root) "app/views/"))
-        (cur-format (my-rails-mode:substring-of-regexp ".\\(js\\|html\\|text\\|csv\\|pdf\\)." buffer-file-name))) ; extract current format
+        (path (concat (mrm/root) "app/views/"))
+        (cur-format (mrm/substring-of-regexp ".\\(js\\|html\\|text\\|csv\\|pdf\\)." buffer-file-name))) ; extract current format
     (if (string-match-p "/" word)
         (cond 
          ((file-exists-p (concat path word)) ; user.html.erb
@@ -87,14 +87,14 @@ else return nil"
          ((file-exists-p (concat path word "." cur-format ".haml")) ; user
           (find-file (concat path word "." cur-format ".haml")))
 
-         ((file-exists-p (concat path (my-rails-mode:insert-string "/.*$" word "_"))) ; _user.html.erb
-          (find-file (concat path (my-rails-mode:insert-string "/.*$" word "_"))))
+         ((file-exists-p (concat path (mrm/insert-string "/.*$" word "_"))) ; _user.html.erb
+          (find-file (concat path (mrm/insert-string "/.*$" word "_"))))
 
-         ((file-exists-p (concat path (my-rails-mode:insert-string "/.*$" word "_") "." cur-format ".erb")) ; _user
-          (find-file (concat path (my-rails-mode:insert-string "/.*$" word "_") "." cur-format ".erb")))
+         ((file-exists-p (concat path (mrm/insert-string "/.*$" word "_") "." cur-format ".erb")) ; _user
+          (find-file (concat path (mrm/insert-string "/.*$" word "_") "." cur-format ".erb")))
 
-         ((file-exists-p (concat path (my-rails-mode:insert-string "/.*$" word "_") "." cur-format ".haml")) ; _user
-          (find-file (concat path (my-rails-mode:insert-string "/.*$" word "_") "." cur-format ".haml")))
+         ((file-exists-p (concat path (mrm/insert-string "/.*$" word "_") "." cur-format ".haml")) ; _user
+          (find-file (concat path (mrm/insert-string "/.*$" word "_") "." cur-format ".haml")))
          ))
     (cond  ; anything inside of current directory
      ((file-exists-p (concat default-directory word)) ; user.html.erb
@@ -120,7 +120,7 @@ else return nil"
 
     ))
 
-(defun my-rails-mode:insert-string (regexp word string)
+(defun mrm/insert-string (regexp word string)
   "Inserts string after the catched regexp in the word"
   (let ((pos (+ (string-match "/.*$" word) 1)))
     (concat (substring word 0 pos) string (substring word pos))
@@ -128,37 +128,37 @@ else return nil"
 
   )
 
-(defun my-rails-mode:open-log ()
+(defun mrm/open-log ()
   (interactive)
   (find-file
-   (concat (my-rails-mode:root)
+   (concat (mrm/root)
            "log/"
-           (ido-completing-read "Open log: " (directory-files (concat (my-rails-mode:root) "log/") nil "[^.|^..]"))))
+           (ido-completing-read "Open log: " (directory-files (concat (mrm/root) "log/") nil "[^.|^..]"))))
   (auto-revert-tail-mode 1))
 
-(defun my-rails-mode:run-server (&optional arg)
+(defun mrm/run-server (&optional arg)
   "Run server with 'bundle exec rails server' command and outputs to
-buffer named whatever `my-rails-mode:run-server-buffer-name' returns.
+buffer named whatever `mrm/run-server-buffer-name' returns.
 If the server is already running switch to the compilation buffer.
 If the current buffer is the compilation buffer restart the server.
 If invoked with prefix arg shutdown the server."
   (interactive "P")
-  (if (consp arg) (kill-buffer (my-rails-mode:run-server-buffer-name))
-    (if (string= (buffer-name) (my-rails-mode:run-server-buffer-name))
+  (if (consp arg) (kill-buffer (mrm/run-server-buffer-name))
+    (if (string= (buffer-name) (mrm/run-server-buffer-name))
         (recompile)
-      (if (get-buffer (my-rails-mode:run-server-buffer-name))
-          (switch-to-buffer-other-window (my-rails-mode:run-server-buffer-name))
-        (compilation-start "bundle exec rails server" t 'my-rails-mode:run-server-buffer-name)
+      (if (get-buffer (mrm/run-server-buffer-name))
+          (switch-to-buffer-other-window (mrm/run-server-buffer-name))
+        (compilation-start "bundle exec rails server" t 'mrm/run-server-buffer-name)
         (save-window-excursion
-          (switch-to-buffer (my-rails-mode:run-server-buffer-name))
+          (switch-to-buffer (mrm/run-server-buffer-name))
           (my-rails-mode t))
         ))))
 
-(defun my-rails-mode:run-server-buffer-name (&optional arg)
+(defun mrm/run-server-buffer-name (&optional arg)
   (string ?* ?M ?y ?R ?o ?R ? ?S ?e ?r ?v ?e ?r ?*))
 
 
-(defun my-rails-mode:under-p (dirname)
+(defun mrm/under-p (dirname)
   "Returns t if `default-directory' is under pass dir name "
   (if (string-match (concat dirname "\\(\.*\\)?$") (expand-file-name default-directory))
       t
@@ -166,18 +166,21 @@ If invoked with prefix arg shutdown the server."
     )
   )
 
-(defun my-rails-mode:bundle-open (gem)
+(defun mrm/bundle-open (gem)
   (interactive "sGem name: ")
-  (find-file (trim-string (shell-command-to-string (concat "bundle show " gem)))))
+  (let ((dir (mrm/trim-string (shell-command-to-string (concat "bundle show " gem))) ))
+    (if (file-exists-p dir)
+        (find-file dir))
+  ))
 
-(defun my-rails-mode:trim-string (string)
+(defun mrm/trim-string (string)
   "Remove white spaces in beginning and ending of STRING.
 White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
 (replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" string))
 )
 
 (defun set-my-rails-mode ()
-  (when (my-rails-mode:root)
+  (when (mrm/root)
     (my-rails-mode t)))
 
 (add-hook 'find-file-hook 'set-my-rails-mode)

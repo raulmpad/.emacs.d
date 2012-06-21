@@ -1,5 +1,5 @@
 
-(defcustom my-rails-mode:view-keywords 
+(defcustom mrm/view-keywords 
   '("action_name" "atom_feed" "audio_path" "audio_tag" "auto_discovery_link_tag"
     "button_tag" "button_to" "button_to_function"
     "cache" "capture" "cdata_section" "check_box" "check_box_tag" "collection_select" "concat" "content_for" "content_tag" "content_tag_for" "controller" "controller_name" "controller_path" "convert_to_model" "cookies" "csrf_meta_tag" "csrf_meta_tags" "current_cycle" "cycle"
@@ -28,10 +28,10 @@
 
 
 (add-hook 'rhtml-mode-hook '(lambda ()
-                             (when (my-rails-mode:under-p "app/views/")
+                             (when (mrm/under-p "app/views/")
                                (font-lock-add-keywords nil
-                                                       ;; '((regexp-opt my-rails-mode:view-keywords 'words) . font-lock-keyword-face)
-                                                       ;; '(((regexp my-rails-mode:view-keywords 'words) . font-lock-keyword-face))
+                                                       ;; '((regexp-opt mrm/view-keywords 'words) . font-lock-keyword-face)
+                                                       ;; '(((regexp mrm/view-keywords 'words) . font-lock-keyword-face))
                                                        '(
 ("link_")
                                                          )
