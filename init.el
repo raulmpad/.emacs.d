@@ -268,8 +268,8 @@
  ;; If there is more than one, they won't work right.
  '(erm-syn-errline ((t (:underline "Red"))))
  '(erm-syn-warnline ((t (:underline "Orange"))))
- '(helm-selection ((t (:background "controlLightHighlightColor" :underline t))))
- '(magit-item-highlight ((t nil)))
+ '(helm-selection ((t (:underline t))))
+ '(magit-item-highlight ((t nil)) t)
  '(yas/field-highlight-face ((t (:inherit (quote highlight))))))
 
 (menu-bar-mode 1)
@@ -343,4 +343,7 @@
 ;; (add-to-list 'auto-mode-alist '("\.html\.erb$" . multi-web-mode-html-erb))
 ;; (add-to-list 'auto-mode-alist '("\.text\.erb$" . multi-web-mode-text-erb))
 
+(global-unset-key (kbd "s-t"))
+(global-unset-key (kbd "s-y"))
+(global-unset-key (kbd "s-u"))
 (electric-pair-mode)
