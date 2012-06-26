@@ -10,6 +10,9 @@
     (define-key map (kbd "C-<return>") 'mrm/jump)
     (define-key map (kbd "C-c r") 'mrm/run-server)
     (define-key map (kbd "C-c b") 'mrm/bundle-open)
+    (define-key map (kbd "s-t") 'mrm/helm-projectile-controllers)
+    (define-key map (kbd "s-y") 'mrm/helm-projectile-models)
+    (define-key map (kbd "s-u") 'mrm/helm-projectile-specs)
     map)
   "Keymap for `my-rails-mode`.")
 
@@ -178,6 +181,33 @@ If invoked with prefix arg shutdown the server."
 White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
 (replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" string))
 )
+
+(defun mrm/helm-c-projectile-specs-files-list ()
+  "Generates a list of spec files in the current project"
+  (projectile-get-project-files
+   (concat (mrm/root) "spec/" )))
+
+(defvar mrm/helm-c-source-projectile-specs-files-list
+  `((name . "Specs files list")
+    ;; Needed for filenames with capitals letters.
+    (disable-shortcuts)
+    (candidates . mrm/helm-c-projectile-specs-files-list)
+    (candidate-number-limit . 15)
+    (volatile)
+    (keymap . ,helm-generic-files-map)
+    (help-message . helm-generic-file-help-message)
+    (mode-line . helm-generic-file-mode-line-string)
+    (match helm-c-match-on-basename)
+    (type . file))
+  "Helm source definition")
+
+;;;###autoload
+(defun mrm/helm-projectile-specs ()
+  "Search using helm for controllers"
+  (interactive)
+  (helm-other-buffer '(mrm/helm-c-source-projectile-specs-files-list
+                       mrm/helm-c-source-projectile-buffers-list)
+                     (format "*My Rails Mode %s*" "specs" )))
 
 (defun set-my-rails-mode ()
   (when (mrm/root)

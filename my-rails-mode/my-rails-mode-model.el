@@ -16,4 +16,31 @@
                              (when (mrm/under-p "app/models/")
                                (mrm/highlight-keywords mrm/model-keywords))))
 
+(defun mrm/helm-c-projectile-models-files-list ()
+  "Generates a list of files in the current project"
+  (projectile-get-project-files
+   (concat (mrm/root) "app/models/" )))
+
+(defvar mrm/helm-c-source-projectile-models-files-list
+  `((name . "Projectile files list")
+    ;; Needed for filenames with capitals letters.
+    (disable-shortcuts)
+    (candidates . mrm/helm-c-projectile-models-files-list)
+    (candidate-number-limit . 15)
+    (volatile)
+    (keymap . ,helm-generic-files-map)
+    (help-message . helm-generic-file-help-message)
+    (mode-line . helm-generic-file-mode-line-string)
+    (match helm-c-match-on-basename)
+    (type . file))
+  "Helm source definition")
+
+;;;###autoload
+(defun mrm/helm-projectile-models ()
+  "Search using helm for models"
+  (interactive)
+  (helm-other-buffer '(mrm/helm-c-source-projectile-models-files-list
+                       mrm/helm-c-source-projectile-buffers-list)
+                     (format "*My Rails Mode %s*" "models" )))
+
 (provide 'my-rails-mode-model)

@@ -52,9 +52,11 @@
   (kbd ", k") 'helm-show-kill-ring
   (kbd ", f") 'ido-find-file
   (kbd ", d") 'ido-dired
+  (kbd ", o") 'magit-checkout
   (kbd ", c") 'magit-status)
 (evil-define-key 'emacs global-map
   (kbd ", f") 'ido-find-file
+  (kbd ", o") 'magit-checkout
   (kbd ", d") 'ido-dired)
 (evil-define-key 'motion global-map
   (kbd ", f") 'ido-find-file
