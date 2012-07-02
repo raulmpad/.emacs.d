@@ -76,5 +76,8 @@
                                     (evil-define-key 'motion compilation-mode-map "r" 'recompile))
                                     (evil-define-key 'motion compilation-mode-map "h" 'evil-backward-char))
 
+(evil-define-key 'insert ruby-mode-map
+  (kbd "<enter>") 'ruby-reindent-then-newline-and-indent)
+
 (provide 'my-evil-bindings)
 

@@ -209,18 +209,19 @@ White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
                        mrm/helm-c-source-projectile-buffers-list)
                      (format "*My Rails Mode %s*" "specs" )))
 
-(defun set-my-rails-mode ()
-  (when (mrm/root)
-    (my-rails-mode t)))
-
-(add-hook 'find-file-hook 'set-my-rails-mode)
-
 (define-minor-mode my-rails-mode
   "My custom RubyOnRails minor mode"
-  nil
-  " myRoR"
-  my-rails-mode-map
+  :init-value nil
+  :lighter " myRoR"
+  :keymap my-rails-mode-map
   )
+
+(define-globalized-minor-mode global-my-rails-mode my-rails-mode
+  (lambda ()
+    (when (mrm/root)
+      (my-rails-mode t))))
+
+(global-my-rails-mode t)
 
 (provide 'my-rails-mode)
 
