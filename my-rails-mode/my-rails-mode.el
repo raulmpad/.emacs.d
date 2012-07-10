@@ -9,7 +9,6 @@
     (define-key map (kbd "C-c s") 'mrm/ack-project)
     (define-key map (kbd "C-<return>") 'mrm/jump)
     (define-key map (kbd "C-c r") 'mrm/run-server)
-    (define-key map (kbd "C-c b") 'mrm/bundle-open)
     (define-key map (kbd "s-t") 'mrm/helm-projectile-controllers)
     (define-key map (kbd "s-y") 'mrm/helm-projectile-models)
     (define-key map (kbd "s-u") 'mrm/helm-projectile-specs)
@@ -168,13 +167,6 @@ If invoked with prefix arg shutdown the server."
     nil
     )
   )
-
-(defun mrm/bundle-open (gem)
-  (interactive "sGem name: ")
-  (let ((dir (mrm/trim-string (shell-command-to-string (concat "bundle show " gem))) ))
-    (if (file-exists-p dir)
-        (find-file dir))
-  ))
 
 (defun mrm/trim-string (string)
   "Remove white spaces in beginning and ending of STRING.

@@ -172,12 +172,13 @@
                             (global-surround-mode 1)))
         (:name rspec-mode
                :type git
-               :url "git://github.com/pezra/rspec-mode.git"
+               :branch "handle-rvm-gemsets-paths-with-at-char"
+               :url "git://github.com/asok/rspec-mode.git"
                :load "rspec-mode.el"
                :feature rspec-mode
                :post-init (lambda ()
                             (add-hook 'rspec-mode-hook 'erm-rspec-extra-keywords)
-                            (define-key rspec-mode-verifible-keymap (kbd "s") 'rspec-verify-single)))
+                             (define-key rspec-mode-verifible-keymap (kbd "s") 'rspec-verify-single)))
         (:name rhtml-mode
                :load "rhtml-mode.el"
                :feature rhtml-mode
@@ -190,6 +191,11 @@
                :url "git://github.com/yoshiki/yaml-mode.git"
                :post-init (lambda ()
                             (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))))
+        (:name bundler
+               :type git
+               :branch "bundle-list-gems-without-nils"
+               :url "git://github.com/asok/bundler.el.git"
+               :feature bundler)
         (:name thingatpt+
                :type emacswiki
                :load "thingatpt+.el"
