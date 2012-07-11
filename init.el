@@ -224,6 +224,10 @@
         ;;        :type elpa
         ;;        :url "git://github.com/fgallina/multi-web-mode.git"
         ;;        :feature multi-web-mode)
+        (:name ace-jump
+               :type git
+               :url "git://github.com/winterTTr/ace-jump-mode.git"
+               :feature ace-jump-mode)
         (:name projectile
                :type git
                :url "git://github.com/bbatsov/projectile.git"

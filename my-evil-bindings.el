@@ -79,5 +79,7 @@
 (evil-define-key 'insert ruby-mode-map
   (kbd "<enter>") 'ruby-reindent-then-newline-and-indent)
 
+(evil-define-key 'normal global-map (kbd "SPC") 'ace-jump-mode)
+
 (provide 'my-evil-bindings)
 
