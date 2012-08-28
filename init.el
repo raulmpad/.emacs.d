@@ -52,21 +52,11 @@
 (setq font-lock-maximum-decoration t)
 
 
-(defun delete-trailing-whitespace-in-ruby-mode ()
-  (add-hook 'ruby-mode-hook
-            (lambda()
-              (add-hook 'local-write-file-hooks
-                        '(lambda()
-                           (save-excursion
-                             (delete-trailing-whitespace)))))))
-
-(defun ruby-mode-hooks ()
-  (setq enh-ruby-program "~/.rvm/rubies/ruby-1.9.3-p125/bin/ruby")
-  ;; (autoload 'ruby-mode "ruby-mode" "Major mode for ruby files" t)
-  (add-to-list 'auto-mode-alist '("\\.rb$" . ruby-mode))
-  (add-to-list 'interpreter-mode-alist '("ruby" . ruby-mode))
-  (delete-trailing-whitespace-in-ruby-mode)
-  )
+(defun delete-trailing-whitespace-on-file-write ()
+    (add-hook 'local-write-file-hooks
+              '(lambda()
+                 (save-excursion
+                   (delete-trailing-whitespace)))))
 
 (defun erm-rspec-extra-keywords ()
   (setq ruby-extra-keywords (append '("describe" "pending" "context" "specify" "shared_examples_for" "it_should_behave_like" "before" "it" "after" "background" "feature" "scenario") ruby-extra-keywords))
@@ -96,6 +86,7 @@
 
 (setq el-get-sources
       '(
+        ;ruby-mode is needed for haml-mode to work
         (:name ruby-mode
                :load "ruby-mode.el")
         (:name enhanced-ruby-mode
@@ -104,7 +95,11 @@
                :load "ruby-mode.el"
                :features ruby-mode
                :post-init (lambda ()
-                            (ruby-mode-hooks)))
+                            (setq enh-ruby-program "~/.rvm/rubies/ruby-1.9.3-p125/bin/ruby")
+                            ;; (autoload 'ruby-mode "ruby-mode" "Major mode for ruby files" t)
+                            (add-to-list 'auto-mode-alist '("\\.rb$" . ruby-mode))
+                            (add-to-list 'interpreter-mode-alist '("ruby" . ruby-mode))
+                            ))
         ;; (:name ruby-electric
         ;;        :type git
         ;;        :url "git://github.com/qoobaa/ruby-electric.git")
@@ -126,14 +121,14 @@
         (:name starter-kit-lisp
                :type elpa)
         (:name haml-mode
-               ;; :type git
-               ;; :url "git://github.com/dgutov/haml-mode.git"
-               ;; :load "haml-mode.el"
-               ;; :feature haml-mode
+               :type git
+               :url "git://github.com/dgutov/haml-mode.git"
+               :load "haml-mode.el"
+               :feature haml-mode
                :post-init (lambda ()
                             (require 'ruby-mode)
-                            (add-hook 'haml-mode-hook '(lambda ()
-                                                         flyspell-mode-off))))
+                            (add-hook 'haml-mode-hook 'flyspell-mode-off)
+                            (add-hook 'haml-mode-hook 'delete-trailing-whitespace-on-file-write)))
         (:name flymake-haml
                :type elpa
                :post-init (lambda () (add-hook 'haml-mode-hook 'flymake-haml-load)))
@@ -178,7 +173,7 @@
                :feature rspec-mode
                :post-init (lambda ()
                             (add-hook 'rspec-mode-hook 'erm-rspec-extra-keywords)
-                             (define-key rspec-mode-verifible-keymap (kbd "s") 'rspec-verify-single)))
+                            (define-key rspec-mode-verifible-keymap (kbd "s") 'rspec-verify-single)))
         (:name rhtml-mode
                :load "rhtml-mode.el"
                :feature rhtml-mode
@@ -328,7 +323,7 @@
 (add-to-list 'load-path "~/.emacs.d/my-rails-mode/")
 (require 'my-rails-mode)
 
-;(add-hook 'magit-checkout-command-hook '(lambda () (projectile-invalidate-cache)))
+                                        ;(add-hook 'magit-checkout-command-hook '(lambda () (projectile-invalidate-cache)))
 
 (require 'yasnippet)
 (yas/initialize)
@@ -357,3 +352,7 @@
 (global-unset-key (kbd "s-y"))
 (global-unset-key (kbd "s-u"))
 (electric-pair-mode)
+
+(add-hook 'ruby-mode-hook 'delete-trailing-whitespace-on-file-write)
+
+(set-variable 'shell-file-name "/bin/bash")

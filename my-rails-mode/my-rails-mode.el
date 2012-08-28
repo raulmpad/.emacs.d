@@ -150,7 +150,7 @@ If invoked with prefix arg shutdown the server."
         (recompile)
       (if (get-buffer (mrm/run-server-buffer-name))
           (switch-to-buffer-other-window (mrm/run-server-buffer-name))
-        (compilation-start "bundle exec rails server" t 'mrm/run-server-buffer-name)
+        (compilation-start "bundle exec rails server" t 'mrm/run-server-buffer-name t)
         (save-window-excursion
           (switch-to-buffer (mrm/run-server-buffer-name))
           (my-rails-mode t))
