@@ -1,3 +1,4 @@
+(require 'cl)
 
 (defcustom mrm/view-keywords 
   '("action_name" "atom_feed" "audio_path" "audio_tag" "auto_discovery_link_tag"
@@ -28,15 +29,38 @@
 
 
 (add-hook 'rhtml-mode-hook '(lambda ()
-                             (when (mrm/under-p "app/views/")
-                               (font-lock-add-keywords nil
-                                                       ;; '((regexp-opt mrm/view-keywords 'words) . font-lock-keyword-face)
-                                                       ;; '(((regexp mrm/view-keywords 'words) . font-lock-keyword-face))
-                                                       '(
-("link_")
-                                                         )
-                                                       ))))
+                              (when (mrm/under-p "app/views/")
+                                (font-lock-add-keywords nil
+                                                        ;; '((regexp-opt mrm/view-keywords 'words) . font-lock-keyword-face)
+                                                        ;; '(((regexp mrm/view-keywords 'words) . font-lock-keyword-face))
+                                                        '(
+                                                          ("link_")
+                                                          )
+                                                        ))))
+(defun mrm/open-file-if-exists (file)
+  (if (file-exists-p file)
+      (find-file file)
+    )
+  )
 
-
+                                        ;TODO make it more efficient
+(defun mrm/find-partial-or-template (word)
+  (let ((word (replace-regexp-in-string "['\"]" "" (replace-regexp-in-string "^/" "" word))) ; get rid of ' and " and optional / at the beginning
+        (path (concat (mrm/root) "app/views/"))
+        (cur-format (mrm/substring-of-regexp ".\\(js\\|html\\|text\\|csv\\|pdf\\)." buffer-file-name))) ; extract current format
+    (loop for file in  (list (concat path word) ; user.html.erb
+                             (concat path word "." cur-format ".erb") ; user
+                             (concat path word "." cur-format ".haml") ; user
+                             (concat default-directory word "." cur-format ".erb") ; user
+                             (concat default-directory word "." cur-format ".haml") ; user
+                             (concat path (mrm/insert-string "/.*$" word "_")) ; _user.html.erb
+                             (concat path (mrm/insert-string "/.*$" word "_") "." cur-format ".erb") ; _user
+                             (concat path (mrm/insert-string "/.*$" word "_") "." cur-format ".haml") ; _user
+                             (concat default-directory (mrm/insert-string "/.*$" word "_")) ; _user.html.erb
+                             (concat default-directory (mrm/insert-string "/.*$" word "_") "." cur-format ".erb") ; _user
+                             (concat default-directory (mrm/insert-string "/.*$" word "_") "." cur-format ".haml")) ; _user
+          when (file-exists-p file)
+          do (return (find-file file))
+          )))
 
 (provide 'my-rails-mode-view)

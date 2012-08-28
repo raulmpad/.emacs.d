@@ -1,7 +1,7 @@
 (require 'my-rails-mode-model)
 (require 'my-rails-mode-controller)
 (require 'my-rails-mode-migration)
-;; (require 'my-rails-mode-views)
+(require 'my-rails-mode-view)
 (require 'ack-and-a-half)
 
 (defvar my-rails-mode-map
@@ -60,67 +60,19 @@ else return nil"
     
     (if (string-match-p "^[A-Z].*" word) 
         (mrm/find-class (downcase (replace-regexp-in-string "::" "/" word)))
-      (if (string-match-p "['\"\\|/]" word) ; we've grabbed string from view
+      (if (string-match-p "/" word) ; we've grabbed string from view
           (mrm/find-partial-or-template word)
         (mrm/find-class (downcase
-                                   (replace-regexp-in-string "s$" ""
-                                                             (replace-regexp-in-string ":" ""
-                                                                                       (replace-regexp-in-string "::" "/" word))))))) ; we've grabbed something like :hedges (strip ':' and 's') TODO: pluralization is dumb here
+                         (replace-regexp-in-string "s$" ""
+                                                   (replace-regexp-in-string ":" ""
+                                                                             (replace-regexp-in-string "::" "/" word))))))) ; we've grabbed something like :hedges (strip ':' and 's') TODO: pluralization is dumb here
     )
   )
 
 (defun mrm/substring-of-regexp (regexp word)
-  "Returns substring of word starting from beginning of matched regexp plus the passed length"
+  "Returns substring of word starting from beginning of matched regexp till end"
   (substring word (+ (string-match regexp word) 1) (match-end 1)))
 
-;TODO DRY it up
-(defun mrm/find-partial-or-template (word)
-  (let ((word (replace-regexp-in-string "['\"]" "" word)) ; get rid of ' and "
-        (path (concat (mrm/root) "app/views/"))
-        (cur-format (mrm/substring-of-regexp ".\\(js\\|html\\|text\\|csv\\|pdf\\)." buffer-file-name))) ; extract current format
-    (if (string-match-p "/" word)
-        (cond 
-         ((file-exists-p (concat path word)) ; user.html.erb
-          (find-file (concat path word)))
-
-         ((file-exists-p (concat path word "." cur-format ".erb")) ; user
-          (find-file (concat path word "." cur-format ".erb")))
-
-         ((file-exists-p (concat path word "." cur-format ".haml")) ; user
-          (find-file (concat path word "." cur-format ".haml")))
-
-         ((file-exists-p (concat path (mrm/insert-string "/.*$" word "_"))) ; _user.html.erb
-          (find-file (concat path (mrm/insert-string "/.*$" word "_"))))
-
-         ((file-exists-p (concat path (mrm/insert-string "/.*$" word "_") "." cur-format ".erb")) ; _user
-          (find-file (concat path (mrm/insert-string "/.*$" word "_") "." cur-format ".erb")))
-
-         ((file-exists-p (concat path (mrm/insert-string "/.*$" word "_") "." cur-format ".haml")) ; _user
-          (find-file (concat path (mrm/insert-string "/.*$" word "_") "." cur-format ".haml")))
-         ))
-    (cond  ; anything inside of current directory
-     ((file-exists-p (concat default-directory word)) ; user.html.erb
-      (find-file (concat default-directory word)))
-
-     ((file-exists-p (concat default-directory word "." cur-format ".erb")) ; user
-      (find-file (concat default-directory word "." cur-format ".erb")))
-
-     ((file-exists-p (concat default-directory word "." cur-format ".haml")) ; user
-      (find-file (concat default-directory word "." cur-format ".haml")))
-
-     ((file-exists-p (concat default-directory "_" word)) ; _user.html.erb
-      (find-file (concat default-directory "_" word)))
-
-     ((file-exists-p (concat default-directory "_" word "." cur-format ".erb")) ; _user
-      (find-file (concat default-directory "_" word "." cur-format ".erb")))
-
-     ((file-exists-p (concat default-directory "_" word "." cur-format ".haml")) ; _user
-      (find-file (concat default-directory "_" word "." cur-format ".haml"))
-      )
-
-     )
-
-    ))
 
 (defun mrm/insert-string (regexp word string)
   "Inserts string after the catched regexp in the word"
@@ -171,8 +123,8 @@ If invoked with prefix arg shutdown the server."
 (defun mrm/trim-string (string)
   "Remove white spaces in beginning and ending of STRING.
 White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
-(replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" string))
-)
+  (replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" string))
+  )
 
 (defun mrm/helm-c-projectile-specs-files-list ()
   "Generates a list of spec files in the current project"
