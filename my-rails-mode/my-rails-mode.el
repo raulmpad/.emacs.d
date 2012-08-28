@@ -57,17 +57,15 @@ else return nil"
   (interactive)
   (let ((word (thing-at-point 'symbol))
         (case-fold-search nil))
-    
-    (if (string-match-p "^[A-Z].*" word) 
-        (mrm/find-class (downcase (replace-regexp-in-string "::" "/" word)))
-      (if (string-match-p "/" word) ; we've grabbed string from view
-          (mrm/find-partial-or-template word)
-        (mrm/find-class (downcase
-                         (replace-regexp-in-string "s$" ""
-                                                   (replace-regexp-in-string ":" ""
-                                                                             (replace-regexp-in-string "::" "/" word))))))) ; we've grabbed something like :hedges (strip ':' and 's') TODO: pluralization is dumb here
-    )
-  )
+    (unless (cond ((mrm/under-p "app/views/")
+                   (mrm/find-partial-or-template word))
+                  ((string-match-p "^[A-Z].*" word)
+                   (mrm/find-class (downcase (replace-regexp-in-string "::" "/" word)))))
+                  (mrm/find-class (downcase
+                                   (replace-regexp-in-string "s$" ""
+                                                             (replace-regexp-in-string ":" ""
+                                                                                       (replace-regexp-in-string "::" "/" word)))))) ; we've grabbed something like :hedges (strip ':' and 's') TODO: pluralization is dumb here
+    ))
 
 (defun mrm/substring-of-regexp (regexp word)
   "Returns substring of word starting from beginning of matched regexp till end"
@@ -76,7 +74,9 @@ else return nil"
 
 (defun mrm/insert-string (regexp word string)
   "Inserts string after the catched regexp in the word"
-  (let ((pos (+ (string-match "/.*$" word) 1)))
+  (let ((pos (if (string-match-p "/" word)
+                 (+ (string-match "/.*$" word) 1)
+               0)))
     (concat (substring word 0 pos) string (substring word pos))
     )
 

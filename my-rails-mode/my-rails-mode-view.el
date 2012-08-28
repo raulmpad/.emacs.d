@@ -37,12 +37,6 @@
                                                           ("link_")
                                                           )
                                                         ))))
-(defun mrm/open-file-if-exists (file)
-  (if (file-exists-p file)
-      (find-file file)
-    )
-  )
-
                                         ;TODO make it more efficient
 (defun mrm/find-partial-or-template (word)
   (let ((word (replace-regexp-in-string "['\"]" "" (replace-regexp-in-string "^/" "" word))) ; get rid of ' and " and optional / at the beginning
@@ -52,13 +46,14 @@
                              (concat path word "." cur-format ".erb") ; user
                              (concat path word "." cur-format ".haml") ; user
                              (concat default-directory word "." cur-format ".erb") ; user
+                             (concat default-directory "_" word) ; _user.html.erb
+                             (concat default-directory "_" word "." cur-format ".erb") ; _user
+                             (concat default-directory "_" word "." cur-format ".haml")
                              (concat default-directory word "." cur-format ".haml") ; user
                              (concat path (mrm/insert-string "/.*$" word "_")) ; _user.html.erb
                              (concat path (mrm/insert-string "/.*$" word "_") "." cur-format ".erb") ; _user
                              (concat path (mrm/insert-string "/.*$" word "_") "." cur-format ".haml") ; _user
-                             (concat default-directory (mrm/insert-string "/.*$" word "_")) ; _user.html.erb
-                             (concat default-directory (mrm/insert-string "/.*$" word "_") "." cur-format ".erb") ; _user
-                             (concat default-directory (mrm/insert-string "/.*$" word "_") "." cur-format ".haml")) ; _user
+)
           when (file-exists-p file)
           do (return (find-file file))
           )))
