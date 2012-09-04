@@ -28,34 +28,63 @@
   :type '(repeat string))
 
 
-(add-hook 'rhtml-mode-hook '(lambda ()
-                              (when (mrm/under-p "app/views/")
-                                (font-lock-add-keywords nil
-                                                        ;; '((regexp-opt mrm/view-keywords 'words) . font-lock-keyword-face)
-                                                        ;; '(((regexp mrm/view-keywords 'words) . font-lock-keyword-face))
-                                                        '(
-                                                          ("link_")
-                                                          )
-                                                        ))))
+;; (add-hook 'rhtml-mode-hook '(lambda ()
+;;                               (when (mrm/under-p "app/views/")
+;;                                 (font-lock-add-keywords nil
+;;                                                         ;; '((regexp-opt mrm/view-keywords 'words) . font-lock-keyword-face)
+;;                                                         ;; '(((regexp mrm/view-keywords 'words) . font-lock-keyword-face))
+;;                                                         '(
+;;                                                           ("link_")
+;;                                                           )
+;;                                                         ))))
                                         ;TODO make it more efficient
 (defun mrm/find-partial-or-template (word)
   (let ((word (replace-regexp-in-string "['\"]" "" (replace-regexp-in-string "^/" "" word))) ; get rid of ' and " and optional / at the beginning
         (path (concat (mrm/root) "app/views/"))
-        (cur-format (mrm/substring-of-regexp ".\\(js\\|html\\|text\\|csv\\|pdf\\)." buffer-file-name))) ; extract current format
-    (loop for file in  (list (concat path word) ; user.html.erb
-                             (concat path word "." cur-format ".erb") ; user
-                             (concat path word "." cur-format ".haml") ; user
-                             (concat default-directory word "." cur-format ".erb") ; user
-                             (concat default-directory "_" word) ; _user.html.erb
-                             (concat default-directory "_" word "." cur-format ".erb") ; _user
-                             (concat default-directory "_" word "." cur-format ".haml")
-                             (concat default-directory word "." cur-format ".haml") ; user
-                             (concat path (mrm/insert-string "/.*$" word "_")) ; _user.html.erb
-                             (concat path (mrm/insert-string "/.*$" word "_") "." cur-format ".erb") ; _user
-                             (concat path (mrm/insert-string "/.*$" word "_") "." cur-format ".haml") ; _user
+        (cur-format (mrm/substring-of-regexp "\.\\(js\\|html\\|text\\|csv\\|pdf\\)\." buffer-file-name))) ; extract current format
+    (loop for file in  (list (concat path word) ; users/user.html.erb -> user.html.erb
+                             (concat path word "." cur-format ".erb") ; users/user -> .../user.html.erb
+                             (concat path word "." cur-format ".haml") ; users/user -> .../user.html.haml
+                             (concat default-directory "_" word) ; user.html.erb -> .../_user.html.erb
+                             (concat default-directory "_" word "." cur-format ".erb") ; user -> ./_user.html.erb
+                             (concat default-directory "_" word "." cur-format ".haml") ; user -> ./_user.html.haml
+                             (concat default-directory word "." cur-format ".erb") ; user -> ./user.html.erb
+                             (concat default-directory word "." cur-format ".haml") ; user -> ./user.html.erb
+                             (concat path (mrm/insert-string "/.*$" word "_")) ; users/_user.html.erb
+                             (concat path (mrm/insert-string "/.*$" word "_") "." cur-format ".erb") ; users/user -> users/_user.html.erb
+                             (concat path (mrm/insert-string "/.*$" word "_") "." cur-format ".haml") ; users/user -> users/_user.html.haml
+                             (concat path (mrm/insert-string "/.*$" word "_") ".erb") ; users/user.html -> users/_user.html.erb
+                             (concat path (mrm/insert-string "/.*$" word "_") ".haml") ; users/user.html -> users/_user.html.haml
 )
           when (file-exists-p file)
           do (return (find-file file))
           )))
+
+(defun mrm/helm-c-projectile-views-files-list ()
+  "Generates a list of files in the current project"
+  (projectile-get-project-files
+   (concat (mrm/root) "app/views/" )))
+
+(defvar mrm/helm-c-source-projectile-views-files-list
+  `((name . "Projectile files list")
+    ;; Needed for filenames with capitals letters.
+    (disable-shortcuts)
+    (candidates . mrm/helm-c-projectile-views-files-list)
+    (candidate-number-limit . 15)
+    (volatile)
+    (keymap . ,helm-generic-files-map)
+    (help-message . helm-generic-file-help-message)
+    (mode-line . helm-generic-file-mode-line-string)
+    (match helm-c-match-on-basename)
+    (type . file))
+  "Helm source definition")
+
+;;;###autoload
+(defun mrm/helm-projectile-views ()
+  "Search using helm for views"
+  (interactive)
+  (helm-other-buffer '(mrm/helm-c-source-projectile-views-files-list
+                       mrm/helm-c-source-projectile-buffers-list)
+                     (format "*My Rails Mode %s*" "views" )))
 
 (provide 'my-rails-mode-view)

@@ -11,7 +11,8 @@
     (define-key map (kbd "C-c r") 'mrm/run-server)
     (define-key map (kbd "s-t") 'mrm/helm-projectile-controllers)
     (define-key map (kbd "s-y") 'mrm/helm-projectile-models)
-    (define-key map (kbd "s-u") 'mrm/helm-projectile-specs)
+    (define-key map (kbd "s-u") 'mrm/helm-projectile-views)
+    (define-key map (kbd "s-o") 'mrm/helm-projectile-specs)
     map)
   "Keymap for `my-rails-mode`.")
 
@@ -102,7 +103,7 @@ If invoked with prefix arg shutdown the server."
         (recompile)
       (if (get-buffer (mrm/run-server-buffer-name))
           (switch-to-buffer-other-window (mrm/run-server-buffer-name))
-        (compilation-start "bundle exec rails server" t 'mrm/run-server-buffer-name t)
+        (start-process "rails server" "*MyRoR Server*" "rails" "server")
         (save-window-excursion
           (switch-to-buffer (mrm/run-server-buffer-name))
           (my-rails-mode t))

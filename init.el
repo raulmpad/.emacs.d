@@ -25,6 +25,10 @@
 
 
 
+(defun expand-region-init ()
+  (global-set-key (kbd "s-,") 'er/expand-region)
+  (require 'ruby-mode-expansions))
+
 (autoload 'vkill "vkill" nil t)
 (autoload 'list-unix-processes "vkill" nil t)
 (defun open-vkill-and-update ()
@@ -231,6 +235,26 @@
                             (add-hook 'ruby-mode-hook #'(lambda () (projectile-mode)))
                             (add-hook 'rhtml-mode-hook #'(lambda () (projectile-mode)))
                             (setq projectile-ignored-directories (append projectile-ignored-directories '("tmp" "public" "coverage" "log" "vendor" "db/migrate")))))
+        (:name auto-complete
+               :type elpa
+               :post-init (lambda ()
+                            (require 'auto-complete-config)
+                            (add-to-list 'ac-dictionary-directories "~/.emacs.d//ac-dict")
+                            (ac-config-default)
+                            (setq rsense-home "/usr/local/Cellar/rsense/0.3/libexec")
+                            (add-to-list 'load-path (concat rsense-home "/etc"))
+                            (require 'rsense)
+                            ))
+        (:name pry
+               :type git
+               :url "git://github.com/jacott/emacs-pry"
+               :post-init (lambda () (require 'pry))
+               )
+        (:name expand-region
+               :type git
+               :url "git://github.com/magnars/expand-region.el.git"
+               :post-init (lambda ()
+                            (global-set-key (kbd "S-,") 'er/expand-region)))
         ))
 
 (setq my-packages (append '(magit yasnippet inf-ruby)
@@ -351,8 +375,16 @@
 (global-unset-key (kbd "s-t"))
 (global-unset-key (kbd "s-y"))
 (global-unset-key (kbd "s-u"))
+
+(global-set-key (kbd "C-q") (lambda () (interactive) (switch-to-prev-buffer (previous-window))))
+(global-set-key (kbd "C-w") (lambda () (interactive) (switch-to-next-buffer (previous-window))))
+
 (electric-pair-mode)
 
 (add-hook 'ruby-mode-hook 'delete-trailing-whitespace-on-file-write)
 
 (set-variable 'shell-file-name "/bin/bash")
+
+(global-set-key (kbd "s-,") 'er/expand-region)
+;; todo this is not working ;(
+(require 'ruby-mode-expansions)
