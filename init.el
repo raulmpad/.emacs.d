@@ -243,6 +243,7 @@
                             (ac-config-default)
                             (setq rsense-home "/usr/local/Cellar/rsense/0.3/libexec")
                             (add-to-list 'load-path (concat rsense-home "/etc"))
+                            (setq ac-auto-start t)
                             (require 'rsense)
                             ))
         (:name pry
@@ -312,7 +313,7 @@
   )
 (add-hook 'fundamental-mode-hook 'remove-dos-eol)
 
-(load-theme 'sanityinc-solarized-dark)
+(load-theme 'wombat)
 
 (require 'term)
 (defun visit-ansi-term ()
@@ -386,5 +387,7 @@
 (set-variable 'shell-file-name "/bin/bash")
 
 (global-set-key (kbd "s-,") 'er/expand-region)
-;; todo this is not working ;(
+;; todo this is not workin 
 (require 'ruby-mode-expansions)
+
+(require 'my-ext)

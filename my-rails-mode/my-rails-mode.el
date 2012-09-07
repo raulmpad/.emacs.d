@@ -62,10 +62,11 @@ else return nil"
                    (mrm/find-partial-or-template word))
                   ((string-match-p "^[A-Z].*" word)
                    (mrm/find-class (downcase (replace-regexp-in-string "::" "/" word)))))
-                  (mrm/find-class (downcase
-                                   (replace-regexp-in-string "s$" ""
-                                                             (replace-regexp-in-string ":" ""
-                                                                                       (replace-regexp-in-string "::" "/" word)))))) ; we've grabbed something like :hedges (strip ':' and 's') TODO: pluralization is dumb here
+      (mrm/find-class (downcase
+                       (replace-regexp-in-string "s$" ""
+                                                 (replace-regexp-in-string ":" ""
+                                        ; we've grabbed something like :hedges (strip ':' and 's') TODO: pluralization is dumb here
+                                                                           (replace-regexp-in-string "::" "/" word))))))
     ))
 
 (defun mrm/substring-of-regexp (regexp word)
@@ -103,7 +104,7 @@ If invoked with prefix arg shutdown the server."
         (recompile)
       (if (get-buffer (mrm/run-server-buffer-name))
           (switch-to-buffer-other-window (mrm/run-server-buffer-name))
-        (start-process "rails server" "*MyRoR Server*" "rails" "server")
+        (start-process "rails server" (mrm/run-server-buffer-name) "rails" "server")
         (save-window-excursion
           (switch-to-buffer (mrm/run-server-buffer-name))
           (my-rails-mode t))
