@@ -42,9 +42,6 @@
                                            (goto-char (point-min)) (forward-line line )
                                            (vkill-update-process-info)))
 
-(call-process "/bin/sh" nil t nil "-c" "~/.emacs.d/umount-ram.sh ~/.emacs.d/tmp")
-
-(call-process "/bin/sh" nil t nil "-c" "~/.emacs.d/mount-ram.sh ~/.emacs.d/tmp 30")
 (setq temporary-file-directory "~/.emacs.d/tmp")
 
 (setq backup-directory-alist
