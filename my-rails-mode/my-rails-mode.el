@@ -2,6 +2,7 @@
 (require 'my-rails-mode-controller)
 (require 'my-rails-mode-migration)
 (require 'my-rails-mode-view)
+(require 'my-rails-mode-rake)
 (require 'ack-and-a-half)
 
 (defvar my-rails-mode-map
