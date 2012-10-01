@@ -1,4 +1,3 @@
-(add-hook 'after-init-hook '(lambda ()
 
 (defun match-paren (arg)
   "Go to the matching paren if on a paren."
@@ -42,8 +41,8 @@
 
 (evil-define-key 'insert shell-mode-map (kbd "<up>") 'comint-previous-input)
 (evil-define-key 'insert shell-mode-map (kbd "<down>") 'comint-next-input)
-))
-
+(evil-define-key 'insert ielm-map (kbd "<down>") 'comint-next-input)
+(evil-define-key 'insert ielm-map (kbd "<up>") 'comint-previous-input)
 
 (evil-define-key 'normal global-map
   (kbd ", s") 'rspec-verify-single
@@ -73,13 +72,21 @@
 (add-hook 'compilation-mode-hook '(lambda ()
                                     (local-unset-key "g")
                                     (local-unset-key "h")
-                                    (evil-define-key 'motion compilation-mode-map "r" 'recompile))
-                                    (evil-define-key 'motion compilation-mode-map "h" 'evil-backward-char))
+                                    (evil-define-key 'motion compilation-mode-map "r" 'recompile)
+                                    (evil-define-key 'motion compilation-mode-map "h" 'evil-backward-char)))
 
 (evil-define-key 'insert ruby-mode-map
   (kbd "<enter>") 'ruby-reindent-then-newline-and-indent)
 
 (evil-define-key 'normal global-map (kbd "SPC") 'ace-jump-mode)
+
+(evil-define-key 'normal rspec-mode-map (kbd ",v") '(lambda () (rspec-compile default-directory)))
+
+;; (defun my/paste-shell ()
+;;   (interactive)
+;;   (term-send-raw-string (current-kill 0)))
+
+;; (evil-define-key 'normal term-raw-escape-map "p" 'my/paste-shell)
 
 (provide 'my-evil-bindings)
 

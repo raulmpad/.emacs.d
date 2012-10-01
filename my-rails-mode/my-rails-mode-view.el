@@ -60,31 +60,4 @@
           do (return (find-file file))
           )))
 
-(defun mrm/helm-c-projectile-views-files-list ()
-  "Generates a list of files in the current project"
-  (projectile-get-project-files
-   (concat (mrm/root) "app/views/" )))
-
-(defvar mrm/helm-c-source-projectile-views-files-list
-  `((name . "Projectile files list")
-    ;; Needed for filenames with capitals letters.
-    (disable-shortcuts)
-    (candidates . mrm/helm-c-projectile-views-files-list)
-    (candidate-number-limit . 15)
-    (volatile)
-    (keymap . ,helm-generic-files-map)
-    (help-message . helm-generic-file-help-message)
-    (mode-line . helm-generic-file-mode-line-string)
-    (match helm-c-match-on-basename)
-    (type . file))
-  "Helm source definition")
-
-;;;###autoload
-(defun mrm/helm-projectile-views ()
-  "Search using helm for views"
-  (interactive)
-  (helm-other-buffer '(mrm/helm-c-source-projectile-views-files-list
-                       mrm/helm-c-source-projectile-buffers-list)
-                     (format "*My Rails Mode %s*" "views" )))
-
 (provide 'my-rails-mode-view)

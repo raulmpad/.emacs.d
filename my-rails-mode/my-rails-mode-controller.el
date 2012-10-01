@@ -13,31 +13,4 @@
                              (when (mrm/under-p "app/controllers/")
                                (mrm/highlight-keywords mrm/controller-keywords))))
 
-(defun mrm/helm-c-projectile-controllers-files-list ()
-  "Generates a list of files in the current project"
-  (projectile-get-project-files
-   (concat (mrm/root) "app/controllers/" )))
-
-(defvar mrm/helm-c-source-projectile-controllers-files-list
-  `((name . "Projectile files list")
-    ;; Needed for filenames with capitals letters.
-    (disable-shortcuts)
-    (candidates . mrm/helm-c-projectile-controllers-files-list)
-    (candidate-number-limit . 15)
-    (volatile)
-    (keymap . ,helm-generic-files-map)
-    (help-message . helm-generic-file-help-message)
-    (mode-line . helm-generic-file-mode-line-string)
-    (match helm-c-match-on-basename)
-    (type . file))
-  "Helm source definition")
-
-;;;###autoload
-(defun mrm/helm-projectile-controllers ()
-  "Search using helm for controllers"
-  (interactive)
-  (helm-other-buffer '(mrm/helm-c-source-projectile-controllers-files-list
-                       mrm/helm-c-source-projectile-buffers-list)
-                     (format "*My Rails Mode %s*" "controllers" )))
-
 (provide 'my-rails-mode-controller)

@@ -3,6 +3,7 @@
 (require 'my-rails-mode-migration)
 (require 'my-rails-mode-view)
 (require 'my-rails-mode-rake)
+(require 'my-rails-mode-helm-projectile)
 (require 'ack-and-a-half)
 
 (defvar my-rails-mode-map
@@ -91,7 +92,8 @@ else return nil"
    (concat (mrm/root)
            "log/"
            (ido-completing-read "Open log: " (directory-files (concat (mrm/root) "log/") nil "[^.|^..]"))))
-  (auto-revert-tail-mode 1))
+  (auto-revert-tail-mode 1)
+  (my-rails-mode t))
 
 (defun mrm/run-server (&optional arg)
   "Run server with 'bundle exec rails server' command and outputs to
@@ -100,7 +102,8 @@ If the server is already running switch to the compilation buffer.
 If the current buffer is the compilation buffer restart the server.
 If invoked with prefix arg shutdown the server."
   (interactive "P")
-  (if (consp arg) (kill-buffer (mrm/run-server-buffer-name))
+  (if (consp arg) (progn
+                    (kill-process (mrm/run-server-buffer-name)) (kill-buffer (mrm/run-server-buffer-name)))
     (if (string= (buffer-name) (mrm/run-server-buffer-name))
         (recompile)
       (if (get-buffer (mrm/run-server-buffer-name))
@@ -112,7 +115,7 @@ If invoked with prefix arg shutdown the server."
         ))))
 
 (defun mrm/run-server-buffer-name (&optional arg)
-  (string ?* ?M ?y ?R ?o ?R ? ?S ?e ?r ?v ?e ?r ?*))
+  (format "*MyRoRServer*"))
 
 
 (defun mrm/under-p (dirname)
@@ -128,33 +131,6 @@ If invoked with prefix arg shutdown the server."
 White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
   (replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" string))
   )
-
-(defun mrm/helm-c-projectile-specs-files-list ()
-  "Generates a list of spec files in the current project"
-  (projectile-get-project-files
-   (concat (mrm/root) "spec/" )))
-
-(defvar mrm/helm-c-source-projectile-specs-files-list
-  `((name . "Specs files list")
-    ;; Needed for filenames with capitals letters.
-    (disable-shortcuts)
-    (candidates . mrm/helm-c-projectile-specs-files-list)
-    (candidate-number-limit . 15)
-    (volatile)
-    (keymap . ,helm-generic-files-map)
-    (help-message . helm-generic-file-help-message)
-    (mode-line . helm-generic-file-mode-line-string)
-    (match helm-c-match-on-basename)
-    (type . file))
-  "Helm source definition")
-
-;;;###autoload
-(defun mrm/helm-projectile-specs ()
-  "Search using helm for controllers"
-  (interactive)
-  (helm-other-buffer '(mrm/helm-c-source-projectile-specs-files-list
-                       mrm/helm-c-source-projectile-buffers-list)
-                     (format "*My Rails Mode %s*" "specs" )))
 
 (define-minor-mode my-rails-mode
   "My custom RubyOnRails minor mode"
