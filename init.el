@@ -112,6 +112,7 @@
                :type elpa
                :load "starter-kit.el"
                :post-init (lambda ()
+                            (remove-hook 'text-mode-hook 'turn-on-flyspell)
                             (remove-hook 'prog-mode-hook 'esk-turn-on-hl-line-mode)
                             (remove-hook 'prog-mode-hook 'esk-turn-on-idle-highlight-mode)
                             (remove-hook 'prog-mode-hook 'esk-local-comment-auto-fill)))
@@ -168,7 +169,6 @@
                             (global-surround-mode 1)))
         (:name rspec-mode
                :type git
-               :branch "handle-rvm-gemsets-paths-with-at-char"
                :url "git://github.com/asok/rspec-mode.git"
                :load "rspec-mode.el"
                :feature rspec-mode
@@ -236,11 +236,11 @@
                :type elpa
                :post-init (lambda ()
                             (require 'auto-complete-config)
-                            (add-to-list 'ac-dictionary-directories "~/.emacs.d//ac-dict")
+                            ;; (add-to-list 'ac-dictionary-directories "~/.emacs.d//ac-dict")
                             (ac-config-default)
                             (setq rsense-home "/usr/local/Cellar/rsense/0.3/libexec")
                             (add-to-list 'load-path (concat rsense-home "/etc"))
-                            (setq ac-auto-start t)
+                            (setq ac-auto-start nil)
                             (require 'rsense)
                             ))
         (:name pry
@@ -258,6 +258,7 @@
 (setq my-packages (append '(magit yasnippet inf-ruby)
                           (mapcar 'el-get-source-name el-get-sources)))
 (el-get 'sync my-packages)
+
 (global-set-key (kbd "M-e") 'rgrep)
 
 
@@ -270,6 +271,9 @@
  '(ack-and-a-half-mode-extension-alist nil)
  '(comint-process-echoes t)
  '(custom-safe-themes (quote ("4cf3221feff536e2b3385209e9b9dc4c2e0818a69a1cdb4b522756bcdf4e00a4" "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" "69349beba557a65bb06f89b28b8fd2890c742f07" "d14db41612953d22506af16ef7a23c4d112150e5" "1440d751f5ef51f9245f8910113daee99848e2c0" "485737acc3bedc0318a567f1c0f5e7ed2dfde3fb" "4711e8fe63ef13accc884c59469067d2f497e79c" default)))
+ '(dabbrev-abbrev-skip-leading-regexp ":")
+ '(dabbrev-case-distinction nil)
+ '(dabbrev-case-fold-search nil)
  '(evil-complete-previous-func (lambda (arg) (let ((dabbrev-search-these-buffers-only (buffer-list)) dabbrev-case-distinction) (dabbrev-expand arg))))
  '(evil-default-cursor (quote (t "white")))
  '(evil-flash-delay 5)
@@ -278,6 +282,7 @@
  '(rails-rake-use-bundler-when-possible t)
  '(recentf-max-saved-items 40)
  '(rspec-spec-command "rspec")
+ '(rspec-use-bundler-when-possible nil)
  '(rspec-use-rake-flag nil)
  '(rspec-use-rvm t)
  '(ruby-check-syntax (quote errors-and-warnings))
@@ -313,34 +318,18 @@
 (load-theme 'wombat)
 
 (require 'term)
-(defun visit-ansi-term ()
+
+(defun visit-shell ()
   "If the current buffer is:
-     1) a running ansi-term named *ansi-term*, rename it.
-     2) a stopped ansi-term, kill it and create a new one.
-     3) a non ansi-term, go to an already running ansi-term
+     1) a running shell named *shell*, rename it.
+     2) a non shell, go to an already running shell
         or start a new one while killing a defunt one"
   (interactive)
-  (let ((is-term (string= "term-mode" major-mode))
-        (is-running (term-check-proc (buffer-name)))
-        (term-cmd "/bin/bash")
-        (anon-term (get-buffer "*ansi-term*")))
-    (if is-term
-        (if is-running
-            (if (string= "*ansi-term*" (buffer-name))
-                (call-interactively 'rename-buffer)
-              (if anon-term
-                  (switch-to-buffer "*ansi-term*")
-                (ansi-term term-cmd)))
-          (kill-buffer (buffer-name))
-          (ansi-term term-cmd))
-      (if anon-term
-          (if (term-check-proc "*ansi-term*")
-              (switch-to-buffer "*ansi-term*")
-            (kill-buffer "*ansi-term*")
-            (ansi-term term-cmd))
-        (ansi-term term-cmd))))
-  (evil-mode nil))
-(global-set-key (kbd "<f2>") 'visit-ansi-term)
+  (if (and (string= "shell-mode" major-mode) (string= "*shell*" (buffer-name)))
+      (call-interactively 'rename-buffer)
+    (shell)))
+
+(global-set-key (kbd "<f2>") 'visit-shell)
 
 (add-to-list 'load-path "~/.emacs.d/my-rails-mode/")
 (require 'my-rails-mode)
