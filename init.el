@@ -373,6 +373,8 @@
 (set-variable 'shell-file-name "/bin/bash")
 
 (global-set-key (kbd "s-,") 'er/expand-region)
+
+(global-set-key (kbd "C-c SPC") 'helm-all-mark-rings)
 ;; todo this is not workin 
 (require 'ruby-mode-expansions)
 
