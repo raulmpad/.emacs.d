@@ -121,10 +121,14 @@ If invoked with prefix arg shutdown the server."
 White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
   (replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" string)))
 
-(defun mrm/bundle-or-zeus-command ()
+(defun mrm/zeus-or-bundler-command ()
   (if (file-exists-p (concat (mrm/root) ".zeus.sock"))
       "zeus "
     "bundle exec "))
+
+(defmacro mrm/in-root (body-form)
+  `(let ((default-directory (mrm/root)))
+     ,body-form))
 
 (define-minor-mode my-rails-mode
   "My custom RubyOnRails minor mode"

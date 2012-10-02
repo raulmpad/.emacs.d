@@ -7,7 +7,8 @@
       (with-temp-buffer
         (insert-file-contents (mrm/rake-tmp-file))
         (buffer-string))
-    (and (mrm/regenerate-rake) (mrm/rake-tasks))))
+    (mrm/regenerate-rake)
+    (mrm/rake-tasks)))
 
 ;; Shamelessly stolen from ruby-starter-kit.el:
 ;; https://github.com/technomancy/emacs-starter-kit/blob/v2/modules/starter-kit-ruby.el
@@ -15,7 +16,8 @@
   "Return a list of all the rake tasks defined in the current
 projects."
   (delq nil (mapcar '(lambda(line)
-                       (if (string-match "rake \\([^ ]+\\)" line) (match-string 1 line)))
+                       (if (string-match "rake \\([^ ]+\\)" line)
+                           (match-string 1 line)))
                     (split-string (mrm/rake-tasks) "[\n]"))))
 
 (defun mrm/regenerate-rake ()
@@ -23,13 +25,13 @@ projects."
 within rails root directory."
   (interactive)
   (if (file-exists-p (mrm/rake-tmp-file)) (delete-file (mrm/rake-tmp-file)))
-  (with-temp-file (mrm/rake-tmp-file) (insert (shell-command-to-string (mrm/bundle-or-zeus-command) "rake -T"))))
-
+  (with-temp-file (mrm/rake-tmp-file)
+    (insert (mrm/in-root (shell-command-to-string (concat (mrm/zeus-or-bundler-command) "rake -T"))))))
 
 (defun mrm/rake (task)
-  (interactive (list (completing-read "Rake (default: default): "
-                                      (mrm/pcmpl-rake-tasks))))
+  (interactive (list (completing-read "Rake (default: default): " (mrm/pcmpl-rake-tasks))))
   (let ((default-directory (mrm/root)))
-        (async-shell-command (concat (mrm/bundle-or-zeus-command) "rake " (if (= 0 (length task)) "default" task)))))
+    (mrm/in-root
+     (async-shell-command (concat (mrm/zeus-or-bundler-command) "rake " (if (= 0 (length task)) "default" task))))))
 
 (provide 'my-rails-mode-rake)
