@@ -1,4 +1,3 @@
-
 (defcustom mrm/model-keywords 
  '("default_scope" "named_scope" "scope" "serialize"
  "belongs_to" "has_one" "has_many" "has_and_belongs_to_many" "composed_of" "accepts_nested_attributes_for"

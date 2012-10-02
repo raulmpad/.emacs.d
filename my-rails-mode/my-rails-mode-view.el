@@ -1,5 +1,3 @@
-(require 'cl)
-
 (defcustom mrm/view-keywords 
   '("action_name" "atom_feed" "audio_path" "audio_tag" "auto_discovery_link_tag"
     "button_tag" "button_to" "button_to_function"
@@ -38,10 +36,11 @@
 ;;                                                           )
 ;;                                                         ))))
                                         ;TODO make it more efficient
+
 (defun mrm/find-partial-or-template (word)
-  (let ((word (replace-regexp-in-string "['\"]" "" (replace-regexp-in-string "^/" "" word))) ; get rid of ' and " and optional / at the beginning
+  (let ((word (replace-regexp-in-string "['\"]" "" (replace-regexp-in-string "^/" "" word)))
         (path (concat (mrm/root) "app/views/"))
-        (cur-format (mrm/substring-of-regexp "\.\\(js\\|html\\|text\\|csv\\|pdf\\)\." buffer-file-name))) ; extract current format
+        (cur-format (mrm/substring-of-regexp "\.\\(js\\|html\\|text\\|csv\\|pdf\\)\." buffer-file-name)))
     (loop for file in  (list (concat path word) ; users/user.html.erb -> user.html.erb
                              (concat path word "." cur-format ".erb") ; users/user -> .../user.html.erb
                              (concat path word "." cur-format ".haml") ; users/user -> .../user.html.haml
@@ -54,10 +53,7 @@
                              (concat path (mrm/insert-string "/.*$" word "_") "." cur-format ".erb") ; users/user -> users/_user.html.erb
                              (concat path (mrm/insert-string "/.*$" word "_") "." cur-format ".haml") ; users/user -> users/_user.html.haml
                              (concat path (mrm/insert-string "/.*$" word "_") ".erb") ; users/user.html -> users/_user.html.erb
-                             (concat path (mrm/insert-string "/.*$" word "_") ".haml") ; users/user.html -> users/_user.html.haml
-)
-          when (file-exists-p file)
-          do (return (find-file file))
-          )))
+                             (concat path (mrm/insert-string "/.*$" word "_") ".haml")) ; users/user.html -> users/_user.html.haml
+          do (if (file-exists-p file) (return (find-file file))))))
 
 (provide 'my-rails-mode-view)

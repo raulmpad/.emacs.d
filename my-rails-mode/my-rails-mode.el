@@ -1,3 +1,4 @@
+(require 'cl)
 (require 'my-rails-mode-model)
 (require 'my-rails-mode-controller)
 (require 'my-rails-mode-migration)
@@ -6,11 +7,13 @@
 (require 'my-rails-mode-helm-projectile)
 (require 'ack-and-a-half)
 
+
 (defvar my-rails-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-c s") 'mrm/ack-project)
     (define-key map (kbd "C-<return>") 'mrm/jump)
-    (define-key map (kbd "C-c r") 'mrm/run-server)
+    (define-key map (kbd "C-c C-r") 'mrm/run-server)
+    (define-key map (kbd "C-c r") 'mrm/rake)
     (define-key map (kbd "s-t") 'mrm/helm-projectile-controllers)
     (define-key map (kbd "s-y") 'mrm/helm-projectile-models)
     (define-key map (kbd "s-u") 'mrm/helm-projectile-views)
@@ -22,11 +25,12 @@
   (setq ruby-extra-keywords (append ruby-extra-keywords keywords ))
   (ruby-local-enable-extra-keywords))
 
+;Stolen from https://github.com/remvee/emacs-rails/blob/master/rails-project.el
 (defun mrm/root ()
   "Return RAILS_ROOT if this file is a part of a Rails application,
 else return nil"
   (let ((curdir default-directory)
-        (max 10)
+        (max 6)
         (found nil))
     (while (and (not found) (> max 0))
       (progn
@@ -43,33 +47,25 @@ else return nil"
   (ack-and-a-half-run (mrm/root) regexp (concat "--type=ruby --type=html --type=js --type=css --type-add html=.haml --type-add css=.sass,.scss --ignore-dir=tmp --ignore-dir=coverage " pattern)))
 
 (defun mrm/find-class (word)
-  (let ((curdir default-directory)
-        (model (concat (mrm/root) "app/models/" word ".rb"))
-        (mailer (concat (mrm/root) "app/mailers/" word ".rb"))
-        (lib (concat (mrm/root)  "lib/" word ".rb")))
-
-    (cond ((file-exists-p model)
-           (find-file model)) 
-          ((file-exists-p mailer)
-           (find-file mailer))
-          ((file-exists-p lib)
-           (find-file lib)))
-    ))
+  (loop for file in (list (concat (mrm/root) "app/models/" word ".rb")
+                          (concat (mrm/root) "app/mailers/" word ".rb")
+                          (concat (mrm/root)  "lib/" word ".rb"))
+        do (if (file-exists-p file) (find-file file))))
 
 (defun mrm/jump ()
   (interactive)
   (let ((word (thing-at-point 'symbol))
         (case-fold-search nil))
-    (unless (cond ((mrm/under-p "app/views/")
-                   (mrm/find-partial-or-template word))
-                  ((string-match-p "^[A-Z].*" word)
-                   (mrm/find-class (downcase (replace-regexp-in-string "::" "/" word)))))
-      (mrm/find-class (downcase
-                       (replace-regexp-in-string "s$" ""
-                                                 (replace-regexp-in-string ":" ""
+    (cond ((mrm/under-p "app/views/")
+           (mrm/find-partial-or-template word))
+          ((string-match-p "^[A-Z].*" word)
+           (mrm/find-class (downcase (replace-regexp-in-string "::" "/" word))))
+          (t  (mrm/find-class (downcase
+                               (replace-regexp-in-string "s$" ""
+                                                         (replace-regexp-in-string ":" ""
                                         ; we've grabbed something like :hedges (strip ':' and 's') TODO: pluralization is dumb here
-                                                                           (replace-regexp-in-string "::" "/" word))))))
-    ))
+                                                                                   (replace-regexp-in-string "::" "/" word))))))
+          )))
 
 (defun mrm/substring-of-regexp (regexp word)
   "Returns substring of word starting from beginning of matched regexp till end"
@@ -81,10 +77,7 @@ else return nil"
   (let ((pos (if (string-match-p "/" word)
                  (+ (string-match "/.*$" word) 1)
                0)))
-    (concat (substring word 0 pos) string (substring word pos))
-    )
-
-  )
+    (concat (substring word 0 pos) string (substring word pos))))
 
 (defun mrm/open-log ()
   (interactive)
@@ -115,22 +108,18 @@ If invoked with prefix arg shutdown the server."
         ))))
 
 (defun mrm/run-server-buffer-name (&optional arg)
-  (format "*MyRoRServer*"))
-
+  "*MyRoRServer*")
 
 (defun mrm/under-p (dirname)
   "Returns t if `default-directory' is under pass dir name "
   (if (string-match (concat dirname "\\(\.*\\)?$") (expand-file-name default-directory))
       t
-    nil
-    )
-  )
+    nil))
 
 (defun mrm/trim-string (string)
   "Remove white spaces in beginning and ending of STRING.
 White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
-  (replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" string))
-  )
+  (replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" string)))
 
 (defun mrm/bundle-or-zeus-command ()
   (if (file-exists-p (concat (mrm/root) ".zeus.sock"))
@@ -141,8 +130,7 @@ White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
   "My custom RubyOnRails minor mode"
   :init-value nil
   :lighter " myRoR"
-  :keymap my-rails-mode-map
-  )
+  :keymap my-rails-mode-map)
 
 (define-globalized-minor-mode global-my-rails-mode my-rails-mode
   (lambda ()
