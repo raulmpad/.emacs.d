@@ -23,13 +23,13 @@ projects."
 within rails root directory."
   (interactive)
   (if (file-exists-p (mrm/rake-tmp-file)) (delete-file (mrm/rake-tmp-file)))
-  (with-temp-file (mrm/rake-tmp-file) (insert (shell-command-to-string "bundle exec rake -T")))
-  )
+  (with-temp-file (mrm/rake-tmp-file) (insert (shell-command-to-string (mrm/bundle-or-zeus-command) "rake -T"))))
 
 
 (defun mrm/rake (task)
   (interactive (list (completing-read "Rake (default: default): "
                                       (mrm/pcmpl-rake-tasks))))
-  (async-shell-command (concat "bundle exec rake " (if (= 0 (length task)) "default" task))))
+  (let ((default-directory (mrm/root)))
+        (async-shell-command (concat (mrm/bundle-or-zeus-command) "rake " (if (= 0 (length task)) "default" task)))))
 
 (provide 'my-rails-mode-rake)

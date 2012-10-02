@@ -132,6 +132,11 @@ White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
   (replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" string))
   )
 
+(defun mrm/bundle-or-zeus-command ()
+  (if (file-exists-p (concat (mrm/root) ".zeus.sock"))
+      "zeus "
+    "bundle exec "))
+
 (define-minor-mode my-rails-mode
   "My custom RubyOnRails minor mode"
   :init-value nil
