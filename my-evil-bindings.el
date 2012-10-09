@@ -80,13 +80,28 @@
 
 (evil-define-key 'normal global-map (kbd "SPC") 'ace-jump-mode)
 
-(evil-define-key 'normal rspec-mode-map (kbd ",v") '(lambda () (rspec-compile default-directory)))
+(defun rspec-compile-default-directory ()
+  (rspec-compile default-directory))
 
-;; (defun my/paste-shell ()
-;;   (interactive)
-;;   (term-send-raw-string (current-kill 0)))
+(evil-define-key 'normal dired-mode-map (kbd ", k") 'dired-up-directory)
 
-;; (evil-define-key 'normal term-raw-escape-map "p" 'my/paste-shell)
+(defun dired-rspec-verify-single ()
+  (interactive)
+  (rspec-compile (mapconcat 'identity (dired-get-marked-files) " ") (rspec-core-options)))
+
+(defun dired-rspec-verify ()
+  (interactive)
+  (rspec-run-single-file (dired-current-directory) (rspec-core-options)))
+
+(evil-define-key 'normal dired-mode-map (kbd ", v") 'dired-rspec-verify)
+(evil-define-key 'normal dired-mode-map (kbd ", a") 'dired-rspec-verify-all)
+
+(defun my-move-key (keymap-from keymap-to key)
+  "Moves key binding from one keymap to another, deleting from the old location. "
+  (define-key keymap-to key (lookup-key keymap-from key))
+  (define-key keymap-from key nil))
+(my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
+(my-move-key evil-motion-state-map evil-normal-state-map " ")
 
 (provide 'my-evil-bindings)
 

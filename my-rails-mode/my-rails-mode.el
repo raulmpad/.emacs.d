@@ -101,6 +101,7 @@ If invoked with prefix arg shutdown the server."
         (recompile)
       (if (get-buffer (mrm/run-server-buffer-name))
           (switch-to-buffer-other-window (mrm/run-server-buffer-name))
+        (rvm-activate-corresponding-ruby)
         (start-process "rails server" (mrm/run-server-buffer-name) "rails" "server")
         (save-window-excursion
           (switch-to-buffer (mrm/run-server-buffer-name))
