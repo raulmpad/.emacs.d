@@ -349,3 +349,5 @@
 
 (add-hook 'emacs-lisp-mode-hook 'my-idle-highlight-hook)
 (add-hook 'js2-mode-hook 'my-idle-highlight-hook)
+
+(winner-mode 1)
