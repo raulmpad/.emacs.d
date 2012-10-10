@@ -21,6 +21,9 @@
     map)
   "Keymap for `my-rails-mode`.")
 
+(defvar my-rails-mode-hook nil
+  "Hook for My Rails Mode.")
+
 (defun mrm/highlight-keywords (keywords)
   (setq ruby-extra-keywords (append ruby-extra-keywords keywords ))
   (ruby-local-enable-extra-keywords))
@@ -140,7 +143,8 @@ White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
 (define-globalized-minor-mode global-my-rails-mode my-rails-mode
   (lambda ()
     (when (mrm/root)
-      (my-rails-mode t))))
+      (my-rails-mode t)
+      (run-hooks 'my-rails-mode-hook))))
 
 (global-my-rails-mode t)
 
