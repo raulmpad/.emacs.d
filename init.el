@@ -171,8 +171,7 @@
                             (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))))
         (:name bundler
                :type git
-               :branch "bundle-list-gems-without-nils"
-               :url "git://github.com/asok/bundler.el.git"
+               :url "git://github.com/tobiassvn/bundler.el.git"
                :feature bundler)
         (:name thingatpt+
                :type emacswiki
