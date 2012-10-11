@@ -91,23 +91,16 @@
                :load "thingatpt+.el"
                :feature "thingatpt")
         (:name ack-and-a-half
-               :type git
-               :url "git://github.com/gleber/ack-and-a-half.git"
-               :branch "autofill-word-at-point"
+               :type github
+               :pkgname "jhelwig/ack-and-a-half"
                :post-init (progn
-                            (autoload 'ack-and-a-half-same "ack-and-a-half" nil t)
-                            (autoload 'ack-and-a-half "ack-and-a-half" nil t)
-                            (autoload 'ack-and-a-half-find-file-same "ack-and-a-half" nil t)
-                            (autoload 'ack-and-a-half-find-file "ack-and-a-half" nil t)
-                            ;; Create shorter aliases
                             (defalias 'ack 'ack-and-a-half)
                             (defalias 'ack-same 'ack-and-a-half-same)
                             (defalias 'ack-find-file 'ack-and-a-half-find-file)
-                            (defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
-                            ))
+                            (defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)))
         (:name haml-mode
-               :type git
-	       :url "git://github.com/dgutov/haml-mode.git"
+               :type github
+	       :pkgname "dgutov/haml-mode"
                :load "haml-mode.el"
                :feature haml-mode
                :post-init (progn
@@ -115,13 +108,13 @@
                             (add-hook 'haml-mode-hook 'flyspell-mode-off)
                             (add-hook 'haml-mode-hook 'delete-trailing-whitespace-on-file-write)))
         (:name pry
-               :type git
-               :url "git://github.com/jacott/emacs-pry"
+               :type github
+               :pkgname "jacott/emacs-pry"
                :post-init (progn (require 'pry))
                )
         (:name wgrep
-               :type git
-               :url "git://github.com/mhayashi1120/Emacs-wgrep.git"
+               :type github
+               :pkgname "mhayashi1120/Emacs-wgrep"
                :branch "BR-ack-support")
         (:name projectile
                :type github
@@ -286,3 +279,9 @@ or start a new one while killing a defunt one"
 
 (scroll-bar-mode -1)
 (show-paren-mode t)
+
+
+(defalias 'ack 'ack-and-a-half)
+(defalias 'ack-same 'ack-and-a-half-same)
+(defalias 'ack-find-file 'ack-and-a-half-find-file)
+(defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
