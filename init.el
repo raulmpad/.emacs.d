@@ -105,6 +105,15 @@
                             (defalias 'ack-find-file 'ack-and-a-half-find-file)
                             (defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
                             ))
+        (:name haml-mode
+               :type git
+	       :url "git://github.com/dgutov/haml-mode.git"
+               :load "haml-mode.el"
+               :feature haml-mode
+               :post-init (progn
+			    (require 'ruby-mode)
+                            (add-hook 'haml-mode-hook 'flyspell-mode-off)
+                            (add-hook 'haml-mode-hook 'delete-trailing-whitespace-on-file-write)))
         (:name pry
                :type git
                :url "git://github.com/jacott/emacs-pry"
@@ -205,22 +214,6 @@ or start a new one while killing a defunt one"
 
 (defun inf-ruby-keys () nil)
 
-;; (defun multi-web-mode-html-erb ()
-;;     (setq mweb-default-major-mode 'rhtml-mode)
-;;     (setq mweb-tags '((ruby-mode "<%=" "%>")))
-;;     (setq mweb-filename-extensions '("html.erb"))
-;;     (multi-web-mode)
-;;     )
-
-;; (defun multi-web-mode-text-erb ()
-;;     (setq mweb-default-major-mode 'text-mode)
-;;     (setq mweb-tags '((ruby-mode "<%==\\|<%=\\|<%#\\|<%" "%>")))
-;;     (setq mweb-filename-extensions '("text.erb"))
-;;     (multi-web-mode))
-
-;; (add-to-list 'auto-mode-alist '("\.html\.erb$" . multi-web-mode-html-erb))
-;; (add-to-list 'auto-mode-alist '("\.text\.erb$" . multi-web-mode-text-erb))
-
 (global-unset-key (kbd "s-t"))
 (global-unset-key (kbd "s-y"))
 (global-unset-key (kbd "s-u"))
@@ -284,10 +277,6 @@ or start a new one while killing a defunt one"
 (require 'my-evil-bindings)
 (evil-mode 1)
 (global-surround-mode 1)
-
-(require 'ruby-mode)
-(add-hook 'haml-mode-hook 'flyspell-mode-off)
-(add-hook 'haml-mode-hook 'delete-trailing-whitespace-on-file-write)
 
 (setq enh-ruby-program "~/.rvm/rubies/ruby-1.9.3-p125/bin/ruby")
 ;; (autoload 'ruby-mode "ruby-mode" "Major mode for ruby files" t)
