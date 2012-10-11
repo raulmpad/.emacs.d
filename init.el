@@ -1,3 +1,5 @@
+(setq ring-bell-function nil)
+(setq visible-bell nil)
 (push "/usr/local/bin" exec-path)
 (push "/opt/local/bin" exec-path)
 (add-to-list 'load-path "~/.emacs.d")
@@ -145,6 +147,8 @@
 			    rspec-mode
 			    key-chord
 			    inf-ruby
+			    smex
+			    ido-ubiquitous
 			    rvm)
                           (mapcar 'el-get-source-name el-get-sources)))
 (el-get 'sync my-packages)
@@ -201,7 +205,7 @@ or start a new one while killing a defunt one"
 					;(add-hook 'magit-checkout-command-hook '(lambda () (projectile-invalidate-cache)))
 
 (require 'yasnippet)
-					;(yas/initialize)
+(yas-minor-mode)
 (setq yas/root-directory "~/.emacs.d/snippets")
 (yas/load-directory yas/root-directory)
 
@@ -280,8 +284,15 @@ or start a new one while killing a defunt one"
 (scroll-bar-mode -1)
 (show-paren-mode t)
 
+(require 'ido)
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(ido-mode 1)
 
-(defalias 'ack 'ack-and-a-half)
-(defalias 'ack-same 'ack-and-a-half-same)
-(defalias 'ack-find-file 'ack-and-a-half-find-file)
-(defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
+
+(require 'smex)
+(smex-initialize)
+(global-set-key (kbd "M-x") 'smex)
+
+(require 'ido-ubiquitous)
+(ido-ubiquitous-mode)
