@@ -47,7 +47,13 @@ else return nil"
 
 (defun mrm/ack-project (pattern &optional regexp directory)
   (interactive (ack-and-a-half-interactive))
-  (ack-and-a-half-run (mrm/root) regexp (concat "--type=ruby --type=html --type=js --type=css --type-add html=.haml --type-add css=.sass,.scss --ignore-dir=tmp --ignore-dir=coverage " pattern)))
+  (let ((ack-and-a-half-arguments (quote ("--type=ruby" "--type=html"
+					  "--type=js" "--type=css"
+					  "--type-add" "html=.haml"
+					  "--type-add" "css=.sass,.scss"
+					  "--ignore-dir=tmp" "--ignore-dir=coverage"))))
+  (ack-and-a-half-run (mrm/root) regexp pattern)))
+
 
 (defun mrm/find-class (word)
   (loop for file in (list (concat (mrm/root) "app/models/" word ".rb")
@@ -116,7 +122,7 @@ If invoked with prefix arg shutdown the server."
 
 (defun mrm/under-p (dirname)
   "Returns t if `default-directory' is under pass dir name "
-  (if (string-match (concat dirname "\\(\.*\\)?$") (expand-file-name default-directory))
+  (if (string-match (concat dirname "\\(\.*\\)?$") (buffer-file-name))
       t
     nil))
 

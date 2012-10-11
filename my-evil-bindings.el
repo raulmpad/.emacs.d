@@ -61,13 +61,19 @@
   (kbd ", f") 'ido-find-file
   (kbd ", d") 'ido-dired)
 
-(evil-add-hjkl-bindings magit-branch-manager-mode-map 'emacs
-  "K" 'magit-discard-item
-  "L" 'magit-key-mode-popup-logging)
-(evil-add-hjkl-bindings magit-status-mode-map 'emacs
-  "K" 'magit-discard-item
-  "l" 'magit-key-mode-popup-logging
-  "h" 'magit-toggle-diff-refine-hunk)
+;; (evil-add-hjkl-bindings magit-branch-manager-mode-map 'emacs
+;;   "K" 'magit-discard-item
+;;   "L" 'magit-key-mode-popup-logging)
+;; (evil-add-hjkl-bindings magit-status-mode-map 'emacs
+;;   "K" 'magit-discard-item
+;;   "l" 'magit-key-mode-popup-logging
+;;   "h" 'magit-toggle-diff-refine-hunk)
+
+(evil-define-key 'motion magit-status-mode-map
+  (kbd "<tab>") 'magit-toggle-section
+  (kbd "<enter>") 'magit-visit-item
+  (kbd ", o") 'magit-checkout
+  (kbd ", c") 'magit-status)
 
 (add-hook 'compilation-mode-hook '(lambda ()
                                     (local-unset-key "g")
@@ -79,9 +85,6 @@
   (kbd "<enter>") 'ruby-reindent-then-newline-and-indent)
 
 (evil-define-key 'normal global-map (kbd "SPC") 'ace-jump-mode)
-
-(defun rspec-compile-default-directory ()
-  (rspec-compile default-directory))
 
 (evil-define-key 'normal dired-mode-map (kbd ", k") 'dired-up-directory)
 
