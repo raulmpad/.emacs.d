@@ -183,7 +183,8 @@
   )
 (add-hook 'fundamental-mode-hook 'remove-dos-eol)
 
-(load-theme 'wombat)
+(load-theme 'solarized-light)
+(setq evil-default-cursor (quote (t "black")))
 
 (require 'term)
 
@@ -205,7 +206,7 @@ or start a new one while killing a defunt one"
 					;(add-hook 'magit-checkout-command-hook '(lambda () (projectile-invalidate-cache)))
 
 (require 'yasnippet)
-(yas-minor-mode)
+(yas-minor-mode 1)
 (setq yas/root-directory "~/.emacs.d/snippets")
 (yas/load-directory yas/root-directory)
 
@@ -241,12 +242,13 @@ or start a new one while killing a defunt one"
 
 (winner-mode 1)
 
-;; (require 'auto-complete-config)
+(require 'popup)
+(require 'auto-complete-config)
 ;; (add-to-list 'ac-dictionary-directories "~/.emacs.d//ac-dict")
-;; (ac-config-default)
+(ac-config-default)
 ;; (setq rsense-home "/usr/local/Cellar/rsense/0.3/libexec")
 ;; (add-to-list 'load-path (concat rsense-home "/etc"))
-;; (setq ac-auto-start nil)
+(setq ac-auto-start 3)
 ;;
 
 (require 'helm-mode)
@@ -288,7 +290,6 @@ or start a new one while killing a defunt one"
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)
 (ido-mode 1)
-
 
 (require 'smex)
 (smex-initialize)

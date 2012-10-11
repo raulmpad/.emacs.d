@@ -106,5 +106,9 @@
 (my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
 (my-move-key evil-motion-state-map evil-normal-state-map " ")
 
+
+;; (evil-define-key 'insert ac-mode-map (kbd "C-n") 'ac-next
+;;   (kbd "C-p") 'ac-previous)
+
 (provide 'my-evil-bindings)
 
