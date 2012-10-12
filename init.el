@@ -156,9 +156,6 @@
 (global-set-key (kbd "M-e") 'rgrep)
 
 
-(setq custom-file "~/.emacs.d/custom.el")
-(load custom-file 'noerror)
-
 (auto-fill-mode nil)
 
 (custom-set-faces
@@ -183,9 +180,6 @@
   )
 (add-hook 'fundamental-mode-hook 'remove-dos-eol)
 
-(load-theme 'solarized-light)
-(setq evil-default-cursor (quote (t "black")))
-
 (require 'term)
 
 (defun visit-shell ()
@@ -206,7 +200,7 @@ or start a new one while killing a defunt one"
 					;(add-hook 'magit-checkout-command-hook '(lambda () (projectile-invalidate-cache)))
 
 (require 'yasnippet)
-(yas-minor-mode 1)
+(yas-global-mode)
 (setq yas/root-directory "~/.emacs.d/snippets")
 (yas/load-directory yas/root-directory)
 
@@ -297,3 +291,19 @@ or start a new one while killing a defunt one"
 
 (require 'ido-ubiquitous)
 (ido-ubiquitous-mode)
+
+(blink-cursor-mode -1)
+
+(defun ack-in-directory (pattern &optional regexp directory)
+  "Run ack inside a directory"
+  (interactive (ack-and-a-half-interactive))
+  (ack-and-a-half-run (read-directory-name "directory to look in") regexp pattern))
+(global-set-key (kbd "C-c e") 'ack-in-directory)
+
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file 'noerror)
+
+(load-theme 'solarized-light)
+(setq evil-default-cursor (quote (t "black")))
+
+
