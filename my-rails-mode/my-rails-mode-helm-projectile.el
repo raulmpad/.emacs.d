@@ -30,6 +30,7 @@
 	(views  "app/views/")
 	(controllers  "app/controllers/")
 	(helpers  "app/helpers/")
+	(mailers  "app/mailers/")
 	(specs  "specs/")
 	(javascripts  "public/javascripts/")
 	(stylesheets  "public/stylesheets/"))
@@ -49,6 +50,7 @@
 			 mrm/helm-c-source-views-files-list
 			 mrm/helm-c-source-controllers-files-list
 			 mrm/helm-c-source-helpers-files-list
+			 mrm/helm-c-source-mailers-files-list
 			 mrm/helm-c-source-specs-files-list
 			 mrm/helm-c-source-javascripts-files-list
 			 mrm/helm-c-source-stylesheets-files-list)
