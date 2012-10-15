@@ -13,25 +13,9 @@
 	   '(mode-line . helm-generic-file-mode-line-string)
 	   '(type . file))))
 
-(mrm/def-helm-c-source models)
-(mrm/def-helm-c-source views)
-(mrm/def-helm-c-source controllers)
-(mrm/def-helm-c-source helpers)
-(mrm/def-helm-c-source specs)
-(mrm/def-helm-c-source javascripts)
-(mrm/def-helm-c-source stylesheets)
-
 (defmacro mrm/def-files-list (name path)
   `(defun ,(intern (format "mrm/%S-files-list" name)) ()
      (projectile-get-project-files (concat (projectile-get-project-root) ,path))))
-
-(mrm/def-files-list models "app/models/")
-(mrm/def-files-list views "app/views/")
-(mrm/def-files-list controllers "app/controllers/")
-(mrm/def-files-list helpers "app/helpers/")
-(mrm/def-files-list specs "spec/")
-(mrm/def-files-list javascripts "public/javascripts/")
-(mrm/def-files-list stylesheets "public/stylesheets/")
 
 (defmacro mrm/def-helm-projectile (name)
 ;;;###autoload
@@ -39,16 +23,20 @@
      ,(format "Search using helm for %S" name)
      (interactive)
      (helm-other-buffer (list ,(intern (format "mrm/helm-c-source-%S-files-list" name)))
-			,(format "*My Rails Mode %s*" name )))
-  )
+			,(format "*My Rails Mode %s*" name ))))
 
-(mrm/def-helm-projectile models)
-(mrm/def-helm-projectile views)
-(mrm/def-helm-projectile controllers)
-(mrm/def-helm-projectile helpers)
-(mrm/def-helm-projectile specs)
-(mrm/def-helm-projectile javascripts)
-(mrm/def-helm-projectile stylesheets)
+(loop for pair in 
+      '((models  "app/models/")
+	(views  "app/views/")
+	(controllers  "app/controllers/")
+	(helpers  "app/helpers/")
+	(specs  "specs/")
+	(javascripts  "public/javascripts/")
+	(stylesheets  "public/stylesheets/"))
+      do(progn
+	  (eval `(mrm/def-helm-c-source ,(first pair)))
+	  (eval `(mrm/def-files-list ,(first pair) ,(second pair)))
+	  (eval `(mrm/def-helm-projectile ,(first pair)))))
 
 ;;;###autoload
 (defun mrm/helm-projectile-all (&optional arg)
