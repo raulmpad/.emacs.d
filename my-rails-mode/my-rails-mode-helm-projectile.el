@@ -13,10 +13,17 @@
 	   '(mode-line . helm-generic-file-mode-line-string)
 	   '(type . file))))
 
+(mrm/def-helm-c-source models)
+(mrm/def-helm-c-source views)
+(mrm/def-helm-c-source controllers)
+(mrm/def-helm-c-source helpers)
+(mrm/def-helm-c-source specs)
+(mrm/def-helm-c-source javascripts)
+(mrm/def-helm-c-source stylesheets)
+
 (defmacro mrm/def-files-list (name path)
   `(defun ,(intern (format "mrm/%S-files-list" name)) ()
      (projectile-get-project-files (concat (projectile-get-project-root) ,path))))
-
 
 (mrm/def-files-list models "app/models/")
 (mrm/def-files-list views "app/views/")
@@ -26,41 +33,22 @@
 (mrm/def-files-list javascripts "public/javascripts/")
 (mrm/def-files-list stylesheets "public/stylesheets/")
 
-(mrm/def-helm-c-source models)
-(mrm/def-helm-c-source views)
-(mrm/def-helm-c-source controllers)
-(mrm/def-helm-c-source helpers)
-(mrm/def-helm-c-source specs)
-(mrm/def-helm-c-source javascripts)
-(mrm/def-helm-c-source stylesheets)
-
+(defmacro mrm/def-helm-projectile (name)
 ;;;###autoload
-(defun mrm/helm-projectile-models ()
-  "Search using helm for models"
-  (interactive)
-  (helm-other-buffer '(mrm/helm-c-source-models-files-list)
-                     (format "*My Rails Mode %s*" "models" )))
+  `(defun ,(intern (format "mrm/helm-projectile-%S" name)) ()
+     ,(format "Search using helm for %S" name)
+     (interactive)
+     (helm-other-buffer (list ,(intern (format "mrm/helm-c-source-%S-files-list" name)))
+			,(format "*My Rails Mode %s*" name )))
+  )
 
-;;;###autoload
-(defun mrm/helm-projectile-views ()
-  "Search using helm for views"
-  (interactive)
-  (helm-other-buffer '(mrm/helm-c-source-views-files-list)
-                     (format "*My Rails Mode %s*" "views" )))
-
-;;;###autoload
-(defun mrm/helm-projectile-controllers ()
-  "Search using helm for controllers"
-  (interactive)
-  (helm-other-buffer '(mrm/helm-c-source-controllers-files-list)
-                     (format "*My Rails Mode %s*" "controllers" )))
-
-;;;###autoload
-(defun mrm/helm-projectile-specs ()
-  "Search using helm for specs"
-  (interactive)
-  (helm-other-buffer '(mrm/helm-c-source-specs-files-list)
-                     (format "*My Rails Mode %s*" "specs" )))
+(mrm/def-helm-projectile models)
+(mrm/def-helm-projectile views)
+(mrm/def-helm-projectile controllers)
+(mrm/def-helm-projectile helpers)
+(mrm/def-helm-projectile specs)
+(mrm/def-helm-projectile javascripts)
+(mrm/def-helm-projectile stylesheets)
 
 ;;;###autoload
 (defun mrm/helm-projectile-all (&optional arg)
@@ -69,13 +57,13 @@
   (interactive "P")
   (if (consp arg)
       (helm-projectile)
-  (helm-other-buffer '(mrm/helm-c-source-models-files-list
-		       mrm/helm-c-source-views-files-list
-		       mrm/helm-c-source-controllers-files-list
-		       mrm/helm-c-source-helpers-files-list
-		       mrm/helm-c-source-specs-files-list
-		       mrm/helm-c-source-javascripts-files-list
-		       mrm/helm-c-source-stylesheets-files-list)
-                     (format "*My Rails Mode %s*" "specs" ))))
+    (helm-other-buffer '(mrm/helm-c-source-models-files-list
+			 mrm/helm-c-source-views-files-list
+			 mrm/helm-c-source-controllers-files-list
+			 mrm/helm-c-source-helpers-files-list
+			 mrm/helm-c-source-specs-files-list
+			 mrm/helm-c-source-javascripts-files-list
+			 mrm/helm-c-source-stylesheets-files-list)
+		       (format "*My Rails Mode %s*" "specs" ))))
 
 (provide 'my-rails-mode-helm-projectile)
