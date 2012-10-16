@@ -85,6 +85,7 @@ or start a new one while killing a defunt one"
 (require 'inits/evil-and-bindings)
 (require 'inits/ido)
 (require 'inits/grepping)
+(require 'inits/yasnippet)
 
 ;expand-region
 ;; todo this is not workin 
