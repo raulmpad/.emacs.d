@@ -11,6 +11,9 @@ anything-c-adaptive-history
 *.swp
 el-get
 tmp
+eshell
+bookmarks
+ac-compihst.dat
 mount-ram.sh
 umount-ram.sh
 abbrev_defs
