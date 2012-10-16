@@ -37,20 +37,6 @@
     (comment-dwim arg)))
 (global-set-key (kbd "M-;") 'comment-dwim-line)
 
-(autoload 'vkill "vkill" nil t)
-(autoload 'list-unix-processes "vkill" nil t)
-(defun open-vkill-and-update ()
-  (interactive)
-  (vkill)
-  (vkill-update-process-info))
-(global-set-key (kbd "<f3>") 'open-vkill-and-update)
-
-(add-hook 'vkill-after-send-signal-hook '(lambda ()
-                                           (setq line (line-number-at-pos))
-                                           (goto-char (point-min)) (forward-line line )
-                                           (vkill-update-process-info)))
-
-
 (defun delete-trailing-whitespace-on-file-write ()
     (add-hook 'local-write-file-hooks
               '(lambda()
