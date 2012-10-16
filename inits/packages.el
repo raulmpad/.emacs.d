@@ -1,10 +1,6 @@
 (unless (file-exists-p "~/.emacs.d/el-get")
-  (url-retrieve
-   "https://raw.github.com/dimitri/el-get/master/el-get-install.el"
-   (lambda (s)
-     (let (el-get-master-branch)
-       (goto-char (point-max))
-       (eval-print-last-sexp)))))
+  (let (el-get-master-branch)
+    (eval-buffer (url-retrieve-synchronously "https://raw.github.com/dimitri/el-get/master/el-get-install.el"))))
 
 (require 'package)
 (package-initialize)
