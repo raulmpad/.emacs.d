@@ -3,21 +3,12 @@
 
 (key-chord-mode 1)
 
-(global-set-key (kbd "C-q") (lambda () (interactive) (switch-to-prev-buffer (previous-window))))
-(global-set-key (kbd "C-w") (lambda () (interactive) (switch-to-next-buffer (previous-window))))
 
 (defun match-paren (arg)
   "Go to the matching paren if on a paren."
   (interactive "p")
   (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
         ((looking-at "\\s\)") (forward-char 1) (backward-list 1))))
-
-(global-set-key (kbd "s-h") 'windmove-left)
-(global-set-key (kbd "s-l") 'windmove-right)
-(global-set-key (kbd "s-j") 'windmove-down)
-(global-set-key (kbd "s-k") 'windmove-up)
-(global-set-key (kbd "s-d") 'previous-buffer)
-(global-set-key (kbd "s-f") 'next-buffer)
 
 
 ;; the greates keymapping EVER
@@ -35,13 +26,6 @@
       (progn (comint-goto-process-mark)
        (evil-append-line nil))
     (evil-insert 1)))
-;TODO
-(defun comint-resend-last-input ()
-  (interactive)
-  (other-window 1)
-  (comint-goto-end-and-insert)
-  (comint-previous-input 1)
-  (comint-send-input))
 
 (evil-define-key 'normal term-raw-map "i" 'go-to-end-and-insert)
 (evil-define-key 'normal comint-mode-map "i" 'comint-goto-end-and-insert)
@@ -140,4 +124,4 @@
 (evil-define-key 'motion global-map (kbd ", g") 'google-query)
 (evil-define-key 'visual global-map (kbd ", g") 'google-query)
 
-(provide 'inits/evil-and-bindings)
+(provide 'inits/evil)
