@@ -61,13 +61,19 @@
   (kbd ", f") 'ido-find-file
   (kbd ", d") 'ido-dired)
 
-;; (evil-add-hjkl-bindings magit-branch-manager-mode-map 'emacs
-;;   "K" 'magit-discard-item
-;;   "L" 'magit-key-mode-popup-logging)
-;; (evil-add-hjkl-bindings magit-status-mode-map 'emacs
-;;   "K" 'magit-discard-item
-;;   "l" 'magit-key-mode-popup-logging
-;;   "h" 'magit-toggle-diff-refine-hunk)
+(evil-add-hjkl-bindings magit-branch-manager-mode-map 'emacs
+  (kbd "C-f") 'evil-scroll-page-down
+  (kbd "C-b") 'evil-scroll-page-up)
+  ;; "K" 'magit-discard-item
+(evil-add-hjkl-bindings magit-status-mode-map 'emacs
+  (kbd "C-f") 'evil-scroll-page-down
+  (kbd "C-b") 'evil-scroll-page-up
+  (kbd "K") 'magit-discard-item
+  (kbd "h") 'magit-toggle-diff-refine-hunk
+  (kbd "l") 'magit-key-mode-popup-logging)
+  ;; "K" 'magit-discard-item
+  ;; "l" 'magit-key-mode-popup-logging
+  ;; "h" 'magit-toggle-diff-refine-hunk)
 
 (evil-define-key 'motion magit-status-mode-map
   (kbd "<tab>") 'magit-toggle-section
@@ -109,6 +115,23 @@
 
 ;; (evil-define-key 'insert ac-mode-map (kbd "C-n") 'ac-next
 ;;   (kbd "C-p") 'ac-previous)
+
+(evil-define-key 'motion help-mode-map (kbd "<left>") 'help-go-back)
+(evil-define-key 'motion help-mode-map (kbd "<right>") 'help-go-forward)
+
+(defun google-query ()
+  "Googles a query or region if any."
+  (interactive)
+  (browse-url
+   (concat
+    "http://www.google.com/search?ie=utf-8&oe=utf-8&q="
+    (if mark-active
+        (buffer-substring (region-beginning) (region-end))
+      (read-string "Google: " (thing-at-point 'symbol))))))
+
+(evil-define-key 'normal global-map (kbd ", g") 'google-query)
+(evil-define-key 'motion global-map (kbd ", g") 'google-query)
+(evil-define-key 'visual global-map (kbd ", g") 'google-query)
 
 (provide 'my-evil-bindings)
 

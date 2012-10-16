@@ -109,11 +109,10 @@
 			    (require 'ruby-mode)
                             (add-hook 'haml-mode-hook 'flyspell-mode-off)
                             (add-hook 'haml-mode-hook 'delete-trailing-whitespace-on-file-write)))
-        (:name pry
-               :type github
-               :pkgname "jacott/emacs-pry"
-               :post-init (progn (require 'pry))
-               )
+        ;; (:name pry
+        ;;        :type github
+        ;;        :pkgname "jacott/emacs-pry"
+        ;;        :post-init (progn (require 'pry)))
         (:name wgrep
                :type github
                :pkgname "mhayashi1120/Emacs-wgrep"
@@ -124,6 +123,16 @@
                :feature "projectile"
                :checkout "c5436c8260"
                )
+	(:name magit
+	       :website "https://github.com/magit/magit#readme"
+	       :description "It's Magit! An Emacs mode for Git."
+	       :type github
+	       :pkgname "magit/magit"
+	       :checkout "5ed79cb120"
+	       :info "."
+	       :autoloads ("50magit")
+	       :build (("make" "all"))
+	       :build/darwin `(,(concat "make EMACS=" el-get-emacs " all")))
         ))
 
 (setq my-packages (append '(
@@ -141,6 +150,7 @@
 			    evil
 			    evil-surround
 			    rhtml-mode
+			    zenburn
 			    haml-mode
 			    bundler
 			    yaml-mode
@@ -149,7 +159,9 @@
 			    inf-ruby
 			    smex
 			    ido-ubiquitous
-			    rvm)
+			    rainbow-mode
+			    rvm
+			    rinari)
                           (mapcar 'el-get-source-name el-get-sources)))
 (el-get 'sync my-packages)
 
@@ -195,6 +207,7 @@ or start a new one while killing a defunt one"
 (global-set-key (kbd "<f2>") 'visit-shell)
 
 (add-to-list 'load-path "~/.emacs.d/my-rails-mode/")
+;; (require 'my-rails-mode-helm-projectile)
 (require 'my-rails-mode)
 
 					;(add-hook 'magit-checkout-command-hook '(lambda () (projectile-invalidate-cache)))
@@ -246,7 +259,6 @@ or start a new one while killing a defunt one"
 ;;
 
 (require 'helm-mode)
-(global-set-key (kbd "s-r") 'helm-projectile)
 (global-set-key (kbd "s-a") 'helm-mini)
 (global-set-key (kbd "s-i") 'helm-imenu)
 (global-set-key (kbd "s-x") 'helm-M-x)
@@ -299,11 +311,19 @@ or start a new one while killing a defunt one"
   (interactive (ack-and-a-half-interactive))
   (ack-and-a-half-run (read-directory-name "directory to look in") regexp pattern))
 (global-set-key (kbd "C-c e") 'ack-in-directory)
+(add-to-list 'auto-mode-alist '("\\.css$" . rainbow-mode))
+
+(defadvice rspec-verify-all (after rename-compilation-buffer ())
+  "Rename compilation buffer to *compilation all*"
+  (save-excursion
+    (switch-to-buffer rspec-compilation-buffer-name)
+    (rename-buffer "*compilation all*" t)))
+
+(ad-activate 'rspec-verify-all)
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file 'noerror)
 
-(load-theme 'solarized-light)
-(setq evil-default-cursor (quote (t "black")))
-
+(load-theme 'solarized-dark)
+;; (setq evil-default-cursor (quote (t "black")))
 
