@@ -3,8 +3,8 @@
 (setq enh-ruby-program "~/.rvm/rubies/ruby-1.9.3-p125/bin/ruby")
 ;; (autoload 'ruby-mode "ruby-mode" "Major mode for ruby files" t)
 (add-to-list 'auto-mode-alist '("\\.rb$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("^Gemfile$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("^Rakefile$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Rakefile$" . ruby-mode))
 (add-to-list 'interpreter-mode-alist '("ruby" . ruby-mode))
 (rvm-autodetect-ruby)
 

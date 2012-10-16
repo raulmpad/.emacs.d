@@ -6,12 +6,6 @@
 
 (setq el-get-sources
       '(
-	(:name Enhanced-Ruby-Mode
-	       :description "Replacement for ruby-mode which uses ruby 1.9's Ripper to parse and indent"
-	       :type github
-	       :pkgname "jacott/Enhanced-Ruby-Mode"
-	       :features ruby-mode
-	       :post-init (progn (load-library "ruby-mode")))
         (:name flymake-haml
                :type elpa
                :post-init (progn (add-hook 'haml-mode-hook 'flymake-haml-load)))
@@ -60,36 +54,38 @@
 	       :autoloads ("50magit")
 	       :build (("make" "all"))
 	       :build/darwin `(,(concat "make EMACS=" el-get-emacs " all")))
+	(:name ruby-mode
+	       :type elpa)
+	(:name Enhanced-Ruby-Mode
+	       :description "Replacement for ruby-mode which uses ruby 1.9's Ripper to parse and indent"
+	       :type github
+	       :pkgname "jacott/Enhanced-Ruby-Mode"
+	       :features ruby-mode
+	       :post-init (progn (load-library "ruby-mode")))
         ))
 
-(el-get 'sync (append '(
-			    ruby-mode
-			    helm
-			    color-theme-solarized
-			    auto-complete
-			    expand-region
-			    magit
-			    yasnippet
-			    idle-highlight-mode
-			    ace-jump-mode
-			    rainbow-delimiters
-			    evil
-			    evil-surround
-			    rhtml-mode
-			    zenburn
-			    haml-mode
-			    bundler
-			    yaml-mode
-			    rspec-mode
-			    key-chord
-			    inf-ruby
-			    smex
-			    ido-ubiquitous
-			    rainbow-mode
-			    rvm
-			    rinari
-			    Enhanced-Ruby-Mode
-			    )
-                          (mapcar 'el-get-source-name el-get-sources)))
+(el-get 'sync (append '(helm
+			color-theme-solarized
+			auto-complete
+			expand-region
+			yasnippet
+			idle-highlight-mode
+			ace-jump-mode
+			rainbow-delimiters
+			evil
+			evil-surround
+			rhtml-mode
+			zenburn
+			bundler
+			yaml-mode
+			rspec-mode
+			key-chord
+			inf-ruby
+			smex
+			ido-ubiquitous
+			rainbow-mode
+			rvm
+			rinari)
+		      (mapcar 'el-get-source-name el-get-sources)))
 
 (provide 'inits/packages)

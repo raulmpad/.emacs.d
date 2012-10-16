@@ -81,8 +81,8 @@ or start a new one while killing a defunt one"
 (require 'inits/auto-complete)
 (require 'inits/helm)
 (require 'inits/projectile)
-(require 'inits/evil-and-bindings)
 (require 'inits/ruby)
+(require 'inits/evil-and-bindings)
 (require 'inits/ido)
 (require 'inits/grepping)
 
