@@ -4,4 +4,4 @@
                         '(lambda (word) (capitalize (downcase word)))
                         (split-string s "_")) ""))
 
-(provide 'my-ext)
+(provide 'inits/elisp-extensions)

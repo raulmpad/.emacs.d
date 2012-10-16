@@ -39,3 +39,14 @@
  '(helm-selection ((t (:underline t))))
  '(magit-item-highlight ((t nil)) t)
  '(yas/field-highlight-face ((t (:inherit (quote highlight)))) t))
+
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(erm-syn-errline ((t (:underline "Red"))))
+ '(erm-syn-warnline ((t (:underline "Orange"))))
+ '(helm-selection ((t (:underline t))))
+ '(magit-item-highlight ((t nil)) t)
+ '(yas/field-highlight-face ((t (:inherit (quote highlight))))))

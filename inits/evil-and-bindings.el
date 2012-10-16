@@ -1,3 +1,10 @@
+(evil-mode 1)
+(global-surround-mode 1)
+
+(key-chord-mode 1)
+
+(global-set-key (kbd "C-q") (lambda () (interactive) (switch-to-prev-buffer (previous-window))))
+(global-set-key (kbd "C-w") (lambda () (interactive) (switch-to-next-buffer (previous-window))))
 
 (defun match-paren (arg)
   "Go to the matching paren if on a paren."
@@ -133,5 +140,4 @@
 (evil-define-key 'motion global-map (kbd ", g") 'google-query)
 (evil-define-key 'visual global-map (kbd ", g") 'google-query)
 
-(provide 'my-evil-bindings)
-
+(provide 'inits/evil-and-bindings)
