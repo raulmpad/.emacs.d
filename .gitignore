@@ -13,3 +13,4 @@ el-get
 tmp
 mount-ram.sh
 umount-ram.sh
+abbrev_defs
