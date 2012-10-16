@@ -2,16 +2,16 @@
 
 (defmacro mrm/def-helm-c-source (name)
   `(defvar ,(intern (format "mrm/helm-c-source-%S-files-list" name))
-     (list '(name . ,(format "%S" name))
-	   ;; Needed for filenames with capitals letters.
-	   '(disable-shortcuts)
-	   '(candidates . ,(intern (format "mrm/%S-files-list" name)))
-	   '(volatile)
-	   '(keymap . ,helm-generic-files-map)
-	   '(help-message . helm-generic-file-help-message)
-	   '(match  helm-c-match-on-basename)
-	   '(mode-line . helm-generic-file-mode-line-string)
-	   '(type . file))))
+     '((name . ,(format "%S" name))
+       ;; Needed for filenames with capitals letters.
+       (disable-shortcuts)
+       (candidates . ,(intern (format "mrm/%S-files-list" name)))
+       (volatile)
+       (keymap . ,helm-generic-files-map)
+       (help-message . helm-generic-file-help-message)
+       (match  helm-c-match-on-basename)
+       (mode-line . helm-generic-file-mode-line-string)
+       (type . file))))
 
 (defmacro mrm/def-files-list (name path)
   `(defun ,(intern (format "mrm/%S-files-list" name)) ()
@@ -31,13 +31,24 @@
 	(controllers  "app/controllers/")
 	(helpers  "app/helpers/")
 	(mailers  "app/mailers/")
-	(specs  "specs/")
+	(specs  "spec/")
 	(javascripts  "public/javascripts/")
 	(stylesheets  "public/stylesheets/"))
       do(progn
 	  (eval `(mrm/def-helm-c-source ,(first pair)))
 	  (eval `(mrm/def-files-list ,(first pair) ,(second pair)))
 	  (eval `(mrm/def-helm-projectile ,(first pair)))))
+
+(mrm/def-helm-c-source various)
+(defun mrm/various-files-list ()
+  (let ((projectile-ignored-directories '("tmp"
+					   "public"
+					   "coverage"
+					   "db/migrate"
+					   "app"
+					   "spec")))
+    (projectile-get-project-files (projectile-get-project-root))
+    ))
 
 ;;;###autoload
 (defun mrm/helm-projectile-all (&optional arg)
@@ -53,7 +64,8 @@
 			 mrm/helm-c-source-mailers-files-list
 			 mrm/helm-c-source-specs-files-list
 			 mrm/helm-c-source-javascripts-files-list
-			 mrm/helm-c-source-stylesheets-files-list)
+			 mrm/helm-c-source-stylesheets-files-list
+			 mrm/helm-c-source-various-files-list)
 		       (format "*My Rails Mode %s*" "specs" ))))
 
 (provide 'my-rails-mode-helm-projectile)
