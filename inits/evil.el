@@ -123,5 +123,6 @@
 (evil-define-key 'normal global-map (kbd ", g") 'google-query)
 (evil-define-key 'motion global-map (kbd ", g") 'google-query)
 (evil-define-key 'visual global-map (kbd ", g") 'google-query)
+(setq evil-want-fine-undo t)
 
 (provide 'inits/evil)
