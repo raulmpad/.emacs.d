@@ -6,6 +6,12 @@
 
 (setq el-get-sources
       '(
+	(:name Enhanced-Ruby-Mode
+	       :description "Replacement for ruby-mode which uses ruby 1.9's Ripper to parse and indent"
+	       :type github
+	       :pkgname "jacott/Enhanced-Ruby-Mode"
+	       :features ruby-mode
+	       :post-init (progn (load-library "ruby-mode")))
         (:name flymake-haml
                :type elpa
                :post-init (progn (add-hook 'haml-mode-hook 'flymake-haml-load)))
@@ -58,7 +64,6 @@
 
 (el-get 'sync (append '(
 			    ruby-mode
-			    Enhanced-Ruby-Mode
 			    helm
 			    color-theme-solarized
 			    auto-complete
@@ -82,7 +87,9 @@
 			    ido-ubiquitous
 			    rainbow-mode
 			    rvm
-			    rinari)
+			    rinari
+			    Enhanced-Ruby-Mode
+			    )
                           (mapcar 'el-get-source-name el-get-sources)))
 
 (provide 'inits/packages)
