@@ -18,6 +18,7 @@
     (define-key map (kbd "s-y") 'mrm/helm-projectile-models)
     (define-key map (kbd "s-u") 'mrm/helm-projectile-views)
     (define-key map (kbd "s-o") 'mrm/helm-projectile-specs)
+    (define-key map (kbd "s-r") 'mrm/helm-projectile-all)
     map)
   "Keymap for `my-rails-mode`.")
 
@@ -155,4 +156,3 @@ White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
 (global-my-rails-mode t)
 
 (provide 'my-rails-mode)
-
