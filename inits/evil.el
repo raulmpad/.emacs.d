@@ -94,7 +94,7 @@
   (rspec-run-single-file (dired-current-directory) (rspec-core-options)))
 
 (evil-define-key 'normal dired-mode-map (kbd ", v") 'dired-rspec-verify)
-(evil-define-key 'normal dired-mode-map (kbd ", a") 'dired-rspec-verify-all)
+(evil-define-key 'normal dired-mode-map (kbd ", s") 'dired-rspec-verify-single)
 
 (defun my-move-key (keymap-from keymap-to key)
   "Moves key binding from one keymap to another, deleting from the old location. "
