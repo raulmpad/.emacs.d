@@ -17,13 +17,11 @@
 		   (find-file (concat (projectile-get-project-root) ,path candidate))))
        (type . file))))
 
-(defmacro mrm/def-files-list (name path)
+(defmacro mrm/def-files-list (name path regexp)
   `(defun ,(intern (format "mrm/%S-files-list" name)) ()
      (let ((subdirpath (concat (expand-file-name (projectile-get-project-root)) ,path)))
-       (mapcar (lambda (c)
-		 (substring c (length subdirpath)))
-	       (projectile-get-project-files subdirpath))
-       )
+       (remq nil (mapcar (lambda (c) (if (string-match ,regexp c) (substring c (length subdirpath))))
+			 (projectile-get-project-files subdirpath))))
      ))
 
 (defmacro mrm/def-helm-projectile (name)
@@ -34,19 +32,19 @@
      (helm-other-buffer (list ,(intern (format "mrm/helm-c-source-%S-files-list" name)))
 			,(format "*My Rails Mode %s*" name ))))
 
-(loop for pair in 
-      '((models  "app/models/")
-	(views  "app/views/")
-	(controllers  "app/controllers/")
-	(helpers  "app/helpers/")
-	(mailers  "app/mailers/")
-	(specs  "spec/")
-	(javascripts  "public/javascripts/")
-	(stylesheets  "public/stylesheets/"))
+(loop for args in 
+      '((models  "app/models/" ".rb$")
+	(views  "app/views/" ".rb$")
+	(controllers  "app/controllers/" ".rb$")
+	(helpers  "app/helpers/" ".rb$")
+	(mailers  "app/mailers/" ".rb$")
+	(specs  "spec/" "_spec.rb$")
+	(javascripts  "public/javascripts/" ".js$")
+	(stylesheets  "public/stylesheets/" ".css$"))
       do(progn
-	  (eval `(mrm/def-helm-c-source ,(first pair) ,(second pair)))
-	  (eval `(mrm/def-files-list ,(first pair) ,(second pair)))
-	  (eval `(mrm/def-helm-projectile ,(first pair)))))
+	  (eval `(mrm/def-helm-c-source ,(first args) ,(second args)))
+	  (eval `(mrm/def-files-list ,(first args) ,(second args) ,(third args)))
+	  (eval `(mrm/def-helm-projectile ,(first args)))))
 
 ;(mrm/def-helm-c-source various )
 ;(defun mrm/various-files-list ()
