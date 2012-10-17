@@ -48,11 +48,14 @@ else return nil"
 
 (defun mrm/ack-project (pattern &optional regexp directory)
   (interactive (ack-and-a-half-interactive))
-  (let ((ack-and-a-half-arguments (quote ("--type=ruby" "--type=html"
-					  "--type=js" "--type=css"
-					  "--type-add" "html=.haml"
-					  "--type-add" "css=.sass,.scss"
-					  "--ignore-dir=tmp" "--ignore-dir=coverage"))))
+  (let ((ack-and-a-half-arguments (quote ("--type=ruby"
+					  "--type=html"
+					  "--type=js"
+					  "--type=css"
+					  "--type-add html=.haml"
+					  "--type-add css=.sass,.scss"
+					  "--ignore-dir=tmp"
+					  "--ignore-dir=coverage"))))
   (ack-and-a-half-run (mrm/root) regexp pattern)))
 
 
@@ -96,6 +99,7 @@ else return nil"
            "log/"
            (ido-completing-read "Open log: " (directory-files (concat (mrm/root) "log/") nil "[^.|^..]"))))
   (auto-revert-tail-mode 1)
+  (setq auto-revert-verbose nil)
   (my-rails-mode t))
 
 (defun mrm/run-server (&optional arg)
