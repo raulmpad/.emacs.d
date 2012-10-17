@@ -61,6 +61,7 @@
 
 ;;;###autoload
 (defun mrm/helm-projectile-all () ;(&optional arg)
+  (interactive)
   (helm-projectile)
   ;"Search using helm for models, views, controllers, helpers, specs, js and stylesheets files.
    ;If called with optional arg uses `helm-projectile' for show all files in the project."
