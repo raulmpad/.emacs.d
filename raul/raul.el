@@ -1,3 +1,4 @@
+; This should be on a custom rails.el file
 (autoload 'inf-ruby "inf-ruby" "Run an inferior Ruby process" t)
     (autoload 'inf-ruby-setup-keybindings "inf-ruby" "" t)
     (eval-after-load 'ruby-mode
