@@ -1,7 +1,9 @@
 (setq ring-bell-function nil)
 (setq visible-bell nil)
+
 (push "/usr/local/bin" exec-path)
-(push "/opt/local/bin" exec-path)
+;;(push "/opt/local/bin" exec-path)
+
 (add-to-list 'load-path "~/.emacs.d")
 
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -78,10 +80,13 @@
 ;;(require 'inits/rainbow-delimiters)
 
 (setq custom-file "~/.emacs.d/custom.el")
-(setq custom-file "~/.emacs.d/raul.el")
-(setq custom-file "~/.emacs.d/inits/keys.el")
+
 (load custom-file 'noerror)
 
-(load-theme 'solarized-dark)
+(load-theme 'misterioso)
 ;; (setq evil-default-cursor (quote (t "black")))
+
+;; (add-to-list 'load-path "~/.emacs.d/raul")
+(load-file "~/.emacs.d/raul/raul.el")
+(load-file "~/.emacs.d/raul/keys.el")
 
