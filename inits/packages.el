@@ -76,8 +76,8 @@
 			idle-highlight-mode
 			ace-jump-mode
 			rainbow-delimiters
-			evil
-			evil-surround
+			;;evil
+			;;evil-surround
 			rhtml-mode
 			zenburn
 			bundler
