@@ -19,6 +19,12 @@
 ;; rgrep power !
 (global-set-key (kbd "s-g") 'rgrep)
 
+;; Goto line
+(global-set-key (kbd "s-l") 'goto-line)
+
+;; jump !!
+(global-set-key (kbd "s-j") 'ace-jump-mode)
+
 ;; easily remove buffer
 (global-set-key (kbd "s-k") (kbd "C-x k RET"))
 
