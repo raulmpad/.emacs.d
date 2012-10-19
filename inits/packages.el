@@ -79,7 +79,7 @@
 			;;evil
 			;;evil-surround
 			rhtml-mode
-			zenburn
+			;;zenburn
 			bundler
 			yaml-mode
 			rspec-mode

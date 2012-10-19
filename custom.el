@@ -6,7 +6,7 @@
  '(ack-and-a-half-arguments nil)
  '(ack-and-a-half-mode-extension-alist nil)
  '(comint-process-echoes t)
- '(custom-safe-themes (quote ("fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "d6a00ef5e53adf9b6fe417d2b4404895f26210c52bb8716971be106550cea257" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" "4cf3221feff536e2b3385209e9b9dc4c2e0818a69a1cdb4b522756bcdf4e00a4" "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" "69349beba557a65bb06f89b28b8fd2890c742f07" "d14db41612953d22506af16ef7a23c4d112150e5" "1440d751f5ef51f9245f8910113daee99848e2c0" "485737acc3bedc0318a567f1c0f5e7ed2dfde3fb" "4711e8fe63ef13accc884c59469067d2f497e79c" default)))
+ '(custom-safe-themes (quote ("d6a00ef5e53adf9b6fe417d2b4404895f26210c52bb8716971be106550cea257" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" default)))
  '(dabbrev-abbrev-skip-leading-regexp ":")
  '(dabbrev-case-distinction nil)
  '(dabbrev-case-fold-search nil)
@@ -22,8 +22,10 @@
  '(recentf-max-saved-items 40)
  '(rspec-spec-command "rspec")
  '(rspec-use-bundler-when-possible nil)
+ '(rspec-use-opts-file-when-available nil)
  '(rspec-use-rake-flag nil)
  '(rspec-use-rvm t)
+ '(rspec-use-zeus-when-possible t)
  '(ruby-check-syntax (quote errors-and-warnings))
  '(ruby-extra-keywords (quote ("include" "extend" "require" "require_relative")))
  '(speedbar-frame-parameters (quote ((minibuffer) (width . 50) (border-width . 0) (menu-bar-lines . 0) (tool-bar-lines . 0) (unsplittable . t) (left-fringe . 0))))
@@ -40,13 +42,4 @@
  '(magit-item-highlight ((t nil)) t)
  '(yas/field-highlight-face ((t (:inherit (quote highlight)))) t))
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(erm-syn-errline ((t (:underline "Red"))))
- '(erm-syn-warnline ((t (:underline "Orange"))))
- '(helm-selection ((t (:underline t))))
- '(magit-item-highlight ((t nil)) t)
- '(yas/field-highlight-face ((t (:inherit (quote highlight))))))
+
