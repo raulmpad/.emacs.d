@@ -9,6 +9,7 @@
 (rvm-autodetect-ruby)
 
 (add-hook 'ruby-mode-hook 'delete-trailing-whitespace-on-file-write)
+
 (require 'ruby-mode-expansions)
 
 ;rails

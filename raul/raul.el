@@ -33,3 +33,5 @@
       (setq cursor-type djcb-normal-cursor-type))))
 
 (add-hook 'post-command-hook 'djcb-set-cursor-according-to-mode)
+
+(add-hook 'ruby-mode-hook (lambda () (ruby-block-mode t) (linum-mode t)))

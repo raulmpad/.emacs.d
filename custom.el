@@ -6,7 +6,7 @@
  '(ack-and-a-half-arguments nil)
  '(ack-and-a-half-mode-extension-alist nil)
  '(comint-process-echoes t)
- '(custom-safe-themes (quote ("d6a00ef5e53adf9b6fe417d2b4404895f26210c52bb8716971be106550cea257" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" default)))
+ '(custom-safe-themes (quote ("fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" default)))
  '(dabbrev-abbrev-skip-leading-regexp ":")
  '(dabbrev-case-distinction nil)
  '(dabbrev-case-fold-search nil)
@@ -28,6 +28,7 @@
  '(rspec-use-zeus-when-possible t)
  '(ruby-check-syntax (quote errors-and-warnings))
  '(ruby-extra-keywords (quote ("include" "extend" "require" "require_relative")))
+ '(safe-local-variable-values (quote ((Coding . utf-8) (ruby-compilation-executable . "ruby") (ruby-compilation-executable . "ruby1.8") (ruby-compilation-executable . "ruby1.9") (ruby-compilation-executable . "rbx") (ruby-compilation-executable . "jruby"))))
  '(speedbar-frame-parameters (quote ((minibuffer) (width . 50) (border-width . 0) (menu-bar-lines . 0) (tool-bar-lines . 0) (unsplittable . t) (left-fringe . 0))))
  '(tool-bar-mode nil))
 (custom-set-faces

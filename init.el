@@ -5,6 +5,8 @@
 ;;(push "/opt/local/bin" exec-path)
 
 (add-to-list 'load-path "~/.emacs.d")
+(add-to-list 'load-path "~/.emacs.d/raul")
+
 
 (fset 'yes-or-no-p 'y-or-n-p)
 (set-frame-font "Monospaced-15")
@@ -77,6 +79,7 @@
 (require 'inits/grepping)
 (require 'inits/yasnippet)
 (require 'inits/expand-region)
+(require 'ruby-block)
 ;;(require 'inits/rainbow-delimiters)
 
 (setq custom-file "~/.emacs.d/custom.el")
@@ -86,7 +89,5 @@
 (load-theme 'misterioso)
 ;; (setq evil-default-cursor (quote (t "black")))
 
-;; (add-to-list 'load-path "~/.emacs.d/raul")
-(load-file "~/.emacs.d/raul/raul.el")
-(load-file "~/.emacs.d/raul/keys.el")
-(load-file "~/.emacs.d/raul/ruby-blocks.el")
+(load "raul.el")
+(load "keys")
