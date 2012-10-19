@@ -89,4 +89,4 @@
 ;; (add-to-list 'load-path "~/.emacs.d/raul")
 (load-file "~/.emacs.d/raul/raul.el")
 (load-file "~/.emacs.d/raul/keys.el")
-
+(load-file "~/.emacs.d/raul/ruby-blocks.el")
