@@ -28,6 +28,9 @@
 ;; easily remove buffer
 (global-set-key (kbd "s-k") (kbd "C-x k RET"))
 
+;; Cut
+(global-set-key (kbd "s-x") (kbd "C-w"))
+
 (defun insert-antidash ()
   "Insert a Euro currency symbol in utf-8."
   (interactive)
