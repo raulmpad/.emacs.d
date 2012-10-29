@@ -86,8 +86,7 @@
 
 (load custom-file 'noerror)
 
-(load-theme 'misterioso)
 ;; (setq evil-default-cursor (quote (t "black")))
 
-(load "raul.el")
+(load "raul")
 (load "keys")

@@ -5,8 +5,8 @@
 (global-set-key (kbd "s-d") 'previous-buffer)
 (global-set-key (kbd "s-f") 'next-buffer)
 
-(global-set-key (kbd "C-q") (lambda () (interactive) (switch-to-prev-buffer (previous-window))))
-(global-set-key (kbd "C-w") (lambda () (interactive) (switch-to-next-buffer (previous-window))))
+;;(global-set-key (kbd "C-q") (lambda () (interactive) (switch-to-prev-buffer (previous-window))))
+;;(global-set-key (kbd "C-w") (lambda () (interactive) (switch-to-next-buffer (previous-window))))
 
 ;; Original idea from
 ;; http://www.opensubscriber.com/message/emacs-devel@gnu.org/10971693.html

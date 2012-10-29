@@ -5,8 +5,12 @@
  ;; If there is more than one, they won't work right.
  '(ack-and-a-half-arguments nil)
  '(ack-and-a-half-mode-extension-alist nil)
+ '(ansi-color-names-vector ["#2d3743" "#ff4242" "#74af68" "#dbdb95" "#34cae2" "#008b8b" "#00ede1" "#e1e1e0"])
+ '(color-theme-directory (quote ("~/.emacs.d/themes/emacs-color-theme-solarized")))
  '(comint-process-echoes t)
+ '(custom-enabled-themes nil)
  '(custom-safe-themes (quote ("fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" default)))
+ '(custom-theme-load-path (quote ("/Users/raul/.emacs.d/el-get/" "/Users/raul/.emacs.d/el-get/color-theme-solarized/" "/Users/raul/.emacs.d/themes/" "/Users/raul/.emacs.d/themes/tomorrow-theme" "/Users/raul/.emacs.d/themes/base16-emacs" custom-theme-directory t)))
  '(dabbrev-abbrev-skip-leading-regexp ":")
  '(dabbrev-case-distinction nil)
  '(dabbrev-case-fold-search nil)
@@ -38,9 +42,8 @@
  ;; If there is more than one, they won't work right.
  '(erm-syn-errline ((t (:underline "Red"))))
  '(erm-syn-warnline ((t (:underline "Orange"))))
- '(font-lock-constant-face ((t (:foreground "#5859b7" :inverse-video nil :underline nil :slant normal :weight normal))))
  '(helm-selection ((t (:underline t))))
- '(magit-item-highlight ((t nil)) t)
+ '(ruby-op-face ((t (:foreground "Magenta" :weight bold))))
  '(yas/field-highlight-face ((t (:inherit (quote highlight)))) t))
 
 

@@ -4,7 +4,7 @@
     (eval-after-load 'ruby-mode
       '(add-hook 'ruby-mode-hook 'inf-ruby-setup-keybindings))
 
-(load-theme 'misterioso)
+;;(load-theme 'misterioso)
 
 ;; Change cursor color according to mode; inspired by
 ;; http://www.emacswiki.org/emacs/ChangingCursorDynamically
@@ -44,3 +44,5 @@
      (set-face-foreground 'magit-diff-del "red3")
      (when (not window-system)
        (set-face-background 'magit-item-highlight "black"))))
+
+(load-theme 'misterioso)
