@@ -2,9 +2,9 @@
 (setq visible-bell nil)
 
 (push "/usr/local/bin" exec-path)
-;;(push "/opt/local/bin" exec-path)
 
 (add-to-list 'load-path "~/.emacs.d")
+(add-to-list 'load-path "~/.emacs.d/evil")
 (add-to-list 'load-path "~/.emacs.d/raul")
 
 
@@ -85,8 +85,6 @@
 (setq custom-file "~/.emacs.d/custom.el")
 
 (load custom-file 'noerror)
-
-;; (setq evil-default-cursor (quote (t "black")))
 
 (load "raul")
 (load "keys")

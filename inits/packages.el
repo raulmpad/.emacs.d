@@ -38,6 +38,17 @@
         ;;        :type github
         ;;        :pkgname "jacott/emacs-pry"
         ;;        :post-init (progn (require 'pry)))
+	;; (:name evil
+       ;; 	       :website "http://gitorious.org/evil/pages/Home"
+       ;; 	       :description "Evil is an extensible vi layer for Emacs. It
+       ;; emulates the main features of Vim, and provides facilities
+       ;; for writing custom extensions."
+       ;; 	       :type elpa
+	      
+       ;; 	       :features evil
+       ;; 	       :depends undo-tree
+       ;; 	       :build (("make" "all" "info"))
+       ;; 	       :info "doc")
         (:name wgrep
                :type github
                :pkgname "mhayashi1120/Emacs-wgrep"
@@ -76,7 +87,6 @@
 			idle-highlight-mode
 			ace-jump-mode
 			rainbow-delimiters
-			;;evil
 			;;evil-surround
 			rhtml-mode
 			;;zenburn

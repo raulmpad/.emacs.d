@@ -26,7 +26,7 @@
  '(recentf-max-saved-items 40)
  '(rspec-spec-command "rspec")
  '(rspec-use-bundler-when-possible nil)
- '(rspec-use-opts-file-when-available nil)
+ '(rspec-use-opts-file-when-available t)
  '(rspec-use-rake-flag nil)
  '(rspec-use-rvm t)
  '(rspec-use-zeus-when-possible t)
