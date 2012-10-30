@@ -34,6 +34,15 @@
 
 (add-hook 'ruby-mode-hook (lambda () (ruby-block-mode t) (wrap-region-mode t) (linum-mode t)))
 
+;; magit colors
+;; change magit diff colors
+(eval-after-load 'magit
+  '(progn
+     (set-face-foreground 'magit-diff-add "green3")
+     (set-face-foreground 'magit-diff-del "red3")
+     (when (not window-system)
+       (set-face-background 'magit-item-highlight "black"))))
+
 (load-theme 'misterioso)
 
 ;; (set-cursor-color "yellow")
