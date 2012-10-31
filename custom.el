@@ -9,7 +9,7 @@
  '(color-theme-directory (quote ("~/.emacs.d/themes/emacs-color-theme-solarized")))
  '(comint-process-echoes t)
  '(custom-enabled-themes nil)
- '(custom-safe-themes (quote ("fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" default)))
+ '(custom-safe-themes (quote ("fab5515afc0931312520b243796956ed65498af486c0da01cfd5dd196e9ebc4c" "1d9f2295049aacd2ba2cf0068b8b6985b78e1913c001135cc7d9930b037493e5" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" default)))
  '(custom-theme-load-path (quote ("/Users/raul/.emacs.d/el-get/" "/Users/raul/.emacs.d/el-get/color-theme-solarized/" "/Users/raul/.emacs.d/themes/" "/Users/raul/.emacs.d/themes/tomorrow-theme" "/Users/raul/.emacs.d/themes/base16-emacs" custom-theme-directory t)))
  '(dabbrev-abbrev-skip-leading-regexp ":")
  '(dabbrev-case-distinction nil)
