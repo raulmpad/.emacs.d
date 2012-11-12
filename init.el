@@ -74,13 +74,11 @@
 (require 'inits/helm)
 (require 'inits/projectile)
 (require 'inits/ruby)
-;;(require 'inits/evil)
 (require 'inits/ido)
 (require 'inits/grepping)
 (require 'inits/yasnippet)
 (require 'inits/expand-region)
 (require 'ruby-block)
-;;(require 'inits/rainbow-delimiters)
 
 (setq custom-file "~/.emacs.d/custom.el")
 

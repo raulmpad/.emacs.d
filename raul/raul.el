@@ -1,8 +1,8 @@
 ; This should be on a custom rails.el file
 (autoload 'inf-ruby "inf-ruby" "Run an inferior Ruby process" t)
-    (autoload 'inf-ruby-setup-keybindings "inf-ruby" "" t)
-    (eval-after-load 'ruby-mode
-      '(add-hook 'ruby-mode-hook 'inf-ruby-setup-keybindings))
+(autoload 'inf-ruby-setup-keybindings "inf-ruby" "" t)
+(eval-after-load 'ruby-mode
+  '(add-hook 'ruby-mode-hook 'inf-ruby-setup-keybindings))
 
 ;; Change cursor color according to mode; inspired by
 ;; http://www.emacswiki.org/emacs/ChangingCursorDynamically
@@ -54,3 +54,16 @@
 (global-surround-mode 1)
 
 (setq evil-default-cursor (quote (t "yellow")))
+
+(add-to-list 'load-path "~/.emacs.d/inits/")
+(require 'helm-rails)
+
+(require 'haml-mode)
+(add-hook 'haml-mode-hook
+	  (lambda ()
+	    (setq indent-tabs-mode nil)
+	    (define-key haml-mode-map "\C-m" 'newline-and-indent)))
+
+(add-to-list 'auto-mode-alist '("\\.sass\\'" . sass-mode))
+; add this line after the auto-complete mode has been loaded
+(add-to-list 'ac-modes 'sass-mode)

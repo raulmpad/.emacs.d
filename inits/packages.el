@@ -87,9 +87,7 @@
 			idle-highlight-mode
 			ace-jump-mode
 			rainbow-delimiters
-			;;evil-surround
 			rhtml-mode
-			;;zenburn
 			bundler
 			yaml-mode
 			rspec-mode
@@ -97,8 +95,9 @@
 			inf-ruby
 			smex
 			ido-ubiquitous
-			rainbow-mode
 			rvm
+			sass-mode
+			quickrun
 			rinari)
 		      (mapcar 'el-get-source-name el-get-sources)))
 
