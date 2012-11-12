@@ -67,3 +67,13 @@
 (add-to-list 'auto-mode-alist '("\\.sass\\'" . sass-mode))
 ; add this line after the auto-complete mode has been loaded
 (add-to-list 'ac-modes 'sass-mode)
+
+;; TODO: Make it work
+;; (defun quickrun_ruby ()
+;;   "Quickrun ruby current buffer."
+;;   (interactive)
+;;   (ruby-mode t)
+;;   (flet ((quickrun/command-key (arg) "ruby" ))
+;;     (quickrun/common (point-min) (point-max))))
+
+;; (define-key ruby-mode-map (kbd "C-c C-r") 'quickrun_ruby)
