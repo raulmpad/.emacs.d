@@ -85,6 +85,7 @@
     (condition-case nil
 	(pop-to-buffer (find-tag-noselect thing))
       ('error (find-tag thing)))))
+(evil-define-key 'normal global-map (kbd ", m") 'asok/find-tag-dwim)
 (global-set-key (kbd "C-c m") 'asok/find-tag-dwim)
 
 ;; Diferent alignments from: http://danconnor.com/post/5028ac91e8891a000000111f/align_and_columnize_key_value_data_in_emacs
@@ -93,5 +94,5 @@
   (align-regexp beg end "\\(\\s-*\\)\=\>\\(\\s-*\\)" 1 1 t))
 (defun align-colons (beg end)
   (interactive "r")
-  (align-regexp beg end ":\\(\\s-*\\)" 1 1 t))a
+  (align-regexp beg end ":\\(\\s-*\\)" 1 1 t))
 

@@ -99,4 +99,4 @@
   (concat default-directory (buffer-name)))
 (global-set-key (kbd "C-n") 'current-buffer-name)
 
-(global-set-key (kbd "C-c C-c C-r") 'quickrun)
+(evil-define-key 'normal global-map (kbd ", c") 'quickrun)
