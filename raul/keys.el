@@ -98,5 +98,11 @@
   (interactive)
   (concat default-directory (buffer-name)))
 (global-set-key (kbd "C-n") 'current-buffer-name)
+(evil-define-key 'normal global-map (kbd ", n") 'current-buffer-name)
 
 (evil-define-key 'normal global-map (kbd ", c") 'quickrun)
+(evil-define-key 'normal global-map (kbd ", w") 'make-frame-command)
+(evil-define-key 'normal global-map (kbd ", g") 'magit-status)
+(evil-define-key 'normal global-map (kbd ", r") 'rspec-verify)
+(evil-define-key 'normal global-map (kbd ", s") 'rspec-verify-single)
+
