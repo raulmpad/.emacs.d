@@ -78,6 +78,7 @@
 
 ;; (define-key ruby-mode-map (kbd "C-c C-r") 'quickrun_ruby)
 
+;; Thanks to "rtags `find . -name '*.rb'`"
 (defun asok/find-tag-dwim ()
   (interactive)
   (let ((thing (thing-at-point 'symbol)))
