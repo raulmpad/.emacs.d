@@ -104,5 +104,6 @@
 (evil-define-key 'normal global-map (kbd ", w") 'make-frame-command)
 (evil-define-key 'normal global-map (kbd ", g") 'magit-status)
 (evil-define-key 'normal global-map (kbd ", r") 'rspec-verify)
-(evil-define-key 'normal global-map (kbd ", s") 'rspec-verify-single)
+(evil-define-key 'normal global-map (kbd ", t") 'rspec-verify-single)
+(evil-define-key 'normal global-map (kbd ", s") 'mrm/ack-project)
 
