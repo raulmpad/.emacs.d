@@ -95,3 +95,21 @@
   (interactive "r")
   (align-regexp beg end ":\\(\\s-*\\)" 1 1 t))
 
+(defun asok/bounds-of-ruby-word-at-point ()
+  (save-excursion
+    (skip-syntax-backward "w_")
+    (if (looking-at "[:a-zA-Z0-9_]+")
+	(cons (+ 1 (point)) (match-end 0)) ; bounds of integer
+      nil)))
+
+(put 'ruby-word 'bounds-of-thing-at-point 'asok/bounds-of-ruby-word-at-point)
+
+(evil-define-motion asok/evil-search-ruby-word-forward (count)
+  "Search forward for ruby word under point."
+  :jump t
+  :type exclusive
+  (dotimes (var (or count 1))
+    (setq isearch-forward t)
+    (evil-search (thing-at-point 'ruby-word) t evil-regexp-search)))
+
+(evil-define-key 'motion ruby-mode-map (kbd "*") 'asok/evil-search-ruby-word-forward)
