@@ -25,6 +25,12 @@
                             (defalias 'ack-same 'ack-and-a-half-same)
                             (defalias 'ack-find-file 'ack-and-a-half-find-file)
                             (defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)))
+	(:name rspec-mode
+	       :description "Enhance ruby-mode for RSpec"
+	       :type github
+	       :pkgname "raulmpad/rspec-mode"
+	       :features rspec-mode)
+
         (:name haml-mode
                :type github
 	       :pkgname "dgutov/haml-mode"
@@ -90,7 +96,6 @@
 			rhtml-mode
 			bundler
 			yaml-mode
-			rspec-mode
 			key-chord
 			inf-ruby
 			smex
