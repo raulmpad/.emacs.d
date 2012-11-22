@@ -113,3 +113,6 @@
     (evil-search (thing-at-point 'ruby-word) t evil-regexp-search)))
 
 (evil-define-key 'motion ruby-mode-map (kbd "*") 'asok/evil-search-ruby-word-forward)
+
+(add-to-list 'load-path "~/.emacs.d/raul/emacs-calfw")
+(require 'calfw)
