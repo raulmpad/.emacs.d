@@ -44,6 +44,7 @@
  '(erm-syn-errline ((t (:underline "Red"))))
  '(erm-syn-warnline ((t (:underline "Orange"))))
  '(helm-selection ((t (:underline t))))
+ '(magit-diff-del ((t (:inherit diff-removed :foreground "#f88"))))
  '(magit-item-highlight ((t (:inherit nil))))
  '(ruby-op-face ((t (:foreground "Magenta" :weight bold))))
  '(yas/field-highlight-face ((t (:inherit (quote highlight)))) t))
