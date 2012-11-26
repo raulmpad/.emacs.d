@@ -116,3 +116,6 @@
 
 (add-to-list 'load-path "~/.emacs.d/raul/emacs-calfw")
 (require 'calfw)
+
+;; (add-to-list 'load-path "~/.emacs.d/raul/iedit")
+;; (require 'iedit)
