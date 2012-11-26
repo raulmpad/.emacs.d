@@ -119,3 +119,17 @@
 
 ;; (add-to-list 'load-path "~/.emacs.d/raul/iedit")
 ;; (require 'iedit)
+
+
+;; If indentation does not work
+;;
+;; (defun ruby-indent-line (&optional flag)
+;;   "Correct indentation of the current ruby line."
+;;   (interactive)
+;;   (erm-wait-for-parse)
+;;   (unwind-protect
+;;       (progn
+;;         (setq erm-no-parse-needed-p t)
+;;         (ruby-indent-to (ruby-calculate-indent)))
+;;     (setq erm-no-parse-needed-p nil)))
+
