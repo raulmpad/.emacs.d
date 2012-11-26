@@ -86,3 +86,4 @@
 
 (load "raul")
 (load "keys")
+(put 'narrow-to-region 'disabled t)
