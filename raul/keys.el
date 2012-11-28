@@ -9,16 +9,6 @@
 (global-set-key [C-kp-subtract]  '(lambda nil (interactive) (my-zoom -1)))
 (message "All done!")
 
-;; Not working yet...
-;;
-;; (defun ruby_compile_buffer ()
-;;    "Compile current buffer"
-;;   (interactive)
-;;   (mark-whole-buffer)
-;;   (ruby-send-region))
-;; (global-set-key (kbd "C-c C-c") 'ruby_compile_buffer)
-
-
 ;; Switching windows easily
 (global-set-key [s-left] 'windmove-left) 
 (global-set-key [s-right] 'windmove-right) 
