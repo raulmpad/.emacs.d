@@ -132,3 +132,6 @@
 (evil-define-key 'normal global-map (kbd ", j") 'move-down-line)
 (evil-define-key 'normal global-map (kbd ", d") 'duplicate-line)
 
+(defadvice split-window (after move-point-to-new-window activate)
+  "Moves the point to the newly created window after splitting."
+  (other-window 1))
